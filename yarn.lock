@@ -129,10 +129,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@markdoc/markdoc@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@markdoc/markdoc/-/markdoc-0.3.0.tgz#f9b3483d1a3ed694ade4f3bd1d4dd184e4a68c44"
-  integrity sha512-QWCF8krIIw52ulflfnoff0yG1eKl9CCGA3KAiOjHyYtHNzSEouFh8lO52nAaO3qV2Ctj1GTB8TTb2rTfvISQfA==
+"@markdoc/markdoc@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@markdoc/markdoc/-/markdoc-0.4.0.tgz#0ac4126c7f0b9370eb45cc05296c044d78c18a16"
+  integrity sha512-fSh4P3Y4E7oaKYc2oNzSIJVPDto7SMzAuQN1Iyx53UxzleA6QzRdNWRxmiPqtVDaDi5dELd2yICoG91csrGrAw==
   optionalDependencies:
     "@types/markdown-it" "12.2.3"
 
