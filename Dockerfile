@@ -1,11 +1,19 @@
 # Install dependencies only when needed
-FROM node:16-alpine AS deps
+FROM node:alpine
 
 RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-COPY . .
+COPY src src/.
+COPY jsconfig.json .
+COPY next.config.mjs .
+COPY package.json .
+COPY postcss.config.js .
+COPY tailwind.config.js .
+COPY yarn.lock .
+
+
 
 
 
