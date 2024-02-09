@@ -46,11 +46,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract Release Tag
-        if: ${{ needs.check-tag.outputs.tag_exists == 'true' }}
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Build and push Docker image
-        if: ${{ needs.check-tag.outputs.tag_exists == 'true' }}
         uses: docker/build-push-action@v4
         with:
           push: true
