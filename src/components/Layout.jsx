@@ -85,12 +85,7 @@ export function Layout({ children }) {
   return (
     <div className="flex w-full flex-col">
       <Header />
-      <HomePage />
-      {/* {isHomePage ? (
-        <HomePage />
-      ) : (
-        <>{isCertificate ? children : <DocsPage>{children}</DocsPage>}</>
-      )} */}
+       {isHomePage ? (<HomePage />) : (<>{isCertificate ? children : <DocsPage>{children}</DocsPage>}</>)}
     </div>
   )
 }
