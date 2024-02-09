@@ -69,14 +69,14 @@ export function Hero() {
                 <p className="mt-3 text-2xl tracking-tight text-slate-400">
                   For accelerated microservice development
                 </p>
-                {/* <div className="mt-10">
+                {<div className="mt-10">
                   <Link
                     className="rounded-full bg-sky-300 px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
                     href="/docs"
                   >
                     Get Started
                   </Link>
-                </div> */}
+                </div> }
               </div>
             </div>
           </div>
