@@ -1,0 +1,58 @@
+name: Node.js CI
+
+on:
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - development
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+          cache: 'npm'
+
+      - name: Build App
+        run: |
+          yarn install
+          yarn build
+
+  release_package:
+      if: ${{ startsWith(github.ref, 'refs/tags/v')}}
+      runs-on: ubuntu-latest
+
+      permissions:
+        contents: read
+        packages: write
+
+      steps:
+      - name: Log in to the Container registry
+
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.GITHUB_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Release Tag
+        if: ${{ needs.check-tag.outputs.tag_exists == 'true' }}
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Build and push Docker image
+        if: ${{ needs.check-tag.outputs.tag_exists == 'true' }}
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: .
+          tags: ${{ env.GITHUB_REGISTRY }}/${{ env.APP_NAME }}:${{ env.RELEASE_VERSION }}
