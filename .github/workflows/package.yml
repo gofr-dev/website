@@ -54,7 +54,5 @@ jobs:
           push: true
           context: .
           file: Dockerfile
-          tags: |
-            ghcr.io/gofr-dev/website:${{ env.RELEASE_VERSION }}
-            ghcr.io/gofr-dev/website:latest
+          tags: ghcr.io/gofr-dev/website:${{ env.RELEASE_VERSION }},ghcr.io/gofr-dev/website:latest
 
