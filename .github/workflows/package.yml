@@ -11,6 +11,7 @@ on:
 
 env:
   GITHUB_REGISTRY: ghcr.io
+  APP_NAME: website
 
 jobs:
   build:
@@ -30,6 +31,7 @@ jobs:
 
   release_package:
       if: ${{ startsWith(github.ref, 'refs/tags/v')}}
+      needs: build
       runs-on: ubuntu-latest
 
       permissions:
