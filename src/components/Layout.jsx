@@ -80,7 +80,7 @@ function Header() {
 export function Layout({ children }) {
   let pathname = usePathname()
   let isHomePage = pathname === '/'
-  const isCertificate = pathname.includes('certificate')
+  const isCertificate = pathname.includes('certificate')|| pathname.includes('test')
 
   return (
     <div className="flex w-full flex-col">
