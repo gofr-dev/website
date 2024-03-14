@@ -1,25 +1,25 @@
-export const convertSpansToSpanTree = spans => {
+export const convertSpansToSpanTree = (spans) => {
   const idToSpan = spans.reduce((acc, cur) => {
     acc[cur.spanId] = cur
     return acc
   }, {})
   const unconsumedSpans = { ...idToSpan }
 
-  const roots = spans.filter(span => {
-    return !span.parentId || !spans.find(p => p.spanId === span.parentId)
+  const roots = spans.filter((span) => {
+    return !span.parentId || !spans.find((p) => p.spanId === span.parentId)
   })
-  roots.forEach(root => {
+  roots.forEach((root) => {
     delete unconsumedSpans[root.spanId]
   })
 
   function fn(span, depth) {
     const childSpans = span.childIds
-      .map(childId => unconsumedSpans[childId])
-      .filter(s => !!s)
-    childSpans.forEach(child => {
+      .map((childId) => unconsumedSpans[childId])
+      .filter((s) => !!s)
+    childSpans.forEach((child) => {
       delete unconsumedSpans[child.spanId]
     })
-    const children = childSpans.map(childSpan => fn(childSpan, depth + 1))
+    const children = childSpans.map((childSpan) => fn(childSpan, depth + 1))
 
     return {
       ...span,
@@ -27,15 +27,15 @@ export const convertSpansToSpanTree = spans => {
       depth,
       maxDepth:
         children.length > 0
-          ? Math.max(...children.map(child => child.maxDepth)) + 1
-          : 0
+          ? Math.max(...children.map((child) => child.maxDepth)) + 1
+          : 0,
     }
   }
 
-  return roots.map(root => fn(root, 0))
+  return roots.map((root) => fn(root, 0))
 }
 
-const spanTreeToSpans = roots => {
+const spanTreeToSpans = (roots) => {
   const spans = []
 
   function fn(node) {
@@ -72,14 +72,14 @@ const extractPartialTree = (roots, rerootedSpanId) => {
 
   return {
     roots: partialTree,
-    spans
+    spans,
   }
 }
 
 export const convertSpanTreeToSpanRowsAndTimestamps = (
   roots,
   closedSpanIdMap,
-  rerootedSpanId
+  rerootedSpanId,
 ) => {
   // If rerootedSpanId is specified, calculate the partial tree.
   let partialRoots
@@ -93,7 +93,7 @@ export const convertSpanTreeToSpanRowsAndTimestamps = (
   let minTimestamp = Number.MAX_SAFE_INTEGER
   let maxTimestamp = Number.MIN_SAFE_INTEGER
 
-  const rows = partialRoots.flatMap(root => {
+  const rows = partialRoots.flatMap((root) => {
     const spanRows = []
 
     // This function creates and appends span rows recursively, and
@@ -115,11 +115,11 @@ export const convertSpanTreeToSpanRowsAndTimestamps = (
         // If parentTreeEdgeShape is undefined, initialize treeEdgeShape with '-'.
         if (!parentTreeEdgeShape) {
           for (let i = 0; i < root.maxDepth; i += 1) {
-            treeEdgeShape[i] = "-"
+            treeEdgeShape[i] = '-'
           }
           // If the node has children, the first element will be 'B'.
           if (node.children) {
-            treeEdgeShape[0] = "B"
+            treeEdgeShape[0] = 'B'
           }
         } else {
           const relativeDepth = node.depth - root.depth
@@ -127,20 +127,20 @@ export const convertSpanTreeToSpanRowsAndTimestamps = (
 
           if (
             relativeDepth >= 2 &&
-            parentTreeEdgeShape[relativeDepth - 2] === "E"
+            parentTreeEdgeShape[relativeDepth - 2] === 'E'
           ) {
-            treeEdgeShape[relativeDepth - 2] = "-"
+            treeEdgeShape[relativeDepth - 2] = '-'
           }
 
           if (relativeDepth >= 1) {
             if (index === siblings.length - 1) {
-              treeEdgeShape[relativeDepth - 1] = "E"
+              treeEdgeShape[relativeDepth - 1] = 'E'
             } else {
-              treeEdgeShape[relativeDepth - 1] = "M"
+              treeEdgeShape[relativeDepth - 1] = 'M'
             }
           }
           if (node.children) {
-            treeEdgeShape[relativeDepth] = "B"
+            treeEdgeShape[relativeDepth] = 'B'
           }
         }
         spanRowIndex =
@@ -149,7 +149,7 @@ export const convertSpanTreeToSpanRowsAndTimestamps = (
             treeEdgeShape,
             isClosed,
             isCollapsible: !!node.children,
-            numOfChildren: 0
+            numOfChildren: 0,
           }) - 1
       }
 
@@ -160,7 +160,7 @@ export const convertSpanTreeToSpanRowsAndTimestamps = (
             i,
             node.children,
             isClosed || isParentClosed,
-            treeEdgeShape
+            treeEdgeShape,
           )
         }
       }
@@ -179,11 +179,11 @@ export const convertSpanTreeToSpanRowsAndTimestamps = (
   return {
     minTimestamp,
     maxTimestamp,
-    spanRows: rows
+    spanRows: rows,
   }
 }
 
-export const adjustPercentValue = value => {
+export const adjustPercentValue = (value) => {
   if (value <= 0) {
     return 0
   }

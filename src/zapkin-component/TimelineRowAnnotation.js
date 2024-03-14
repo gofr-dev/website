@@ -2,26 +2,26 @@
  * Copyright The OpenZipkin Authors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { Box, makeStyles } from "@material-ui/core"
-import React, { useMemo } from "react"
-import { AnnotationTooltip } from "./AnnotationTooltip"
+import { Box, makeStyles } from '@material-ui/core'
+import React, { useMemo } from 'react'
+import { AnnotationTooltip } from './AnnotationTooltip'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   annotationMarker: {
-    position: "absolute",
+    position: 'absolute',
     backgroundColor: theme.palette.common.black,
     height: 12,
     width: 1,
     top: -6,
-    cursor: "pointer",
-    pointerEvents: "auto"
-  }
+    cursor: 'pointer',
+    pointerEvents: 'auto',
+  },
 }))
 
 export const TimelineRowAnnotation = ({
   selectedMinTimestamp,
   selectedMaxTimestamp,
-  annotation
+  annotation,
 }) => {
   const classes = useStyles()
 

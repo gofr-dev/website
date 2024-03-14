@@ -11,6 +11,8 @@
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
     "@algolia/autocomplete-core": "^1.9.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
     "@headlessui/react": "^1.7.13",
     "@markdoc/markdoc": "0.3.0",
     "@markdoc/next.js": "0.3.1",
@@ -18,6 +20,8 @@
     "@material-ui/data-grid": "^4.0.0-alpha.37",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.61",
+    "@mui/material": "^5.15.12",
+    "@mui/styles": "^5.15.12",
     "@sindresorhus/slugify": "^2.1.0",
     "@tailwindcss/typography": "^0.5.7",
     "autoprefixer": "^10.4.12",

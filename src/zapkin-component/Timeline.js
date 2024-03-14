@@ -2,29 +2,29 @@
  * Copyright The OpenZipkin Authors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { Box, makeStyles } from "@material-ui/core"
-import React, { useCallback, useEffect, useRef } from "react"
-import AutoSizer from "react-virtualized-auto-sizer"
-import { FixedSizeList as List } from "react-window"
-import { useMeasure } from "react-use"
-import { MiniTimeline } from "./MiniTimeline"
-import { TickMarkers } from "./TickMarkers"
-import { TimelineHeader } from "./TimelineHeader"
-import { TimelineRow } from "./TimelineRow"
+import { Box, makeStyles } from '@material-ui/core'
+import React, { useCallback, useEffect, useRef } from 'react'
+import AutoSizer from 'react-virtualized-auto-sizer'
+import { FixedSizeList as List } from 'react-window'
+import { useMeasure } from 'react-use'
+import { MiniTimeline } from './MiniTimeline'
+import { TickMarkers } from './TickMarkers'
+import { TimelineHeader } from './TimelineHeader'
+import { TimelineRow } from './TimelineRow'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: theme.palette.background.paper
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: theme.palette.background.paper,
   },
   miniViewerContainer: {
-    flex: "0 0",
+    flex: '0 0',
     padding: theme.spacing(1),
     backgroundColor: theme.palette.grey[50],
-    borderBottom: `1px solid ${theme.palette.divider}`
-  }
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
 }))
 
 const rowHeight = 30
@@ -46,7 +46,8 @@ export const Timeline = ({
   rerootedSpanId,
   setRerootedSpanId,
   toggleOpenSpan,
-  setClosedSpanIdMap
+  setClosedSpanIdMap,
+  services,
 }) => {
   const classes = useStyles()
 
@@ -57,14 +58,14 @@ export const Timeline = ({
   useEffect(() => {
     if (selectedSpan.spanId !== prevSelectedSpanId.current) {
       listRef.current.scrollToItem(
-        spanRows.findIndex(r => r.spanId === selectedSpan.spanId),
-        "center"
+        spanRows.findIndex((r) => r.spanId === selectedSpan.spanId),
+        'center',
       )
     }
   }, [selectedSpan.spanId, spanRows])
 
   const rowRenderer = useCallback(
-    props => {
+    (props) => {
       const spanRow = spanRows[props.index]
 
       return (
@@ -77,6 +78,7 @@ export const Timeline = ({
             selectedMaxTimestamp={selectedMaxTimestamp}
             toggleOpenSpan={toggleOpenSpan}
             rowHeight={rowHeight}
+            services={services}
           />
         </div>
       )
@@ -87,8 +89,9 @@ export const Timeline = ({
       selectedSpan.spanId,
       setSelectedSpan,
       spanRows,
-      toggleOpenSpan
-    ]
+      toggleOpenSpan,
+      services,
+    ],
   )
 
   return (
@@ -129,7 +132,7 @@ export const Timeline = ({
       </Box>
       <Box flex="1 1">
         <AutoSizer>
-          {args => (
+          {(args) => (
             <List
               ref={listRef}
               width={args.width}

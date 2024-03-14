@@ -1,12 +1,12 @@
-import React, { useMemo } from "react"
-import { selectServiceColor } from "../zapkin-lib/color"
-import { adjustPercentValue } from "../zapkin-lib/helpers"
+import React, { useMemo } from 'react'
+import { selectServiceColor } from '../zapkin-lib/color'
+import { adjustPercentValue } from '../zapkin-lib/helpers'
 
 export const MiniTimelineRow = ({
   top,
   spanRow,
   minTimestamp,
-  maxTimestamp
+  maxTimestamp,
 }) => {
   const left = useMemo(
     () =>
@@ -15,9 +15,9 @@ export const MiniTimelineRow = ({
           ? ((spanRow.timestamp - minTimestamp) /
               (maxTimestamp - minTimestamp)) *
               100
-          : 0
+          : 0,
       ),
-    [maxTimestamp, minTimestamp, spanRow.timestamp]
+    [maxTimestamp, minTimestamp, spanRow.timestamp],
   )
 
   const width = useMemo(
@@ -29,11 +29,11 @@ export const MiniTimelineRow = ({
                 (maxTimestamp - minTimestamp)) *
                 100 -
                 left,
-              0.1
+              0.1,
             )
-          : 0.1
+          : 0.1,
       ),
-    [left, maxTimestamp, minTimestamp, spanRow.duration, spanRow.timestamp]
+    [left, maxTimestamp, minTimestamp, spanRow.duration, spanRow.timestamp],
   )
 
   return (

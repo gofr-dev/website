@@ -1,6 +1,6 @@
-import { useTheme } from "@material-ui/core"
-import React, { useCallback, useMemo, useState } from "react"
-import { adjustPercentValue } from "../zapkin-lib/helpers"
+import { useTheme } from '@material-ui/core'
+import React, { useCallback, useMemo, useState } from 'react'
+import { adjustPercentValue } from '../zapkin-lib/helpers'
 
 const calculateX = (parentRect, x, opositeX, isSmallerThanOpositeX) => {
   let value =
@@ -21,14 +21,14 @@ const useRangeHandler = (
   maxTimestamp,
   opositeX,
   isSmallerThanOpositeX,
-  setTimestamp
+  setTimestamp,
 ) => {
   const [currentX, setCurrentX] = useState()
   const [mouseDownX, setMouseDownX] = useState()
   const [isDragging, setIsDragging] = useState(false)
 
   const onMouseMove = useCallback(
-    e => {
+    (e) => {
       if (!rootEl.current) {
         return
       }
@@ -36,15 +36,15 @@ const useRangeHandler = (
         rootEl.current.getBoundingClientRect(),
         e.pageX,
         opositeX,
-        isSmallerThanOpositeX
+        isSmallerThanOpositeX,
       )
       setCurrentX(x)
     },
-    [isSmallerThanOpositeX, opositeX, rootEl]
+    [isSmallerThanOpositeX, opositeX, rootEl],
   )
 
   const onMouseUp = useCallback(
-    e => {
+    (e) => {
       if (!rootEl.current) {
         return
       }
@@ -52,15 +52,15 @@ const useRangeHandler = (
         rootEl.current.getBoundingClientRect(),
         e.pageX,
         opositeX,
-        isSmallerThanOpositeX
+        isSmallerThanOpositeX,
       )
       setTimestamp((x / 100) * (maxTimestamp - minTimestamp) + minTimestamp)
       setCurrentX(undefined)
       setMouseDownX(undefined)
       setIsDragging(false)
 
-      window.removeEventListener("mousemove", onMouseMove)
-      window.removeEventListener("mouseup", onMouseUp)
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('mouseup', onMouseUp)
     },
     [
       isSmallerThanOpositeX,
@@ -69,12 +69,12 @@ const useRangeHandler = (
       onMouseMove,
       opositeX,
       rootEl,
-      setTimestamp
-    ]
+      setTimestamp,
+    ],
   )
 
   const onMouseDown = useCallback(
-    e => {
+    (e) => {
       if (!rootEl.current) {
         return
       }
@@ -82,16 +82,16 @@ const useRangeHandler = (
         rootEl.current.getBoundingClientRect(),
         e.currentTarget.getBoundingClientRect().x + 3,
         opositeX,
-        isSmallerThanOpositeX
+        isSmallerThanOpositeX,
       )
       setCurrentX(x)
       setMouseDownX(x)
       setIsDragging(true)
 
-      window.addEventListener("mousemove", onMouseMove)
-      window.addEventListener("mouseup", onMouseUp)
+      window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('mouseup', onMouseUp)
     },
-    [isSmallerThanOpositeX, onMouseMove, onMouseUp, opositeX, rootEl]
+    [isSmallerThanOpositeX, onMouseMove, onMouseUp, opositeX, rootEl],
   )
 
   return { currentX, mouseDownX, onMouseDown, isDragging }
@@ -104,7 +104,7 @@ export const TimeRangeSelector = ({
   selectedMinTimestamp,
   selectedMaxTimestamp,
   setSelectedMinTimestamp,
-  setSelectedMaxTimestamp
+  setSelectedMaxTimestamp,
 }) => {
   const theme = useTheme()
 
@@ -115,7 +115,7 @@ export const TimeRangeSelector = ({
     ((selectedMaxTimestamp - minTimestamp) / (maxTimestamp - minTimestamp)) *
       100,
     true,
-    setSelectedMinTimestamp
+    setSelectedMinTimestamp,
   )
 
   const maxRangeHandler = useRangeHandler(
@@ -125,7 +125,7 @@ export const TimeRangeSelector = ({
     ((selectedMinTimestamp - minTimestamp) / (maxTimestamp - minTimestamp)) *
       100,
     false,
-    setSelectedMaxTimestamp
+    setSelectedMaxTimestamp,
   )
 
   const rightOnTheLeft = useMemo(
@@ -133,9 +133,9 @@ export const TimeRangeSelector = ({
       adjustPercentValue(
         ((selectedMinTimestamp - minTimestamp) /
           (maxTimestamp - minTimestamp)) *
-          100
+          100,
       ),
-    [maxTimestamp, minTimestamp, selectedMinTimestamp]
+    [maxTimestamp, minTimestamp, selectedMinTimestamp],
   )
 
   const leftOnTheRight = useMemo(
@@ -143,9 +143,9 @@ export const TimeRangeSelector = ({
       adjustPercentValue(
         ((selectedMaxTimestamp - minTimestamp) /
           (maxTimestamp - minTimestamp)) *
-          100
+          100,
       ),
-    [maxTimestamp, minTimestamp, selectedMaxTimestamp]
+    [maxTimestamp, minTimestamp, selectedMaxTimestamp],
   )
 
   return (
@@ -191,11 +191,11 @@ export const TimeRangeSelector = ({
           <rect
             x={`${Math.min(
               minRangeHandler.mouseDownX,
-              minRangeHandler.currentX
+              minRangeHandler.currentX,
             )}%`}
             y="0"
             width={`${Math.abs(
-              minRangeHandler.mouseDownX - minRangeHandler.currentX
+              minRangeHandler.mouseDownX - minRangeHandler.currentX,
             )}%`}
             height="100%"
             fill={theme.palette.secondary.light}
@@ -208,11 +208,11 @@ export const TimeRangeSelector = ({
           <rect
             x={`${Math.min(
               maxRangeHandler.mouseDownX,
-              maxRangeHandler.currentX
+              maxRangeHandler.currentX,
             )}%`}
             y="0"
             width={`${Math.abs(
-              maxRangeHandler.mouseDownX - maxRangeHandler.currentX
+              maxRangeHandler.mouseDownX - maxRangeHandler.currentX,
             )}%`}
             height="100%"
             fill={theme.palette.secondary.light}

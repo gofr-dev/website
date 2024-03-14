@@ -2,28 +2,28 @@
  * Copyright The OpenZipkin Authors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { Box, Drawer, makeStyles } from "@material-ui/core"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useToggle } from "react-use"
-import { Header } from "./Header"
+import { Box, Drawer, makeStyles } from '@material-ui/core'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useToggle } from 'react-use'
+import { Header } from './Header'
 import {
   convertSpansToSpanTree,
-  convertSpanTreeToSpanRowsAndTimestamps
-} from "../zapkin-lib/helpers"
-import { SpanDetailDrawer } from "./SpanDetailDrawer"
-import { SpanTable } from "./SpanTable"
-import { Timeline } from "./Timeline"
+  convertSpanTreeToSpanRowsAndTimestamps,
+} from '../zapkin-lib/helpers'
+import { SpanDetailDrawer } from './SpanDetailDrawer'
+import { SpanTable } from './SpanTable'
+import { Timeline } from './Timeline'
 
-const SPAN_DETAIL_DRAWER_WIDTH = "400px"
+const SPAN_DETAIL_DRAWER_WIDTH = '400px'
 
 const useStyles = makeStyles((theme) => ({
   details: {
     flex: `0 0 ${SPAN_DETAIL_DRAWER_WIDTH}`,
     [theme.breakpoints.down('sm')]: {
-      flex: `1 0 ${SPAN_DETAIL_DRAWER_WIDTH}`,
+      flex: `1 0 280px`,
     },
   },
-}));
+}))
 
 export const TracePageContent = ({ trace, rawTrace }) => {
   const [rerootedSpanId, setRerootedSpanId] = useState()
@@ -31,26 +31,27 @@ export const TracePageContent = ({ trace, rawTrace }) => {
   const [isSpanDetailDrawerOpen, toggleIsSpanDetailDrawerOpen] = useToggle(true)
   const [isMiniTimelineOpen, toggleIsMiniTimelineOpen] = useToggle(true)
   const [isSpanTableOpen, toggleIsSpanTableOpen] = useToggle(false)
-  const classes = useStyles();
+  const classes = useStyles()
 
-  const roots = useMemo(() => convertSpansToSpanTree(trace.spans), [
-    trace.spans
-  ])
+  const roots = useMemo(
+    () => convertSpansToSpanTree(trace.spans),
+    [trace.spans],
+  )
 
   const { spanRows, minTimestamp, maxTimestamp } = useMemo(
     () =>
       convertSpanTreeToSpanRowsAndTimestamps(
         roots,
         closedSpanIdMap,
-        rerootedSpanId
+        rerootedSpanId,
       ),
-    [closedSpanIdMap, rerootedSpanId, roots]
+    [closedSpanIdMap, rerootedSpanId, roots],
   )
 
-  const toggleOpenSpan = useCallback(spanId => {
-    setClosedSpanIdMap(prev => ({
+  const toggleOpenSpan = useCallback((spanId) => {
+    setClosedSpanIdMap((prev) => ({
       ...prev,
-      [spanId]: !prev[spanId]
+      [spanId]: !prev[spanId],
     }))
   }, [])
 
@@ -58,19 +59,36 @@ export const TracePageContent = ({ trace, rawTrace }) => {
 
   const [selectedMinTimestamp, setSelectedMinTimestamp] = useState(minTimestamp)
   const [selectedMaxTimestamp, setSelectedMaxTimestamp] = useState(maxTimestamp)
+  const [services, setServices] = useState([])
   useEffect(() => {
     setSelectedMinTimestamp(minTimestamp)
     setSelectedMaxTimestamp(maxTimestamp)
   }, [maxTimestamp, minTimestamp])
 
+  const serviceSelectionHandler = (event) => {
+    const {
+      target: { value },
+    } = event
+    setServices(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    )
+  }
 
   return (
-    <Box display="flex" flexDirection="column" height="calc(100vh - 64px)">
+    <Box
+      display="flex"
+      flexDirection="column"
+      height="calc(100vh - 64px)"
+      className="overflow-scroll bg-white"
+    >
       <Box flex="0 0">
         <Header
           trace={trace}
-          rawTrace={rawTrace}
           toggleIsSpanTableOpen={toggleIsSpanTableOpen}
+          spanRows={spanRows}
+          serviceSelectionHandler={serviceSelectionHandler}
+          value={services}
         />
       </Box>
       {/* <Box flex="1 1" display="flex" overflow="hidden"> */}
@@ -94,15 +112,11 @@ export const TracePageContent = ({ trace, rawTrace }) => {
             setRerootedSpanId={setRerootedSpanId}
             toggleOpenSpan={toggleOpenSpan}
             setClosedSpanIdMap={setClosedSpanIdMap}
+            services={services}
           />
         </Box>
         {isSpanDetailDrawerOpen && (
-          <Box
-            className={classes.details}
-
-            height="100%"
-            overflow="auto"
-          >
+          <Box className={classes.details} height="100%" overflow="auto">
             {selectedSpan && (
               <SpanDetailDrawer
                 minTimestamp={minTimestamp}

@@ -1,26 +1,26 @@
-import { Box, Divider, Grid, makeStyles, Typography } from "@material-ui/core"
-import React from "react"
-import { AnnotationViewer } from "./AnnotationViewer"
-import { TagList } from "./TagList"
+import { Box, Divider, Grid, makeStyles, Typography } from '@material-ui/core'
+import React from 'react'
+import { AnnotationViewer } from './AnnotationViewer'
+import { TagList } from './TagList'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
     backgroundColor: theme.palette.background.paper,
     borderLeft: `1px solid ${theme.palette.divider}`,
-    minHeight: "100%",
-    color:"black"
+    minHeight: '100%',
+    color: 'black',
   },
   basicInfoLabel: {
-    lineHeight: 1.2
+    lineHeight: 1.2,
   },
   basicInfoValue: {
-    wordWrap: "break-word"
+    wordWrap: 'break-word',
   },
   divider: {
     marginTop: theme.spacing(1.5),
-    marginBottom: theme.spacing(2.5)
-  }
+    marginBottom: theme.spacing(2.5),
+  },
 }))
 
 export const SpanDetailDrawer = ({ span, minTimestamp }) => {
@@ -31,10 +31,10 @@ export const SpanDetailDrawer = ({ span, minTimestamp }) => {
     <Box className={classes.root}>
       <Grid container spacing={1}>
         {[
-          { label: "Service name", value: span.serviceName },
-          { label: "Span name", value: span.spanName },
+          { label: 'Service name', value: span.serviceName },
+          { label: 'Span name', value: span.spanName },
           { label: `Span ID`, value: span.spanId },
-          { label: `Parent ID`, value: span.parentId || "none" }
+          { label: `Parent ID`, value: span.parentId || 'none' },
         ].map(({ label, value }) => (
           <Grid key={label} item xs={6}>
             <Typography

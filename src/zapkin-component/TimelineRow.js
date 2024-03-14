@@ -2,35 +2,38 @@
  * Copyright The OpenZipkin Authors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { Box, makeStyles } from "@material-ui/core"
-import { ErrorOutline as ErrorOutlineIcon } from "@material-ui/icons"
-import classNames from "classnames"
-import React, { useCallback } from "react"
-import { TimelineRowBar } from "./TimelineRowBar"
-import { TimelineRowEdge } from "./TimelineRowEdges"
+import { Box, makeStyles } from '@material-ui/core'
+import { ErrorOutline as ErrorOutlineIcon } from '@material-ui/icons'
+import classNames from 'classnames'
+import React, { useCallback } from 'react'
+import { TimelineRowBar } from './TimelineRowBar'
+import { TimelineRowEdge } from './TimelineRowEdges'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: "rgba(0, 0, 0, 0.1)"
+    display: 'flex',
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
     },
   },
   rootSelected: {
-    backgroundColor: "rgba(0, 0, 0, 0.1)"
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   text: {
     fontSize: theme.typography.caption.fontSize,
-    color:"black"
+    color: 'black',
   },
   errorIcon: {
     marginRight: theme.spacing(0.5),
-    fontSize: "14px"
-  }
+    fontSize: '14px',
+  },
+  dull: {
+    opacity: 0.4,
+  },
 }))
 
-export const TimelineRow = props => {
+export const TimelineRow = (props) => {
   const {
     isSelected,
     setSelectedSpan,
@@ -46,7 +49,8 @@ export const TimelineRow = props => {
     selectedMinTimestamp,
     selectedMaxTimestamp,
     toggleOpenSpan,
-    rowHeight
+    rowHeight,
+    services,
   } = props
   const classes = useStyles()
 
@@ -55,18 +59,22 @@ export const TimelineRow = props => {
   }, [props, setSelectedSpan])
 
   const handleButtonClick = useCallback(
-    e => {
+    (e) => {
       e.stopPropagation()
       toggleOpenSpan(spanId)
     },
-    [spanId, toggleOpenSpan]
+    [spanId, toggleOpenSpan],
   )
 
   return (
     <Box
-      className={classNames(classes.root, {
-        [classes.rootSelected]: isSelected
-      })}
+      className={classNames(
+        classes.root,
+        {
+          [classes.rootSelected]: isSelected,
+        },
+        services.length > 0 && !services.includes(serviceName) && classes.dull,
+      )}
       onClick={handleClick}
     >
       <TimelineRowEdge
@@ -80,7 +88,7 @@ export const TimelineRow = props => {
       <Box position="relative" width="100%" flex="1 1">
         <Box pt={0.25} display="flex" justifyContent="space-between" pr={1}>
           <Box display="flex" alignItems="center">
-            {errorType !== "none" && (
+            {errorType !== 'none' && (
               <ErrorOutlineIcon className={classes.errorIcon} color="error" />
             )}
             <Box className={classes.text}>{`${serviceName}: ${spanName}`}</Box>

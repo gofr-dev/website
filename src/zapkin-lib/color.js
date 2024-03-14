@@ -1,25 +1,25 @@
-import { createTheme } from "@material-ui/core/styles"
-import * as colors from "@material-ui/core/colors"
+import { createTheme } from '@material-ui/core/styles'
+import * as colors from '@material-ui/core/colors'
 
-export const primaryColor = "#6a9fb5"
+export const primaryColor = '#6a9fb5'
 
 export const theme = createTheme({
   palette: {
     primary: {
       main: primaryColor,
-      contrastText: "#fff"
-    }
-  }
+      contrastText: '#fff',
+    },
+  },
 })
 
 export const darkTheme = createTheme({
   palette: {
-    type: "dark",
+    type: 'dark',
     primary: {
       main: primaryColor,
-      contrastText: "#fff"
-    }
-  }
+      contrastText: '#fff',
+    },
+  },
 })
 
 export const allColors = [
@@ -41,21 +41,21 @@ export const allColors = [
   colors.deepOrange,
   colors.brown,
   colors.grey,
-  colors.blueGrey
+  colors.blueGrey,
 ]
 
-export const allColorThemes = allColors.map(color =>
+export const allColorThemes = allColors.map((color) =>
   createTheme({
     palette: {
       primary: {
-        main: color[500]
-      }
-    }
-  })
+        main: color[500],
+      },
+    },
+  }),
 )
 
 /* eslint no-bitwise: ["error", { "allow": ["<<", "|="] }] */
-const generateHash = str => {
+const generateHash = (str) => {
   let hash = 0
   if (str.length === 0) return hash
   for (let i = 0; i < str.length; i += 1) {
@@ -66,32 +66,32 @@ const generateHash = str => {
   return Math.abs(hash) // Only positive number.
 }
 
-export const selectServiceTheme = serviceName => {
+export const selectServiceTheme = (serviceName) => {
   const hash = generateHash(serviceName)
   return allColorThemes[hash % allColors.length]
 }
 
-export const selectServiceColor = serviceName =>
+export const selectServiceColor = (serviceName) =>
   selectServiceTheme(serviceName).palette.primary.dark
 
-export const selectColorByErrorType = errorType => {
+export const selectColorByErrorType = (errorType) => {
   switch (errorType) {
-    case "transient":
+    case 'transient':
       return colors.red[500]
-    case "critical":
+    case 'critical':
       return colors.red[500]
     default:
       return theme.palette.primary.main
   }
 }
 
-export const selectColorByInfoClass = infoClass => {
+export const selectColorByInfoClass = (infoClass) => {
   switch (infoClass) {
-    case "trace-error-transient":
-      return selectColorByErrorType("transient")
-    case "trace-error-critical":
-      return selectColorByErrorType("critical")
+    case 'trace-error-transient':
+      return selectColorByErrorType('transient')
+    case 'trace-error-critical':
+      return selectColorByErrorType('critical')
     default:
-      return selectColorByErrorType("none")
+      return selectColorByErrorType('none')
   }
 }

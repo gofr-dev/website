@@ -1,5 +1,5 @@
-import { useTheme } from "@material-ui/core"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import { useTheme } from '@material-ui/core'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const calculateX = (parentRect, x) => {
   const value =
@@ -17,7 +17,7 @@ export const MiniTimelineOverlay = ({
   minTimestamp,
   maxTimestamp,
   setSelectedMinTimestamp,
-  setSelectedMaxTimestamp
+  setSelectedMaxTimestamp,
 }) => {
   const theme = useTheme()
   const rootEl = useRef(null)
@@ -30,7 +30,7 @@ export const MiniTimelineOverlay = ({
     mouseDownXRef.current = mouseDownX
   }, [mouseDownX])
 
-  const handleMouseMove = useCallback(e => {
+  const handleMouseMove = useCallback((e) => {
     if (!rootEl.current) {
       return
     }
@@ -39,7 +39,7 @@ export const MiniTimelineOverlay = ({
   }, [])
 
   const handleMouseUp = useCallback(
-    e => {
+    (e) => {
       if (!rootEl.current || mouseDownXRef.current === undefined) {
         return
       }
@@ -60,20 +60,20 @@ export const MiniTimelineOverlay = ({
       setCurrentX(undefined)
       setMouseDownX(undefined)
 
-      window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("mouseup", handleMouseUp)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
     },
     [
       maxTimestamp,
       minTimestamp,
       handleMouseMove,
       setSelectedMaxTimestamp,
-      setSelectedMinTimestamp
-    ]
+      setSelectedMinTimestamp,
+    ],
   )
 
   const handleMouseDown = useCallback(
-    e => {
+    (e) => {
       if (!rootEl.current) {
         return
       }
@@ -81,13 +81,13 @@ export const MiniTimelineOverlay = ({
       setCurrentX(x)
       setMouseDownX(x)
 
-      window.addEventListener("mousemove", handleMouseMove)
-      window.addEventListener("mouseup", handleMouseUp)
+      window.addEventListener('mousemove', handleMouseMove)
+      window.addEventListener('mouseup', handleMouseUp)
     },
-    [handleMouseMove, handleMouseUp]
+    [handleMouseMove, handleMouseUp],
   )
 
-  const handleMouseHoverMove = useCallback(e => {
+  const handleMouseHoverMove = useCallback((e) => {
     if (e.buttons !== 0 || !rootEl.current) {
       return
     }

@@ -1,5 +1,4 @@
-
-import { compare, mergeV2ById } from "./span-cleaner"
+import { compare, mergeV2ById } from './span-cleaner'
 
 /*
  * Convenience type representing a trace tree. Multiple Zipkin features require a trace tree. For
@@ -35,13 +34,13 @@ export class SpanNode {
 
   // Mutable as some transformations, such as clock skew, adjust the current node in the tree.
   setSpan(span) {
-    if (!span) throw new Error("span was undefined")
+    if (!span) throw new Error('span was undefined')
     this._span = span
   }
 
   // Adds the child IFF it isn't already a child.
   addChild(child) {
-    if (!child) throw new Error("child was undefined")
+    if (!child) throw new Error('child was undefined')
     if (child === this)
       throw new Error(`circular dependency on ${this.toString()}`)
     child._setParent(this)
@@ -52,13 +51,13 @@ export class SpanNode {
   queueRootMostSpans() {
     const queue = []
     // since the input data could be headless, we first push onto the queue the root-most spans
-    if (typeof this.span === "undefined") {
+    if (typeof this.span === 'undefined') {
       // synthetic root
-      this.children.forEach(child => queue.push(child))
+      this.children.forEach((child) => queue.push(child))
     } else {
       queue.push(this)
     }
-    if (queue.length === 0) throw new Error("Trace was empty")
+    if (queue.length === 0) throw new Error('Trace was empty')
     return queue
   }
 
@@ -80,14 +79,14 @@ export class SpanNode {
 
   toString() {
     if (this._span) return `SpanNode(${JSON.stringify(this._span)})`
-    return "SpanNode()"
+    return 'SpanNode()'
   }
 }
 
 // In javascript, dict keys can't be objects
 function keyString(id, shared = false, endpoint) {
   if (!shared) return id
-  const endpointString = endpoint ? JSON.stringify(endpoint) : "x"
+  const endpointString = endpoint ? JSON.stringify(endpoint) : 'x'
   return `${id}-${endpointString}`
 }
 
@@ -191,9 +190,8 @@ export class SpanNodeBuilder {
     } else if (this._rootSpan) {
       // we are root or don't know our parent
       if (this._debug) {
-        const prefix = "attributing span missing parent to root"
+        const prefix = 'attributing span missing parent to root'
         /* eslint-disable no-console */
-     
       }
     }
 
@@ -220,7 +218,7 @@ export class SpanNodeBuilder {
    * (e.g. all share the same trace ID).
    */
   build(spans) {
-    if (spans.length === 0) throw new Error("Trace was empty")
+    if (spans.length === 0) throw new Error('Trace was empty')
 
     // In order to make a tree, we need clean data. This will merge any duplicates so that we
     // don't have redundant leaves on the tree.
@@ -248,7 +246,7 @@ export class SpanNodeBuilder {
       if (this._debug) {
         /* eslint-disable no-console */
         console.log(
-          `substituting dummy node for missing root span: traceId=${traceId}`
+          `substituting dummy node for missing root span: traceId=${traceId}`,
         )
       }
       this._rootSpan = new SpanNode()
@@ -256,7 +254,7 @@ export class SpanNodeBuilder {
 
     // At this point, we have the most reliable parent-child relationships and can allocate spans
     // corresponding the the best place in the trace tree.
-    Object.keys(this._spanToParent).forEach(key => {
+    Object.keys(this._spanToParent).forEach((key) => {
       const child = this._keyToNode[key]
       const parent = this._keyToNode[this._spanToParent[key]]
 

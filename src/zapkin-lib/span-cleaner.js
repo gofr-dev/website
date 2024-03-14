@@ -1,15 +1,15 @@
-import isEqual from "lodash/isEqual"
-import sortBy from "lodash/sortBy"
-import unionWith from "lodash/unionWith"
+import isEqual from 'lodash/isEqual'
+import sortBy from 'lodash/sortBy'
+import unionWith from 'lodash/unionWith'
 
 export function normalizeTraceId(traceId) {
   if (traceId.length > 16) {
-    const result = traceId.padStart(32, "0")
+    const result = traceId.padStart(32, '0')
     // undo prefix if it will result in a 64-bit trace ID
-    if (result.startsWith("0000000000000000")) return result.substring(16)
+    if (result.startsWith('0000000000000000')) return result.substring(16)
     return result
   }
-  return traceId.padStart(16, "0")
+  return traceId.padStart(16, '0')
 }
 
 function isEndpoint(endpoint) {
@@ -19,18 +19,18 @@ function isEndpoint(endpoint) {
 // This cleans potential dirty v2 inputs, like normalizing IDs etc. It does not affect the input
 export function clean(span) {
   const res = {
-    traceId: normalizeTraceId(span.traceId)
+    traceId: normalizeTraceId(span.traceId),
   }
 
   // take care not to create self-referencing spans even if the input data is incorrect
-  const id = span.id.padStart(16, "0")
+  const id = span.id.padStart(16, '0')
   if (span.parentId) {
-    const parentId = span.parentId.padStart(16, "0")
+    const parentId = span.parentId.padStart(16, '0')
     if (parentId !== id) res.parentId = parentId
   }
   res.id = id
 
-  if (span.name && span.name !== "" && span.name !== "unknown")
+  if (span.name && span.name !== '' && span.name !== 'unknown')
     res.name = span.name
   if (span.kind) res.kind = span.kind
 
@@ -45,8 +45,8 @@ export function clean(span) {
   res.annotations = span.annotations ? span.annotations.slice(0) : []
   if (res.annotations.length > 1) {
     res.annotations = sortBy(unionWith(res.annotations, isEqual), [
-      "timestamp",
-      "value"
+      'timestamp',
+      'value',
     ])
   }
 
@@ -54,7 +54,7 @@ export function clean(span) {
 
   if (span.debug) res.debug = true
   // shared is for the server side, unset it if accidentally set on the client side
-  if (span.shared && span.kind !== "CLIENT") res.shared = true
+  if (span.shared && span.kind !== 'CLIENT') res.shared = true
 
   return res
 }
@@ -62,7 +62,7 @@ export function clean(span) {
 // exposed for testing. assumes spans are already clean
 export function merge(left, right) {
   const res = {
-    traceId: right.traceId.length > 16 ? right.traceId : left.traceId
+    traceId: right.traceId.length > 16 ? right.traceId : left.traceId,
   }
 
   const parentId = left.parentId || right.parentId
@@ -92,7 +92,7 @@ export function merge(left, right) {
   } else {
     res.annotations = sortBy(
       unionWith(left.annotations, right.annotations, isEqual),
-      ["timestamp", "value"]
+      ['timestamp', 'value'],
     )
   }
 
@@ -112,7 +112,7 @@ export function compare(a, b) {
 }
 
 function isUndefined(ref) {
-  return typeof ref === "undefined"
+  return typeof ref === 'undefined'
 }
 
 /*
@@ -138,7 +138,7 @@ function compareShared(left, right) {
   const rightNotShared = isUndefined(right.shared) || !right.shared
 
   if (leftNotShared && rightNotShared) {
-    return left.kind === "CLIENT" ? -1 : 1
+    return left.kind === 'CLIENT' ? -1 : 1
   }
   if (leftNotShared) return -1
   if (rightNotShared) return 1
@@ -212,7 +212,7 @@ export function mergeV2ById(spans) {
 
   // Let's cleanup any spans and pick the longest ID
   let traceId
-  spans.forEach(span => {
+  spans.forEach((span) => {
     const cleaned = clean(span)
     if (!traceId || traceId.length !== 32) traceId = cleaned.traceId
     result.push(cleaned)
@@ -256,7 +256,7 @@ export function mergeV2ById(spans) {
     // have the entire trace, and it is ordered client-first, we can correct a missing shared flag.
     if (last && last.id === span.id) {
       // Backfill missing shared flag as some instrumentation doesn't add it
-      if (last.kind === "CLIENT" && span.kind === "SERVER" && !span.shared) {
+      if (last.kind === 'CLIENT' && span.kind === 'SERVER' && !span.shared) {
         span.shared = true
       }
 

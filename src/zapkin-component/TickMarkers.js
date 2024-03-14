@@ -1,27 +1,27 @@
-import { Box, makeStyles } from "@material-ui/core"
-import React, { useMemo } from "react"
-import { formatDuration } from "../zapkin-lib/timestamp"
+import { Box, makeStyles } from '@material-ui/core'
+import React, { useMemo } from 'react'
+import { formatDuration } from '../zapkin-lib/timestamp'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     height: 16,
-    position: "relative",
-    borderRight: `1px solid ${theme.palette.divider}`
+    position: 'relative',
+    borderRight: `1px solid ${theme.palette.divider}`,
   },
   tick: {
     height: 16,
-    position: "absolute",
-    display: "flex",
-    alignItems: "center",
+    position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
     fontSize: theme.typography.caption.fontSize,
     color: theme.palette.text.secondary,
     bottom: 0,
     paddingLeft: theme.spacing(0.5),
     paddingRight: theme.spacing(0.5),
-    "&:not(:last-child)": {
-      borderLeft: `1px solid ${theme.palette.divider}`
-    }
-  }
+    '&:not(:last-child)': {
+      borderLeft: `1px solid ${theme.palette.divider}`,
+    },
+  },
 }))
 
 const numOfTickMarkers = 3
@@ -33,12 +33,12 @@ export const TickMarkers = ({ minTimestamp, maxTimestamp }) => {
     const result = []
     for (let i = 0; i <= numOfTickMarkers; i += 1) {
       const timestamp = formatDuration(
-        ((maxTimestamp - minTimestamp) / numOfTickMarkers) * i + minTimestamp
+        ((maxTimestamp - minTimestamp) / numOfTickMarkers) * i + minTimestamp,
       )
       let left
       let right
       if (i === numOfTickMarkers) {
-        right = "0%"
+        right = '0%'
       } else {
         left = `${(i / numOfTickMarkers) * 100}%`
       }
@@ -51,7 +51,7 @@ export const TickMarkers = ({ minTimestamp, maxTimestamp }) => {
           style={{ left, right }}
         >
           {timestamp}
-        </Box>
+        </Box>,
       )
     }
     return result

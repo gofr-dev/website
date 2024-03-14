@@ -1,49 +1,49 @@
-import { Box, Button, makeStyles } from "@material-ui/core"
-import { Add as AddIcon, Remove as RemoveIcon } from "@material-ui/icons"
-import React, { memo, useMemo } from "react"
+import { Box, Button, makeStyles } from '@material-ui/core'
+import { Add as AddIcon, Remove as RemoveIcon } from '@material-ui/icons'
+import React, { memo, useMemo } from 'react'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    flex: "0 0 120px",
+    flex: '0 0 120px',
     paddingLeft: theme.spacing(2),
-    display: "flex",
-    pointerEvents: "none",
-    position: "relative"
+    display: 'flex',
+    pointerEvents: 'none',
+    position: 'relative',
   },
   buttonWrapper: {
-    position: "absolute",
+    position: 'absolute',
     left: theme.spacing(2),
-    right: 0
+    right: 0,
   },
   button: {
     fontSize: theme.typography.pxToRem(11),
-    position: "absolute",
+    position: 'absolute',
     minWidth: 0,
     lineHeight: 1.2,
     padding: theme.spacing(0.25, 0.5),
-    pointerEvents: "auto",
-    display: "flex",
-    alignItems: "center",
-    backgroundColor:"rgb(56, 189, 248)",
-        color:"white",
-        "&:hover": {
-          backgroundColor: "rgba(56, 189, 248, 0.8)" // Change color on hover
-        }
+    pointerEvents: 'auto',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: 'rgb(56, 189, 248)',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: 'rgba(56, 189, 248, 0.8)', // Change color on hover
+    },
   },
   buttonIcon: {
     marginLeft: theme.spacing(0.25),
-    fontSize: theme.typography.pxToRem(10)
+    fontSize: theme.typography.pxToRem(10),
   },
   horizontalAndVertical: {
     borderTop: `1px solid ${theme.palette.divider}`,
-    borderLeft: `1px solid ${theme.palette.divider}`
+    borderLeft: `1px solid ${theme.palette.divider}`,
   },
   vertical: {
-    borderLeft: `1px solid ${theme.palette.divider}`
+    borderLeft: `1px solid ${theme.palette.divider}`,
   },
   horizontal: {
-    borderTop: `1px solid ${theme.palette.divider}`
-  }
+    borderTop: `1px solid ${theme.palette.divider}`,
+  },
 }))
 
 const buttonSizePx = 14
@@ -54,14 +54,14 @@ const TimelineRowEdgeImpl = ({
   isClosed,
   isCollapsible,
   rowHeight,
-  onButtonClick
+  onButtonClick,
 }) => {
   const classes = useStyles()
 
   const button = useMemo(() => {
     if (isCollapsible) {
       for (let i = treeEdgeShape.length - 1; i >= 0; i -= 1) {
-        if (treeEdgeShape[i] !== "-") {
+        if (treeEdgeShape[i] !== '-') {
           return (
             <Button
               variant="contained"
@@ -69,7 +69,7 @@ const TimelineRowEdgeImpl = ({
               style={{
                 left: `${(100 / (treeEdgeShape.length + 1)) * i}%`,
                 top: `${(rowHeight / 4) * 3 - buttonSizePx / 2}px`,
-                transform: "translate(-50%)"
+                transform: 'translate(-50%)',
               }}
               onClick={onButtonClick}
             >
@@ -92,7 +92,7 @@ const TimelineRowEdgeImpl = ({
     numOfChildren,
     onButtonClick,
     rowHeight,
-    treeEdgeShape
+    treeEdgeShape,
   ])
 
   const content = useMemo(() => {
@@ -100,8 +100,8 @@ const TimelineRowEdgeImpl = ({
       height: rowHeight,
       width: `${100 / (treeEdgeShape.length + 1)}%`,
       style: {
-        transform: `translateY(${(rowHeight / 4) * 3}px)`
-      }
+        transform: `translateY(${(rowHeight / 4) * 3}px)`,
+      },
     }
 
     let branch = true
@@ -110,38 +110,46 @@ const TimelineRowEdgeImpl = ({
     tree.push(<Box {...commonProps} className={classes.horizontal} key="-1" />)
     for (let i = treeEdgeShape.length - 1; i >= 0; i -= 1) {
       const shape = treeEdgeShape[i]
-      const props = { ...commonProps}
+      const props = { ...commonProps }
 
       switch (shape) {
-        case "M":
+        case 'M':
           if (branch) {
             tree.push(
-              <Box {...props} key={i} className={classes.horizontalAndVertical} />
+              <Box
+                {...props}
+                key={i}
+                className={classes.horizontalAndVertical}
+              />,
             )
           } else {
-            tree.push(<Box {...props} key={i}  className={classes.vertical} />)
+            tree.push(<Box {...props} key={i} className={classes.vertical} />)
           }
           branch = false
           break
-        case "E":
+        case 'E':
           branch = false
-          tree.push(<Box {...props} key={i}  className={classes.horizontal} />)
+          tree.push(<Box {...props} key={i} className={classes.horizontal} />)
           break
-        case "B":
+        case 'B':
           if (isClosed) {
-            tree.push(<Box {...props} key={i}  className={classes.horizontal} />)
+            tree.push(<Box {...props} key={i} className={classes.horizontal} />)
           } else {
             tree.push(
-              <Box {...props} key={i}  className={classes.horizontalAndVertical} />
+              <Box
+                {...props}
+                key={i}
+                className={classes.horizontalAndVertical}
+              />,
             )
           }
           break
         default:
           if (branch) {
-            tree.push(<Box {...props} key={i}  className={classes.horizontal} />)
+            tree.push(<Box {...props} key={i} className={classes.horizontal} />)
           } else {
-            tree.push(<Box {...props} key={i}  />)
-          } 
+            tree.push(<Box {...props} key={i} />)
+          }
       }
     }
     tree.reverse()
@@ -153,7 +161,7 @@ const TimelineRowEdgeImpl = ({
     classes.vertical,
     isClosed,
     rowHeight,
-    treeEdgeShape
+    treeEdgeShape,
   ])
 
   return (
@@ -165,4 +173,3 @@ const TimelineRowEdgeImpl = ({
 }
 
 export const TimelineRowEdge = memo(TimelineRowEdgeImpl)
-

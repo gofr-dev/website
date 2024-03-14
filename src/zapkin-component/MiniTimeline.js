@@ -1,37 +1,37 @@
-import { Box, Button, makeStyles, useTheme } from "@material-ui/core"
-import React, { useCallback, useMemo, useRef } from "react"
-import { MiniTimelineOverlay } from "./MiniTimelineOverlay"
-import { TimeRangeSelector } from "./TimeRangeSelector"
-import { MiniTimelineRow } from "./MiniTimelineRow"
+import { Box, Button, makeStyles, useTheme } from '@material-ui/core'
+import React, { useCallback, useMemo, useRef } from 'react'
+import { MiniTimelineOverlay } from './MiniTimelineOverlay'
+import { TimeRangeSelector } from './TimeRangeSelector'
+import { MiniTimelineRow } from './MiniTimelineRow'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
+    width: '100%',
     height: 50,
     border: `1px solid ${theme.palette.divider}`,
     backgroundColor: theme.palette.background.paper,
-    position: "relative",
+    position: 'relative',
     // Show the reset button only when hovering.
-    "& > button": {
-      display: "none"
+    '& > button': {
+      display: 'none',
     },
-    "&:hover > button": {
-      display: "inline"
-    }
+    '&:hover > button': {
+      display: 'inline',
+    },
   },
   svg: {
-    width: "100%",
-    height: "100%"
+    width: '100%',
+    height: '100%',
   },
   resetButton: {
-    position: "absolute",
+    position: 'absolute',
     right: 10,
     top: 6,
     backgroundColor: theme.palette.common.white,
-    "&:hover": {
-      backgroundColor: theme.palette.grey[100]
-    }
-  }
+    '&:hover': {
+      backgroundColor: theme.palette.grey[100],
+    },
+  },
 }))
 
 const numOfTickMarkers = 3
@@ -43,7 +43,7 @@ export const MiniTimeline = ({
   selectedMinTimestamp,
   selectedMaxTimestamp,
   setSelectedMinTimestamp,
-  setSelectedMaxTimestamp
+  setSelectedMaxTimestamp,
 }) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -62,14 +62,14 @@ export const MiniTimeline = ({
           y2="100%"
           stroke={theme.palette.divider}
           strokeWidth={1}
-        />
+        />,
       )
     }
     return result
   }, [theme.palette.divider])
 
   const handleResetButtonClick = useCallback(
-    e => {
+    (e) => {
       e.stopPropagation()
       setSelectedMinTimestamp(minTimestamp)
       setSelectedMaxTimestamp(maxTimestamp)
@@ -78,8 +78,8 @@ export const MiniTimeline = ({
       maxTimestamp,
       minTimestamp,
       setSelectedMaxTimestamp,
-      setSelectedMinTimestamp
-    ]
+      setSelectedMinTimestamp,
+    ],
   )
 
   return (

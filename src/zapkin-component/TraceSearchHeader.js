@@ -1,14 +1,25 @@
 'use client'
-
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 
-import { MobileNavigation } from '@/components/MobileNavigation'
-import { Search } from '@/components/Search'
-import { HomePage } from './HomePage'
-import { DocsPage } from './DocsPage'
+function SearchIcon(props) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-5 w-5 text-gray-500 dark:text-gray-400"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+        clipRule="evenodd"
+      ></path>
+    </svg>
+  )
+}
 
 function GitHubIcon(props) {
   return (
@@ -18,10 +29,15 @@ function GitHubIcon(props) {
   )
 }
 
-function Header() {
+export default function TraceSearchHeader({
+  traceId,
+  setTraceId,
+  fetechTraces,
+}) {
+  const handleTraceIdChange = (e) => {
+    setTraceId(e.target.value)
+  }
   let [isScrolled, setIsScrolled] = useState(false)
-  let pathname = usePathname()
-  const isCertificate = pathname.includes('certificate')
 
   useEffect(() => {
     function onScroll() {
@@ -33,6 +49,11 @@ function Header() {
       window.removeEventListener('scroll', onScroll)
     }
   }, [])
+  const handleTraceIdKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      fetechTraces(traceId)
+    }
+  }
 
   return (
     <header
@@ -43,11 +64,6 @@ function Header() {
           : 'dark:bg-transparent',
       )}
     >
-      {!isCertificate && (
-        <div className="mr-6 flex lg:hidden">
-          <MobileNavigation />
-        </div>
-      )}
       <div className="relative flex flex-grow basis-0 items-center">
         <Link href="/" aria-label="Home page" className="flex items-center">
           <span className="text-3xl font-bold italic text-sky-400">
@@ -58,11 +74,24 @@ function Header() {
           </span>
         </Link>
       </div>
-      {!isCertificate && (
-        <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
-          <Search />
+
+      <div className="relative">
+        <input
+          type="text"
+          value={traceId}
+          onChange={handleTraceIdChange}
+          onKeyDown={handleTraceIdKeyDown}
+          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 pl-4 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          placeholder="Search by trace id..."
+        />
+
+        <div
+          className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
+          onClick={() => fetechTraces(traceId)}
+        >
+          <SearchIcon />
         </div>
-      )}
+      </div>
       <div className="relative flex basis-0 justify-end gap-6 sm:gap-8 md:flex-grow">
         <Link
           href="https://github.com/gofr-dev/gofr"
@@ -74,20 +103,5 @@ function Header() {
         </Link>
       </div>
     </header>
-  )
-}
-
-export function Layout({ children }) {
-  let pathname = usePathname()
-  let isHomePage = pathname === '/'
-  const isCertificate = pathname.includes('certificate')
-  const isTraces = pathname.includes('traces')
-
-  return (
-    <div className="flex w-full flex-col">
-      {isTraces ? <>{children}</> : <> <Header />
-        {isHomePage ? (<HomePage />) : (<>{isCertificate ? children : <DocsPage>{children}</DocsPage>}</>)}</>}
-
-    </div>
   )
 }

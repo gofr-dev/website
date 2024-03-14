@@ -1,31 +1,31 @@
-import { Link, makeStyles } from "@material-ui/core"
-import { DataGrid } from "@material-ui/data-grid"
-import React, { useMemo } from "react"
-import { formatDuration, formatTimestamp } from "../zapkin-lib/timestamp"
+import { Link, makeStyles } from '@material-ui/core'
+import { DataGrid } from '@material-ui/data-grid'
+import React, { useMemo } from 'react'
+import { formatDuration, formatTimestamp } from '../zapkin-lib/timestamp'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   dataGrid: {
-    border: "none",
+    border: 'none',
     borderRadius: 0,
     backgroundColor: theme.palette.background.paper,
-    borderBottom: `1px solid ${theme.palette.divider}`
-  }
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
 }))
 
 export const SpanTable = ({
   spans,
   setSelectedSpan,
-  toggleIsSpanTableOpen
+  toggleIsSpanTableOpen,
 }) => {
   const classes = useStyles()
 
   const COLUMN_DEFS = useMemo(
     () => [
       {
-        field: "spanId",
-        headerName: "Span ID",
+        field: 'spanId',
+        headerName: 'Span ID',
         width: 200,
-        renderCell: params => {
+        renderCell: (params) => {
           const spanId = params.value.toString()
           return (
             <Link
@@ -38,26 +38,26 @@ export const SpanTable = ({
               {spanId}
             </Link>
           )
-        }
+        },
       },
-      { field: "serviceName", headerName: "Service name", width: 200 },
-      { field: "spanName", headerName: "Span name", width: 200 },
+      { field: 'serviceName', headerName: 'Service name', width: 200 },
+      { field: 'spanName', headerName: 'Span name', width: 200 },
       {
-        field: "timestamp",
-        headerName: "Start time",
-        valueGetter: params =>
+        field: 'timestamp',
+        headerName: 'Start time',
+        valueGetter: (params) =>
           formatTimestamp(parseInt(params.value.toString(), 10)),
-        width: 200
+        width: 200,
       },
       {
-        field: "duration",
-        headerName: "Duration",
-        valueGetter: params =>
+        field: 'duration',
+        headerName: 'Duration',
+        valueGetter: (params) =>
           formatDuration(parseInt(params.value.toString(), 10)),
-        width: 150
-      }
+        width: 150,
+      },
     ],
-    [setSelectedSpan, toggleIsSpanTableOpen]
+    [setSelectedSpan, toggleIsSpanTableOpen],
   )
 
   return (
@@ -66,7 +66,7 @@ export const SpanTable = ({
       density="compact"
       rows={spans}
       columns={COLUMN_DEFS}
-      getRowId={span => span.spanId}
+      getRowId={(span) => span.spanId}
       hideFooter
       pageSize={spans.length}
       disableColumnFilter
