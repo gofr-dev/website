@@ -44,6 +44,7 @@ export const MiniTimeline = ({
   selectedMaxTimestamp,
   setSelectedMinTimestamp,
   setSelectedMaxTimestamp,
+  services,
 }) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -104,6 +105,7 @@ export const MiniTimeline = ({
               spanRow={spanRow}
               minTimestamp={minTimestamp}
               maxTimestamp={maxTimestamp}
+              services={services}
             />
           ))}
         </g>

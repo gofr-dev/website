@@ -7,6 +7,7 @@ export const MiniTimelineRow = ({
   spanRow,
   minTimestamp,
   maxTimestamp,
+  services,
 }) => {
   const left = useMemo(
     () =>
@@ -37,12 +38,20 @@ export const MiniTimelineRow = ({
   )
 
   return (
-    <rect
-      x={`${left}%`}
-      y={`${top}%`}
-      width={`${width}%`}
-      height="3"
-      fill={selectServiceColor(spanRow.serviceName)}
-    />
+    <>
+      <rect
+        style={{
+          opacity:
+            services.length > 0 && !services.includes(spanRow.serviceName)
+              ? 0.4
+              : 1,
+        }}
+        x={`${left}%`}
+        y={`${top}%`}
+        width={`${width}%`}
+        height="3"
+        fill={selectServiceColor(spanRow.serviceName)}
+      />
+    </>
   )
 }

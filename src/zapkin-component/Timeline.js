@@ -110,6 +110,7 @@ export const Timeline = ({
             selectedMaxTimestamp={selectedMaxTimestamp}
             setSelectedMinTimestamp={setSelectedMinTimestamp}
             setSelectedMaxTimestamp={setSelectedMaxTimestamp}
+            services={services}
           />
         </Box>
       )}

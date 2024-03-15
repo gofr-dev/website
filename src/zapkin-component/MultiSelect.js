@@ -41,12 +41,12 @@ export default function MultipleSelectCheckmarks({
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-multiple-checkbox-label" size="small">
+        <InputLabel id="services-multiple-checkbox-label" size="small">
           Services{' '}
         </InputLabel>
         <Select
-          labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
+          labelId="services-multiple-checkbox-label"
+          id="servicesemo-multiple-checkbox"
           multiple
           value={value}
           onChange={serviceSelectionHandler}
