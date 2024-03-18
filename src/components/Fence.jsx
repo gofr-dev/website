@@ -48,12 +48,16 @@ export function Fence({ children, language }) {
               <div>
                 {copied ? (
                   <Tooltip title="Copied!">
-                    <DoneOutlinedIcon className="h-6 w-6 text-xs text-green-500 transition duration-500 ease-in-out" />
+                    <DoneOutlinedIcon
+                      fontSize="small"
+                      className=" text-green-500 transition duration-500 ease-in-out"
+                    />
                   </Tooltip>
                 ) : (
                   <Tooltip title="Copy">
                     <FileCopyIcon
-                      className={`h-6 w-6 cursor-pointer text-xs text-gray-500 transition duration-500 ease-in-out`}
+                      fontSize="small"
+                      className={`cursor-pointer text-gray-500 transition duration-500 ease-in-out`}
                       onClick={handleCopy}
                     />
                   </Tooltip>
