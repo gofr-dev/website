@@ -1,6 +1,7 @@
-import { Tooltip, withStyles } from '@material-ui/core'
+import { Tooltip } from '@mui/material'
 import React, { useMemo } from 'react'
 import { AnnotationTable } from './AnnotationTable'
+import { withStyles } from '@mui/styles'
 
 const HtmlTooltip = withStyles((theme) => ({
   tooltip: {

@@ -7,6 +7,9 @@ import {
 import { TracePageContent } from '@/zapkin-component/main'
 import TraceSearchHeader from '@/zapkin-component/TraceSearchHeader'
 import Snackbar from '@/zapkin-component/Snackbar'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+
+const theme = createTheme()
 var json = [
   {
     traceId: 'ea9cb54072795138ee68a1a49a0522f5',
@@ -484,7 +487,11 @@ export default function Zapkin({ params }) {
       />
       <Snackbar error={error} serError={setError} />
       <div className="flex">
-        {trace && <TracePageContent rawTrace={json} trace={trace} />}
+        {trace && (
+          <ThemeProvider theme={theme}>
+            <TracePageContent rawTrace={json} trace={trace} />
+          </ThemeProvider>
+        )}
       </div>
     </div>
   )

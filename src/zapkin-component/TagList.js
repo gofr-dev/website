@@ -2,17 +2,17 @@ import {
   Box,
   Collapse,
   IconButton,
-  makeStyles,
   Table,
   TableBody,
   TableCell,
   TableRow,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
-} from '@material-ui/icons'
+} from '@mui/icons-material'
+import { makeStyles } from '@mui/styles'
 import React from 'react'
 import { useToggle } from 'react-use'
 

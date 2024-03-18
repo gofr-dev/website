@@ -1,14 +1,8 @@
-import {
-  Box,
-  Collapse,
-  IconButton,
-  makeStyles,
-  Typography,
-} from '@material-ui/core'
+import { Box, Collapse, IconButton, Typography, styled } from '@mui/material'
 import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
-} from '@material-ui/icons'
+} from '@mui/icons-material'
 import React from 'react'
 import { useToggle } from 'react-use'
 import { selectServiceColor } from '../zapkin-lib/color'
@@ -24,14 +18,14 @@ const calculateMarkerLeftPosition = (annotation, span) => {
   return `${p}%`
 }
 
-const useStyles = makeStyles((theme) => ({
-  bar: {
+const AnnotationViewerContainer = styled(Box)(({ theme }) => ({
+  '& .bar': {
     width: '100%',
     height: 10,
     backgroundColor: ({ serviceName }) => selectServiceColor(serviceName),
     position: 'relative',
   },
-  annotationMarker: {
+  '& .annotationMarker': {
     position: 'absolute',
     backgroundColor: theme.palette.common.black,
     height: 18,
@@ -42,11 +36,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export const AnnotationViewer = ({ minTimestamp, span }) => {
-  const classes = useStyles({ serviceName: span.serviceName })
   const [open, toggleOpen] = useToggle(true)
 
   return (
-    <Box>
+    <AnnotationViewerContainer serviceName={span.serviceName}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography>Annotation</Typography>
         <IconButton onClick={toggleOpen} size="small">
@@ -60,7 +53,7 @@ export const AnnotationViewer = ({ minTimestamp, span }) => {
               minTimestamp={span.timestamp - minTimestamp}
               maxTimestamp={span.timestamp + span.duration - minTimestamp}
             />
-            <Box className={classes.bar}>
+            <Box className="bar">
               {span.annotations
                 .filter(
                   (annotation) =>
@@ -75,7 +68,7 @@ export const AnnotationViewer = ({ minTimestamp, span }) => {
                   >
                     <Box
                       key={`${annotation.value}-${annotation.timestamp}`}
-                      className={classes.annotationMarker}
+                      className="annotationMarker"
                       style={{
                         left: calculateMarkerLeftPosition(annotation, span),
                       }}
@@ -87,6 +80,6 @@ export const AnnotationViewer = ({ minTimestamp, span }) => {
         ) : null}
         <AnnotationTable annotations={span.annotations} />
       </Collapse>
-    </Box>
+    </AnnotationViewerContainer>
   )
 }

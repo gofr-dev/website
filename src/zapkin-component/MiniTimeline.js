@@ -1,4 +1,5 @@
-import { Box, Button, makeStyles, useTheme } from '@material-ui/core'
+import { Box, Button } from '@mui/material'
+import { makeStyles, useTheme } from '@mui/styles'
 import React, { useCallback, useMemo, useRef } from 'react'
 import { MiniTimelineOverlay } from './MiniTimelineOverlay'
 import { TimeRangeSelector } from './TimeRangeSelector'
@@ -24,9 +25,9 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   resetButton: {
-    position: 'absolute',
-    right: 10,
-    top: 6,
+    position: 'absolute !important',
+    right: '10px !important',
+    top: '6px !important',
     backgroundColor: theme.palette.common.white,
     '&:hover': {
       backgroundColor: theme.palette.grey[100],

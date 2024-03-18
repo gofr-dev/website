@@ -1,5 +1,6 @@
-import { Link, makeStyles } from '@material-ui/core'
-import { DataGrid } from '@material-ui/data-grid'
+import { Link } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid'
+import { makeStyles } from '@mui/styles'
 import React, { useMemo } from 'react'
 import { formatDuration, formatTimestamp } from '../zapkin-lib/timestamp'
 

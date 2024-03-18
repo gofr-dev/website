@@ -1,6 +1,5 @@
 import React from 'react'
 import OutlinedInput from '@mui/material/OutlinedInput'
-import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import ListItemText from '@mui/material/ListItemText'
@@ -41,17 +40,28 @@ export default function MultipleSelectCheckmarks({
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel id="services-multiple-checkbox-label" size="small">
-          Services{' '}
-        </InputLabel>
         <Select
-          labelId="services-multiple-checkbox-label"
+          displayEmpty
           id="servicesemo-multiple-checkbox"
           multiple
           value={value}
           onChange={serviceSelectionHandler}
-          input={<OutlinedInput label="Services" />}
-          renderValue={(selected) => selected.join(', ')}
+          input={
+            <OutlinedInput
+              sx={{
+                '&.Mui-focused fieldset': {
+                  borderColor: 'rgb(56 189 248) !important',
+                },
+              }}
+            />
+          }
+          renderValue={(selected) => {
+            if (selected.length === 0) {
+              return 'Services'
+            }
+
+            return selected.join(', ')
+          }}
           MenuProps={MenuProps}
           className={classes.select}
         >

@@ -1,10 +1,5 @@
-import {
-  makeStyles,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from '@material-ui/core'
+import { Table, TableBody, TableCell, TableRow } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import React from 'react'
 import { formatTimestamp } from '../zapkin-lib/timestamp'
 

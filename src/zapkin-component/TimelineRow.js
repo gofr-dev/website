@@ -1,7 +1,3 @@
-/*
- * Copyright The OpenZipkin Authors
- * SPDX-License-Identifier: Apache-2.0
- */
 import { Box, makeStyles } from '@material-ui/core'
 import { ErrorOutline as ErrorOutlineIcon } from '@material-ui/icons'
 import classNames from 'classnames'

@@ -1,13 +1,8 @@
-import MultipleSelectCheckmarks from '@/zapkin-component/MultiSelect'
-import {
-  Box,
-  Button,
-  makeStyles,
-  Typography,
-  TextField,
-} from '@material-ui/core'
-import { List as ListIcon } from '@material-ui/icons'
+import { Box, Button, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { List as ListIcon } from '@mui/icons-material'
 import React, { useMemo } from 'react'
+import MultipleSelectCheckmarks from '@/zapkin-component/MultiSelect'
 
 // @ts-ignore
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   infoCellKey: {
-    color: theme.palette.text.hint,
+    color: theme.palette.text.secondary,
     marginRight: theme.spacing(0.5),
   },
   infoCellValue: {
@@ -114,8 +109,12 @@ export const Header = ({
           },
         ].map(({ key, value }) => (
           <Box key={key} className={classes.infoCell}>
-            <Box className={classes.infoCellKey}>{key}</Box>
-            <Box className={classes.infoCellValue}>{value}</Box>
+            <Typography variant="body2" className={classes.infoCellKey}>
+              {key}
+            </Typography>
+            <Typography variant="body2" className={classes.infoCellValue}>
+              {value}
+            </Typography>
           </Box>
         ))}
       </Box>

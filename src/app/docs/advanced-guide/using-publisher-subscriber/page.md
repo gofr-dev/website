@@ -21,7 +21,7 @@ Some of the configurations that are required to configure the PubSub backend tha
 that are specific for the type of message broker user wants to use. 
 `PUBSUB_BACKEND` defines which message broker the application needs to use.
 
-### Kafka
+### KAFKA
 
 #### Configs
 ```dotenv
@@ -52,7 +52,7 @@ docker run -d \
   confluentinc/cp-kafka:7.0.1
 ```
 
-### Google
+### GOOGLE
 
 #### Configs
 ```dotenv
@@ -68,12 +68,40 @@ docker run --name=gcloud-emulator -d -p 8086:8086 \
        gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators gcloud beta emulators pubsub start --project=test123 \
        --host-port=0.0.0.0:8086
 ```
-> **Note**: To set GOOGLE_APPLICATION_CREDENTIAL - refer [here](https://cloud.google.com/docs/authentication/application-default-credentials)
+> **Note**: To set GOOGLE_APPLICATION_CREDENTIAL - refer {% new-tab-link title="here" href="https://cloud.google.com/docs/authentication/application-default-credentials" /%}
 
 > **Note**: In Google PubSub only one subscription name can access one topic, framework appends the topic name and subscription name to form the
 > unique subscription name on the Google client.
 
-## Subscribing to Pub/Sub
+### MQTT
+
+#### Configs
+```dotenv
+PUBSUB_BACKEND=MQTT            // using Mqtt as pubsub
+MQTT_HOST=localhost            // broker host url
+MQTT_PORT=1883                 // broker port
+MQTT_CLIENT_ID_SUFFIX=test     // suffix to a random generated client-id(uuid v4)
+
+#some additional configs(optional)
+MQTT_PROTOCOL=tcp              // protocol for connecting to broker can be tcp, tls, ws or wss
+MQTT_MESSAGE_ORDER=true  // config to maintain/retain message publish order, by defualt this is false
+MQTT_USER=username       // authentication username
+MQTT_PASSWORD=password   // authentication password 
+```
+> **Note** : If `MQTT_HOST` config is not provided, the application will connect to a public broker
+> {% new-tab-link title="HiveMQ" href="https://www.hivemq.com/mqtt/public-mqtt-broker/" /%}
+
+#### Docker setup
+```shell 
+docker run -d \
+  --name mqtt \
+  -p 8883:8883 \
+  -v <path-to>/mosquitto.conf:/mosquitto/config/mosquitto.conf \
+  eclipse-mosquitto:latest
+```
+> **Note**: find the default mosquitto config file {% new-tab-link title="here" href="https://github.com/eclipse/mosquitto/blob/master/mosquitto.conf" /%}
+
+## Subscribing
 Adding a subscriber is similar to adding an HTTP handler, which makes it easier to develop scalable applications,
 as it decoupled from the Sender/Publisher.
 Users can define a subscriber handler and do the message processing and
@@ -140,7 +168,7 @@ func main() {
 }
 ```
 
-## Publishing to Pub/Sub
+## Publishing
 The publishing of message is advised to done at the point where the message is being generated.
 To facilitate this, user can access the publishing interface from `gofr Context(ctx)` to publish messages.
 

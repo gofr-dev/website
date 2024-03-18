@@ -1,5 +1,6 @@
-import { Box, Divider, Grid, makeStyles, Typography } from '@material-ui/core'
 import React from 'react'
+import { Box, Divider, Grid, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import { AnnotationViewer } from './AnnotationViewer'
 import { TagList } from './TagList'
 

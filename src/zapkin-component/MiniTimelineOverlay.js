@@ -1,4 +1,4 @@
-import { useTheme } from '@material-ui/core'
+import { useTheme } from '@mui/material/styles'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const calculateX = (parentRect, x) => {

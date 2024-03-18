@@ -1,8 +1,5 @@
-/*
- * Copyright The OpenZipkin Authors
- * SPDX-License-Identifier: Apache-2.0
- */
-import { Box, Drawer, makeStyles } from '@material-ui/core'
+import { Box, Drawer } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useToggle } from 'react-use'
 import { Header } from './Header'
