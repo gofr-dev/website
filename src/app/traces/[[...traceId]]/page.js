@@ -13,6 +13,7 @@ const theme = createTheme()
 
 export default function Zapkin({ params }) {
   const [trace, setTrace] = useState(null)
+  const [rawTrace, setRawTrace] = useState([])
   const [traceId, setTraceId] = useState(params.traceId?.[0] || '')
   const [error, setError] = React.useState(false)
 
@@ -23,6 +24,7 @@ export default function Zapkin({ params }) {
       )
       const jsonData = await response.json()
       if (jsonData?.data) {
+        setRawTrace(jsonData.data)
         const tree_response = treeCorrectedForClockSkew(jsonData.data)
         const final_trace = detailedTraceSummary(tree_response)
         setTrace(final_trace)
@@ -61,7 +63,7 @@ export default function Zapkin({ params }) {
       <div className="flex">
         {trace && (
           <ThemeProvider theme={theme}>
-            <TracePageContent rawTrace={json} trace={trace} />
+            <TracePageContent rawTrace={rawTrace} trace={trace} />
           </ThemeProvider>
         )}
       </div>
