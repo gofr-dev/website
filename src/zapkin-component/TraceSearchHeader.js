@@ -75,7 +75,15 @@ export default function TraceSearchHeader({
         </Link>
       </div>
 
-      <div className="relative">
+      <div
+        className="relative"
+        style={{
+          width: '30%', // Default width is full width
+          '@media (min-width: 768px)': {
+            width: '90%', // Change width to 500px on screens larger than tablet size
+          },
+        }}
+      >
         <input
           type="text"
           value={traceId}
