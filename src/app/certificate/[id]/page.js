@@ -2,7 +2,12 @@ import NotFound from '@/app/not-found'
 import Image from 'next/image'
 
 async function getCertificateUrl(id) {
-  const response = await fetch(`/certificate-service/certificate/${id}`)
+  const response = await fetch(
+    `https://staging.gofr.dev/certificate-service/certificate/${id}`,
+  )
+  if (!response.ok) {
+    throw new Error('Failed to fetch data')
+  }
   const { data } = await response.json()
 
   return data.url

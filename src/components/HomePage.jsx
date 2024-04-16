@@ -25,7 +25,7 @@ export function HomePage() {
           href="#"
         />
       </div>
-      <div className="mx-4 flex gap-x-8 overflow-y-auto pb-10 md:gap-y-16 lg:mx-8 xl:mx-12 xl:gap-x-16">
+      <div className='className="mx-4 " flex flex-wrap  justify-between overflow-y-auto pb-10 md:gap-y-16 lg:mx-8 xl:mx-12'>
         <Testimonials />
       </div>
     </div>

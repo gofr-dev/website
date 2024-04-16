@@ -1,71 +1,40 @@
-import React from 'react'
-import cloudNativeLandscapeSvg from '@/images/cloud-native-landscape.svg'
-import awesomeGo from '@/images/awesome-go.svg'
-import Image from 'next/image'
+import RedditIcon from '@mui/icons-material/Reddit'
+import GitHubIcon from '@mui/icons-material/GitHub'
+
+const navigation = [
+  {
+    name: 'Facebook',
+    href: 'https://github.com/gofr-dev/gofr',
+    icon: (props) => <RedditIcon {...props} />,
+  },
+  {
+    name: 'GitHub',
+    href: 'https://www.reddit.com/r/gofr/',
+    icon: (props) => <GitHubIcon {...props} />,
+  },
+]
 function FooterUi() {
   return (
-    <footer className="border-t border-slate-800 px-12 pb-4 pt-4 dark:bg-slate-900">
-      <div className="flex w-full flex-col">
-        <div className="mb-4 flex flex-col items-baseline justify-between md:flex-row">
-          <div className="flex-1">
-            <h2 className="mb-5 text-base font-semibold capitalize text-gray-900 dark:text-white">
-              Web Links
-            </h2>
-            <ul className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              <li>
-                <a
-                  href="https://landscape.cncf.io/?selected=go-fr"
-                  className="flex h-12 w-28 hover:text-sky-200"
-                  target="_blank"
-                >
-                  <div className="dark:bg-slate-900">
-                    <Image
-                      src={cloudNativeLandscapeSvg}
-                      alt="cloudNativeLandscape"
-                      className="h-full w-full"
-                    />
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/avelino/awesome-go?tab=readme-ov-file#web-frameworks"
-                  className="flex h-12 w-28 hover:text-sky-200"
-                  target="_blank"
-                >
-                  <div className="dark:bg-slate-900">
-                    <Image
-                      src={awesomeGo}
-                      alt="cloudNativeLandscape"
-                      className="h-full w-full"
-                    />
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className="flex-1">
-            <h2 className="mb-5 text-base font-semibold capitalize text-gray-900 dark:text-white">
-              Community
-            </h2>
-            <ul className="text-sm font-medium text-slate-700 dark:text-slate-400">
-              <li className="mb-3">
-                <a
-                  href="https://github.com/gofr-dev/gofr/discussions"
-                  target="_blank"
-                  className="hover:text-slate-300"
-                >
-                  Github
-                </a>
-              </li>
-            </ul>
-          </div>
+    <footer className="dark:bg-slate-900">
+      <div className="md:center mx-auto max-w-7xl justify-center px-6 py-12 md:flex md:items-center lg:px-8">
+        <div className="flex justify-center space-x-6 md:order-2">
+          {navigation.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              target="_blank"
+              className="text-gray-400 hover:text-gray-500"
+            >
+              <span className="sr-only">{item.name}</span>
+              <item.icon className="h-6 w-6" aria-hidden="true" />
+            </a>
+          ))}
         </div>
-        <div className="flex items-center justify-center">
-          <span className="text-xs text-gray-500 dark:text-gray-300 sm:text-center">
-            © 2023 <span>GoFr</span>. All Rights Reserved.
-          </span>
-        </div>
+        {/* <div className="mt-8 md:order-1 md:mt-0">
+          <p className="text-center text-xs leading-5 text-gray-500">
+            &copy; 2024 GoFr. All rights reserved.
+          </p>
+        </div> */}
       </div>
     </footer>
   )
