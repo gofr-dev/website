@@ -9,7 +9,7 @@ export function DocsHeader({ title }) {
   let section = navigation.find((section) =>
     section.links.find((link) => link.href === pathname),
   )
-  let link = section.links.find((link) => link.href === pathname)
+  let link = section?.links?.find((link) => link.href === pathname)
 
   if (!title && !section) {
     return null
@@ -17,7 +17,7 @@ export function DocsHeader({ title }) {
 
   return (
     <header className="mb-9 space-y-1">
-      <title>{section.title + " | " + link.page_title}</title>
+      <title>{section.title + ' | ' + link?.title || ''}</title>
       {section && (
         <p className="font-display text-sm font-medium text-sky-500">
           {section.title}
