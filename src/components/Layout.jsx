@@ -17,6 +17,23 @@ function GitHubIcon(props) {
     </svg>
   )
 }
+function GitHubStar(){
+  return(
+    <>
+      <a
+        class="github-button" 
+        href="https://github.com/gofr-dev/gofr/" 
+        data-color-scheme="no-preference: light; light: light_high_contrast; dark: light;" 
+        data-icon="octicon-star" data-size="large" 
+        data-show-count="true" 
+        aria-label="Star buttons/github-buttons on GitHub"
+      >
+        Star
+      </a>
+      <script async defer src="https://buttons.github.io/buttons.js"></script>
+    </>
+  )
+}
 
 function Header() {
   let [isScrolled, setIsScrolled] = useState(false)
@@ -72,6 +89,7 @@ function Header() {
         >
           <GitHubIcon className="h-6 w-6 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
         </Link>
+        <GitHubStar/>
       </div>
     </header>
   )
