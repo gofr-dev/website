@@ -13,7 +13,12 @@ yarn dev
 ```
 
 Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
-
+## WITH DOCKER SETTING UP IS EASY :
+Just use this command to build :
+-->  docker build . -t (img-name) 
+to run this image :-
+-->  docker run -p 3000:3000 (img-name)
+And you will have project locally without installing dependencies and open [http://localhost:3000] to view website in browser.
 ## Customizing
 
 You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
