@@ -9,7 +9,7 @@ import { DiscordIcon } from './icons/DiscordIcon'
 import { LinkedinIcon } from './icons/LinkedinIcon'
 import { TwitterIcon } from './icons/TwitterIcon'
 
-const SocailMediaLinks = [
+const SocialMediaLinks = [
   {
     Icon: GithubIcon,
     Link: 'https://github.com/gofr-dev/',
@@ -100,7 +100,7 @@ function FooterUi() {
       {/* <div className="flex items-center justify-center gap-4 overflow-auto"> */}
       <div class="mx-auto max-w-7xl flex-wrap px-6 py-6 md:flex md:items-center md:justify-center lg:px-8">
         <div class="flex items-center justify-center space-x-6 md:order-2 ">
-          {SocailMediaLinks.map((item, idx) => {
+          {SocialMediaLinks.map((item, idx) => {
             const { Icon, Link: link } = item
             return (
               <Link

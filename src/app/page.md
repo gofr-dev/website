@@ -12,7 +12,7 @@ This framework aims to provide an easy-to-use and familiar abstraction for non-G
 
 {% quick-link title="Examples" icon="plugins" href="https://github.com/gofr-dev/gofr/tree/main/examples" description="Our guides break down how to perform common tasks in GoFr." /%}
 
-<!-- {% quick-link title="FAQ" icon="theming" href="/" description="Frequently asked questions and solutions to commonly occuring issues." /%} -->
+<!-- {% quick-link title="FAQ" icon="theming" href="/" description="Frequently asked questions and solutions to commonly occurring issues." /%} -->
 
 {% /quick-links %}
 
