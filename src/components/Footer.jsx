@@ -34,7 +34,7 @@ const SocialMediaLinks = [
 
 function FooterUi() {
   return (
-    <footer className="border-t border-slate-800 px-12 pb-4 pt-4 dark:bg-slate-900">
+    <footer className="border-t border-slate-800 px-12 pb-4 pt-4 dark:bg-slate-900 ">
       {/* <div className="flex w-full flex-col">
         <div className="mb-4 flex flex-col items-baseline justify-between md:flex-row">
           <div className="flex-1">
@@ -109,7 +109,7 @@ function FooterUi() {
                 target="_blank"
                 aria-label="social media link"
               >
-                <Icon className="h-6 w-6 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300"></Icon>
+              <Icon className="h-7 w-7 fill-slate-400 transition-transform transition-colors duration-300 hover:fill-slate-500 dark:hover:fill-slate-500 hover:scale-125"></Icon>
               </Link>
             )
           })}
