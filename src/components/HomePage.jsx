@@ -25,7 +25,7 @@ export function HomePage() {
           href="#"
         />
       </div>
-      <div className="mx-4 flex gap-x-8 overflow-y-auto pb-10 md:gap-y-16 lg:mx-8 xl:mx-12 xl:gap-x-16">
+      <div className="mx-4 flex flex-col {{ sm:flex-col xs:flex-col md:flex-row lg:flex-row }}  gap-x-8 overflow-y-auto pb-10 gap-y-16 lg:mx-8 xl:mx-12 xl:gap-x-16">
         <Testimonials />
       </div>
     </div>

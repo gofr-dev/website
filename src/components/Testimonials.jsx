@@ -27,7 +27,7 @@ export function Testimonials() {
       {testimonialsData.map((testimonial) => (
         <div
           key={testimonial.name}
-          className="flex min-w-[calc(100%-5rem)] flex-col md:min-w-[calc(50%-1rem)] xl:min-w-[calc(50%-2rem)]"
+          className="flex min-w-[calc(100%-5rem)] flex-col sm:mb-14 md:min-w-[calc(50%-1rem)] xl:min-w-[calc(50%-2rem)] "
         >
           <figure className="flex flex-auto flex-col justify-between">
             <blockquote className="text-lg leading-8 text-white">
