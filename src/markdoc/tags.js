@@ -41,6 +41,7 @@ const tags = {
       description: { type: String },
       icon: { type: String },
       href: { type: String },
+      newtab: { type: Boolean },
     },
   },
   'new-tab-link': {
@@ -49,6 +50,7 @@ const tags = {
     attributes: {
       href: { type: String },
       title: { type: String },
+      newtab: { type: Boolean },
     },
   },
 }
