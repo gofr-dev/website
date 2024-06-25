@@ -1,11 +1,41 @@
 import React from 'react'
+import Link from 'next/link'
 import cloudNativeLandscapeSvg from '@/images/cloud-native-landscape.svg'
 import awesomeGo from '@/images/awesome-go.svg'
 import Image from 'next/image'
+import { RedditIcon } from './icons/RedditIcon'
+import { GithubIcon } from './icons/GithubIcon'
+import { DiscordIcon } from './icons/DiscordIcon'
+import { LinkedinIcon } from './icons/LinkedinIcon'
+import { TwitterIcon } from './icons/TwitterIcon'
+
+const SocialMediaLinks = [
+  {
+    Icon: GithubIcon,
+    Link: 'https://github.com/gofr-dev/',
+  },
+  {
+    Icon: DiscordIcon,
+    Link: 'https://discord.gg/5ACeSKGt37',
+  },
+  {
+    Icon: RedditIcon,
+    Link: 'https://www.reddit.com/r/gofr/',
+  },
+  {
+    Icon: LinkedinIcon,
+    Link: 'https://in.linkedin.com/company/gofr-dev',
+  },
+  {
+    Icon: TwitterIcon,
+    Link: 'https://twitter.com/gofr_dev',
+  },
+]
+
 function FooterUi() {
   return (
     <footer className="border-t border-slate-800 px-12 pb-4 pt-4 dark:bg-slate-900">
-      <div className="flex w-full flex-col">
+      {/* <div className="flex w-full flex-col">
         <div className="mb-4 flex flex-col items-baseline justify-between md:flex-row">
           <div className="flex-1">
             <h2 className="mb-5 text-base font-semibold capitalize text-gray-900 dark:text-white">
@@ -65,6 +95,24 @@ function FooterUi() {
           <span className="text-xs text-gray-500 dark:text-gray-300 sm:text-center">
             © 2023 <span>GoFr</span>. All Rights Reserved.
           </span>
+        </div>
+      </div> */}
+      {/* <div className="flex items-center justify-center gap-4 overflow-auto"> */}
+      <div class="mx-auto max-w-7xl flex-wrap px-6 py-6 md:flex md:items-center md:justify-center lg:px-8">
+        <div class="flex items-center justify-center space-x-6 md:order-2 ">
+          {SocialMediaLinks.map((item, idx) => {
+            const { Icon, Link: link } = item
+            return (
+              <Link
+                href={link}
+                class="text-gray-400 hover:text-gray-500"
+                target="_blank"
+                aria-label="social media link"
+              >
+                <Icon className="h-6 w-6 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300"></Icon>
+              </Link>
+            )
+          })}
         </div>
       </div>
     </footer>
