@@ -16,7 +16,7 @@ const SocailMediaLinks = [
   },
   {
     Icon: DiscordIcon,
-    Link: 'https://discord.com/invite/j3UAs74g',
+    Link: 'https://discord.gg/5ACeSKGt37',
   },
   {
     Icon: RedditIcon,
