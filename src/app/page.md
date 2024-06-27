@@ -88,12 +88,12 @@ off performance for ease of use.
 <!-- * Minor changes can be done directly by editing code on . Github automatically creates a temporary branch and
   files a PR. This is only suitable for really small changes like: spelling fixes, variable name changes or error string
   change etc. For larger commits, following steps are recommended.
-* (Optional) If you want to discuss your implementation with the users of Gofr, use the official Gofr teams channel.
+* (Optional) If you want to discuss your implementation with the users of Gofr, use the official GoFr teams channel.
 * Configure your editor to use goimport and golangci-lint on file changes. Any code which is not formatted using these
   tools, will fail on the pipeline.
 * All code contributions should have associated tests and all new line additions should be covered in those testcases.
   No PR should ever decrease the overall code coverage.
 * Once your code changes are done along with the testcases, submit a PR to development branch. Please note that all PRs
   are merged from feature branches to development first.
-* All PRs needs to be reviewed by at least 2 Gofr developers. They might reach out to you for any clarfication.
+* All PRs needs to be reviewed by at least 2 GoFr developers. They might reach out to you for any clarfication.
 * Thank you for your contribution. :)  -->
