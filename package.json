@@ -20,7 +20,7 @@
     "@mui/material": "^5.15.13",
     "@sindresorhus/slugify": "^2.1.0",
     "@tailwindcss/typography": "^0.5.7",
-    "autoprefixer": "^10.4.12",
+    "autoprefixer": "^10.4.19",
     "clsx": "^1.2.1",
     "copy-to-clipboard": "^3.3.3",
     "fast-glob": "^3.2.12",
