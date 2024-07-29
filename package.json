@@ -18,6 +18,7 @@
     "@markdoc/next.js": "0.3.1",
     "@mui/icons-material": "^5.15.13",
     "@mui/material": "^5.15.13",
+    "@next/third-parties": "^14.2.5",
     "@sindresorhus/slugify": "^2.1.0",
     "@tailwindcss/typography": "^0.5.7",
     "autoprefixer": "^10.4.12",

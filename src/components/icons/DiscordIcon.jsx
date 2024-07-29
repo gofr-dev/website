@@ -10,7 +10,7 @@ export function DiscordIcon(props) {
       {...props}
     >
       <g
-        fill="#94a3b8"
+        // fill="#94a3b8"
         fillRule="nonzero"
         stroke="none"
         strokeWidth={1}

@@ -3,7 +3,7 @@ import { Testimonials } from './Testimonials'
 import { QuickLink } from '@/components/QuickLinks'
 export function HomePage() {
   return (
-    <div>
+    <div className="m-auto w-auto max-w-screen-2xl">
       <Hero />
       <div className="not-prose my-12 grid grid-cols-1 gap-6 px-4 md:grid-cols-3 lg:px-8 xl:px-12">
         <QuickLink
@@ -22,6 +22,24 @@ export function HomePage() {
           title="REST Standards by default"
           description="Default behaviour is how 'you' would design a REST API. Status codes, response formats - all taken care by GoFr automagically."
           icon="plugins"
+          href="#"
+        />
+        <QuickLink
+          title="Middleware support"
+          description="Elevate productivity effortlessly with predefined middleware's, while retaining flexibility through seamless integration of custom middleware tailored to your specific needs."
+          icon="middleware"
+          href="#"
+        />
+        <QuickLink
+          title="Environment based config"
+          description="Following the 12-factor config principles for maintaining application configurations, simplify the integration of data sources like MySQL, Postgres, Kafka, Google Pubsub, and others."
+          icon="env"
+          href="#"
+        />
+        <QuickLink
+          title="Crash Handling"
+          description="GoFr catches all and every panics and automatically recovers from them to maintain continuous availability of your server."
+          icon="crash"
           href="#"
         />
       </div>
