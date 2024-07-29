@@ -1,33 +1,32 @@
 ## Getting started
 
-To begin using this site, start by installing the npm dependencies:
+To get started with this site, first install the npm dependencies:
 
 ```bash
 yarn install
 ```
 
-Now you are good to run the development server, using the below command:
+Next, run the development server:
 
 ```bash
 yarn dev
 ```
 
-The website would be running now, and you can visit [http://localhost:3000](http://localhost:3000) in your browser to view the website.
+Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
 
 ## Customizing
 
-You can start customizing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
+You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
 
 ## Global search
 
 This template includes a global search that's powered by the [FlexSearch](https://github.com/nextapps-de/flexsearch) library. It's available by clicking the search input or by using the `⌘K` shortcut.
 
-The search feature requires no configuration, and works out of the box by automatically scanning your documentation pages to build its index.
-You can adjust the search parameters by editing the `/src/markdoc/search.mjs` file.
+This feature requires no configuration, and works out of the box by automatically scanning your documentation pages to build its index. You can adjust the search parameters by editing the `/src/markdoc/search.mjs` file.
 
 ## Learn more
 
-To learn more about the technologies used in this site, checkout the following resources:
+To learn more about the technologies used in this site, see the following resources:
 
 - [Tailwind CSS](https://tailwindcss.com/docs) - the official Tailwind CSS documentation
 - [Next.js](https://nextjs.org/docs) - the official Next.js documentation

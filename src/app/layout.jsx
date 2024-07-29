@@ -7,6 +7,7 @@ import { Layout } from '@/components/Layout'
 
 import '@/styles/tailwind.css'
 import FooterUi from '@/components/Footer'
+import { GoogleTagManager } from '@next/third-parties/google'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -28,6 +29,21 @@ export const metadata = {
   },
   description: 'For accelerated microservice development',
   metadataBase: new URL('https://gofr.dev'),
+  keywords: [
+    'gofr',
+    'go framework',
+    'golang framework',
+    'golang web framework',
+    'http services',
+    'gin gonic',
+    'go fiber',
+    'fiber',
+    'fiber app',
+    'fiber logs',
+    'go recover',
+    'fiber set',
+    'fiber router',
+  ],
 }
 
 export default function RootLayout({ children }) {
@@ -57,7 +73,7 @@ export default function RootLayout({ children }) {
         <meta property="og:url" content="https://gofr.dev/"></meta>
         <meta property="og:type" content="website"></meta>
 
-        <script
+        {/* <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-QEC53YYXB8"
         ></script>
@@ -71,10 +87,11 @@ export default function RootLayout({ children }) {
           gtag('config', 'G-QEC53YYXB8');
           `,
           }}
-        />
+        /> */}
+        <GoogleTagManager gtmId="GTM-5G6KD5VJ" />
       </head>
 
-      <body className="flex min-h-full flex-col bg-white dark:bg-slate-900">
+      <body className="flex  flex-col  bg-white dark:bg-slate-900">
         <Providers>
           <Layout>{children}</Layout>
           <FooterUi />

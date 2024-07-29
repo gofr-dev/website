@@ -7,8 +7,6 @@ import clsx from 'clsx'
 
 import { MobileNavigation } from '@/components/MobileNavigation'
 import { Search } from '@/components/Search'
-import { HomePage } from './HomePage'
-import { DocsPage } from './DocsPage'
 import { formatNumber } from '@/lib/common'
 
 function GitHubIcon(props) {
@@ -120,18 +118,10 @@ function Header() {
 }
 
 export function Layout({ children }) {
-  let pathname = usePathname()
-  let isHomePage = pathname === '/'
-  const isCertificate = pathname.includes('certificate')
-
   return (
     <div className="flex w-full flex-col">
       <Header />
-      {isHomePage ? (
-        <HomePage />
-      ) : (
-        <>{isCertificate ? children : <DocsPage>{children}</DocsPage>}</>
-      )}
+      {children}
     </div>
   )
 }
