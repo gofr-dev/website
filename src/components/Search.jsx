@@ -15,6 +15,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { createAutocomplete } from '@algolia/autocomplete-core'
 import { Dialog } from '@headlessui/react'
 import clsx from 'clsx'
+import Link from 'next/link'
 
 import { navigation } from '@/lib/navigation'
 
@@ -178,11 +179,14 @@ function SearchResults({ autocomplete, query, collection }) {
   if (collection.items.length === 0) {
     return (
       <p className="px-4 py-8 text-center text-sm text-slate-700 dark:text-slate-400">
-        No results for &ldquo;
+        Couldn't find what you are looking for?&nbsp;
+        <Link href="https://github.com/gofr-dev/gofr/issues" target="_blank" className='underline'>
+          Create an Issue on GitHub for &ldquo;
         <span className="break-words text-slate-900 dark:text-white">
           {query}
         </span>
         &rdquo;
+        </Link>
       </p>
     )
   }
