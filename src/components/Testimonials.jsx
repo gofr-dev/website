@@ -1,8 +1,6 @@
-import Image from 'next/image'
-
 import vineetImage from '@/images/vineet_pp.jpg'
 import praveenImage from '@/images/praveen_kumar.jpg'
-import { useEffect, useState } from 'react'
+import Carousel from "@/components/Carousel";
 
 const testimonialsData = [
   {
@@ -24,33 +22,7 @@ const testimonialsData = [
 export function Testimonials() {
   return (
     <>
-      {testimonialsData.map((testimonial) => (
-        <div
-          key={testimonial.name}
-          className="flex min-w-[calc(100%-5rem)] flex-col sm:mb-14 md:min-w-[calc(50%-1rem)] xl:min-w-[calc(50%-2rem)] "
-        >
-          <figure className="flex flex-auto flex-col justify-between">
-            <blockquote className="text-lg leading-8 text-white">
-              <p>“{testimonial.content}”</p>
-            </blockquote>
-            <figcaption className="mt-10 flex items-center gap-x-6">
-              <Image
-                className="h-14 w-14 rounded-full bg-gray-800"
-                src={testimonial.profile}
-                width={400}
-                height={400}
-                alt="profile"
-              />
-              <div className="text-base">
-                <div className="font-semibold text-white">
-                  {testimonial.name}
-                </div>
-                <div className="mt-1 text-gray-400">{testimonial.role}</div>
-              </div>
-            </figcaption>
-          </figure>
-        </div>
-      ))}
+      <Carousel data={testimonialsData} />
     </>
   )
 }
