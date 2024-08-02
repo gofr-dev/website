@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { Highlight } from 'prism-react-renderer'
@@ -10,7 +10,7 @@ import blurIndigoImage from '@/images/blur-indigo.png'
 import Link from 'next/link'
 
 const codeLanguage = 'javascript'
-const code = `package main
+const mainGoCode = `package main
 
 import "gofr.dev/pkg/gofr"
 
@@ -23,6 +23,60 @@ func main() {
 
     app.Run()
 }`
+
+const mainTestGoCode = `package main
+
+import (
+    "encoding/json"
+    "io"
+    "net/http"
+    "testing"
+    "time"
+
+    "github.com/stretchr/testify/assert"
+    "github.com/stretchr/testify/require"
+)
+
+func TestIntegration_SimpleAPIServer(t *testing.T) {
+    go main()
+
+    time.Sleep(time.Second * 3) // Giving some time to start the server
+
+    tests := []struct {
+       desc string
+       path string
+       body interface{}
+    }{
+       {"hello handler", "/hello", "Hello World!"},
+    }
+
+    for i, tc := range tests {
+       req, _ := http.NewRequest(http.MethodGet, "http://localhost:8080" + tc.path, nil)
+       req.Header.Set("content-type", "application/json")
+
+       c := http.Client{}
+       resp, err := c.Do(req)
+
+       var data = struct {
+          Data interface{} \`json:"data"\`
+       }{}
+
+       b, err := io.ReadAll(resp.Body)
+
+       require.NoError(t, err, "TEST[%d], Failed.\n%s", i, tc.desc)
+
+       _ = json.Unmarshal(b, &data)
+
+       assert.Equal(t, tc.body, data.Data, "TEST[%d], Failed.\n%s", i, tc.desc)
+
+       require.NoError(t, err, "TEST[%d], Failed.\n%s", i, tc.desc)
+
+       assert.Equal(t, http.StatusOK, resp.StatusCode, "TEST[%d], Failed.\n%s", i, tc.desc)
+
+       resp.Body.Close()
+    }
+}
+`
 
 const tabs = [
   { name: 'main.go', isActive: true },
@@ -40,6 +94,9 @@ function TrafficLightsIcon(props) {
 }
 
 export function Hero() {
+  const [activeTab, setActiveTab] = useState('main.go')
+  const code = activeTab === 'main.go' ? mainGoCode : mainTestGoCode
+
   return (
     <div className="overflow-hidden bg-slate-900 dark:-mb-32 dark:mt-[-4.75rem] dark:pb-32 dark:pt-[4.75rem]">
       <div className="sm:px-2 lg:relative lg:px-0 lg:py-16 lg:py-20">
@@ -69,14 +126,16 @@ export function Hero() {
                 <p className="mt-3 text-2xl tracking-tight text-slate-400">
                   For accelerated microservice development
                 </p>
-                {<div className="mt-10">
-                  <Link
-                    className="rounded-full bg-sky-300 px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
-                    href="/docs"
-                  >
-                    Get Started
-                  </Link>
-                </div> }
+                {
+                  <div className="mt-10">
+                    <Link
+                      className="rounded-full bg-sky-300 px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
+                      href="/docs"
+                    >
+                      Get Started
+                    </Link>
+                  </div>
+                }
               </div>
             </div>
           </div>
@@ -108,23 +167,24 @@ export function Hero() {
               <div className="relative rounded-2xl bg-[#0A101F]/80 ring-1 ring-white/10 backdrop-blur">
                 <div className="absolute -top-px left-20 right-11 h-px bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-sky-300/0" />
                 <div className="absolute -bottom-px left-11 right-20 h-px bg-gradient-to-r from-blue-400/0 via-blue-400 to-blue-400/0" />
-                <div className="pl-4 pt-4">
+                <div className="pb-6 pl-4 pr-4 pt-4">
                   <TrafficLightsIcon className="h-2.5 w-auto stroke-slate-500/30" />
                   <div className="mt-4 flex space-x-2 text-xs">
                     {tabs.map((tab) => (
                       <div
                         key={tab.name}
                         className={clsx(
-                          'flex h-6 rounded-full',
-                          tab.isActive
+                          'flex h-6 cursor-pointer rounded-full',
+                          tab.name === activeTab
                             ? 'bg-gradient-to-r from-sky-400/30 via-sky-400 to-sky-400/30 p-px font-medium text-sky-300'
                             : 'text-slate-500',
                         )}
+                        onClick={() => setActiveTab(tab.name)}
                       >
                         <div
                           className={clsx(
                             'flex items-center rounded-full px-2.5',
-                            tab.isActive && 'bg-slate-800',
+                            tab.name === activeTab && 'bg-slate-800',
                           )}
                         >
                           {tab.name}
@@ -132,7 +192,11 @@ export function Hero() {
                       </div>
                     ))}
                   </div>
-                  <div className="mt-6 flex items-start px-1 text-sm">
+                  <div
+                    className={`mt-6 flex max-h-[315px] items-start px-1 px-4 text-sm ${
+                      activeTab === 'main_test.go' ? 'overflow-auto' : ''
+                    }`}
+                  >
                     <div
                       aria-hidden="true"
                       className="select-none border-r border-slate-300/5 pr-4 font-mono text-slate-600"
