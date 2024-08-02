@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { Highlight } from 'prism-react-renderer'
@@ -24,22 +24,37 @@ func main() {
     app.Run()
 }`
 
+const test_code = `package main
+
+import (
+	"net/http"
+	"net/http/httptest"
+	"testing"
+    "regexp"
+)
+
+func helloHandler(w http.ResponseWriter, r *http.Request) 
+{
+	w.Write([]byte("Hello"))
+}`
+
 const tabs = [
   { name: 'main.go', isActive: true },
-  { name: 'main_test.go', isActive: false },
+  { name: 'main_test.go', isActive: true },
 ]
 
 function TrafficLightsIcon(props) {
   return (
     <svg aria-hidden="true" viewBox="0 0 42 10" fill="none" {...props}>
-      <circle cx="5" cy="5" r="4.5" />
-      <circle cx="21" cy="5" r="4.5" />
-      <circle cx="37" cy="5" r="4.5" />
+      <circle cx="5" cy="5" r="5" fill="rgb(237,106,94)" />
+      <circle cx="21" cy="5" r="5" fill="rgb(245,191,74)" />
+      <circle cx="37" cy="5" r="5" fill="rgb(97,197,84)" />
     </svg>
   )
 }
 
 export function Hero() {
+  const [activeTab, setActiveTab] = useState('main.go')
   return (
     <div className="overflow-hidden bg-slate-900 dark:-mb-32 dark:mt-[-4.75rem] dark:pb-32 dark:pt-[4.75rem]">
       <div className="sm:px-2 lg:relative lg:px-0 lg:py-16 lg:py-20">
@@ -69,14 +84,16 @@ export function Hero() {
                 <p className="mt-3 text-2xl tracking-tight text-slate-400">
                   For accelerated microservice development
                 </p>
-                {<div className="mt-10">
-                  <Link
-                    className="rounded-full bg-sky-300 px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
-                    href="/docs"
-                  >
-                    Get Started
-                  </Link>
-                </div> }
+                {
+                  <div className="mt-10">
+                    <Link
+                      className="rounded-full bg-sky-300 px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
+                      href="/docs"
+                    >
+                      Get Started
+                    </Link>
+                  </div>
+                }
               </div>
             </div>
           </div>
@@ -115,8 +132,8 @@ export function Hero() {
                       <div
                         key={tab.name}
                         className={clsx(
-                          'flex h-6 rounded-full',
-                          tab.isActive
+                          'flex h-6 cursor-pointer rounded-full',
+                          tab.isActive && tab.name === activeTab
                             ? 'bg-gradient-to-r from-sky-400/30 via-sky-400 to-sky-400/30 p-px font-medium text-sky-300'
                             : 'text-slate-500',
                         )}
@@ -126,6 +143,7 @@ export function Hero() {
                             'flex items-center rounded-full px-2.5',
                             tab.isActive && 'bg-slate-800',
                           )}
+                          onClick={() => setActiveTab(tab.name)}
                         >
                           {tab.name}
                         </div>
@@ -147,7 +165,7 @@ export function Hero() {
                       ))}
                     </div>
                     <Highlight
-                      code={code}
+                      code={activeTab === 'main.go' ? code : test_code}
                       language={codeLanguage}
                       theme={{ plain: {}, styles: [] }}
                     >
