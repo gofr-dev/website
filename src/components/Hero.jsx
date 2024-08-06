@@ -40,40 +40,39 @@ import (
 func TestIntegration_SimpleAPIServer(t *testing.T) {
     go main()
 
-    time.Sleep(time.Second * 3) // Giving some time to start the server
+    time.Sleep(time.Second * 1) // Giving some time to start the server
 
     tests := []struct {
-       desc string
-       path string
-       body interface{}
+        desc       string
+        path       string
+        statusCode int
+        body       interface{}
     }{
-       {"hello handler", "/hello", "Hello World!"},
+        {"hello handler", "/hello", http.StatusOK, "Hello World!"},
+        {"hello error", "/unknown", http.StatusNotFound, nil},
     }
 
     for i, tc := range tests {
-       req, _ := http.NewRequest(http.MethodGet, "http://localhost:8080" + tc.path, nil)
-       req.Header.Set("content-type", "application/json")
+        req, _ := http.NewRequest(http.MethodGet,
+        "http://localhost:8000"+tc.path, nil)
+        req.Header.Set("content-type", "application/json")
 
-       c := http.Client{}
-       resp, err := c.Do(req)
+        c := http.Client{}
+        resp, err := c.Do(req)
 
-       var data = struct {
-          Data interface{} \`json:"data"\`
-       }{}
+        var data = struct {
+            Data interface{} \`json:"data\`
+        }{}
 
-       b, err := io.ReadAll(resp.Body)
+        b, err := io.ReadAll(resp.Body)
+        require.NoError(t, err)
 
-       require.NoError(t, err, "TEST[%d], Failed.\n%s", i, tc.desc)
+        _ = json.Unmarshal(b, &data)
 
-       _ = json.Unmarshal(b, &data)
+        assert.Equal(t, tc.body, data.Data)
+        assert.Equal(t, tc.statusCode, resp.StatusCode)
 
-       assert.Equal(t, tc.body, data.Data, "TEST[%d], Failed.\n%s", i, tc.desc)
-
-       require.NoError(t, err, "TEST[%d], Failed.\n%s", i, tc.desc)
-
-       assert.Equal(t, http.StatusOK, resp.StatusCode, "TEST[%d], Failed.\n%s", i, tc.desc)
-
-       resp.Body.Close()
+        resp.Body.Close()
     }
 }
 `
