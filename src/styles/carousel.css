@@ -1,0 +1,12 @@
+.activeCardTimer{
+    animation: increaseWidth 10s linear forwards;
+}
+
+@keyframes increaseWidth {
+    0%{
+        width: 0;
+    }
+    100%{
+        width: 100%;
+    }
+}
