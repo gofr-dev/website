@@ -144,7 +144,7 @@ export function Hero() {
             </div>
             <div className="relative">
               <Image
-                className="absolute -right-64 -top-64"
+                className="absolute -right-2 -top-64"
                 src={blurCyanImage}
                 alt=""
                 width={530}
@@ -153,7 +153,7 @@ export function Hero() {
                 priority
               />
               <Image
-                className="absolute -bottom-40 -right-44"
+                className="absolute -bottom-40 -right-1"
                 src={blurIndigoImage}
                 alt=""
                 width={567}
