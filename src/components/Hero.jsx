@@ -125,15 +125,15 @@ export function Hero() {
                 <p className="mt-3 text-2xl tracking-tight text-slate-400">
                   For accelerated microservice development
                 </p>
-                <div className="mt-10 flex gap-4 justify-center xl:justify-start">
+                <div className="mt-9 flex gap-4 justify-center xl:justify-start">
                   <Link
-                    className="rounded-full bg-sky-300 px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
+                    className="rounded-full bg-sky-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
                     href="/docs"
                   >
                     Get Started
                   </Link>
                   <Link
-                    className="rounded-full bg-white px-4 py-3 text-sm font-semibold text-slate-900 flex gap-1 items-center"
+                    className="rounded-full text-white bg-white transition-all duration-200 hover:bg-opacity-[.15] bg-opacity-[0.08] px-4 py-1 text-sm font-semibold flex gap-1 items-center"
                     href="https://github.com/gofr-dev/gofr"
                     target="_blank"
                   >
