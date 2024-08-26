@@ -59,10 +59,6 @@ export default function RootLayout({ children }) {
           content="9TFTpJ19XHm0dVVKTF5l6OTMLcahEn0M3aZFZ14gRFI"
         />
         <meta
-          name="go-import"
-          content="gofr.dev git https://github.com/gofr-dev/gofr"
-        />
-        <meta
           property="og:title"
           content="GoFr - An opinionated Go Framework"
         />
