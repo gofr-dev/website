@@ -44,6 +44,9 @@ export const metadata = {
     'fiber set',
     'fiber router',
   ],
+  other:{
+    "web-version" : "v0.4.3"
+  }
 }
 
 export default function RootLayout({ children }) {
