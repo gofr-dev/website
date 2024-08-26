@@ -1,5 +1,4 @@
 export const metadata = {
-  title:"test",
   other: {
     'go-import': 'gofr.dev/cli/gofr git https://github.com/gofr-dev/gofr-cli',
   },
