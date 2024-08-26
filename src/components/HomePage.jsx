@@ -1,3 +1,4 @@
+"use client"
 import { Hero } from './Hero'
 import { Testimonials } from './Testimonials'
 import { QuickLink } from '@/components/QuickLinks'
