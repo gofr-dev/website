@@ -8,6 +8,7 @@ import clsx from 'clsx'
 import { MobileNavigation } from '@/components/MobileNavigation'
 import { Search } from '@/components/Search'
 import { formatNumber } from '@/lib/common'
+import { ErrorBoundary } from './BugsnagWrapper'
 
 function GitHubIcon(props) {
   return (
@@ -117,11 +118,19 @@ function Header() {
   )
 }
 
+const ErrorView = () => (
+  <div>
+    <p>Something went wrong</p>
+  </div>
+)
+
 export function Layout({ children }) {
   return (
-    <div className="flex w-full flex-col">
-      <Header />
-      {children}
-    </div>
+    <ErrorBoundary FallbackComponent={ErrorView}>
+      <div className="flex w-full flex-col">
+        <Header />
+        {children}
+      </div>
+    </ErrorBoundary>
   )
 }
