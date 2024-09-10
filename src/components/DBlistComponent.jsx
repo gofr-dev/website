@@ -80,7 +80,7 @@ const DBlistComponent = () => {
                     width={158}
                     height={48}
                     style={itemStyle}
-                    className="item col-span-2 max-h-12   object-contain object-left lg:col-span-1"
+                    className="item col-span-2 max-h-12 object-contain object-left lg:col-span-1"
                   />
                 </Link>
               )

@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="158px" height="54px" viewBox="0 0 158 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Group 59</title>
-    <g id="Work-file-(ignore)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Group-59" transform="translate(0, 0.7498)">
-            <rect id="Rectangle-Copy-35" x="0" y="2.25018868" width="158" height="48"></rect>
-            <g id="Group-54" transform="translate(0, 0.2502)">
-                <path d="M27.6730245,7.02511229 L41.1023518,14.6307433 C42.3766009,15.3524078 43.1593858,16.708231 43.147241,18.1725953 L43.019247,33.6055494 C43.0073997,35.0340552 42.2405506,36.349648 41.0033857,37.0639254 L27.3299476,44.9582886 C26.0927828,45.672566 24.5700215,45.6788805 23.3269755,44.9748877 L9.89764821,37.3692567 C8.62339914,36.6475922 7.84061422,35.291769 7.852759,33.8274047 L7.98075296,18.3944506 C7.99260034,16.9659448 8.75944944,15.650352 9.9966143,14.9360746 L23.6700524,7.04171143 C24.9072172,6.32743396 26.4299785,6.32111952 27.6730245,7.02511229 Z" id="Polygon" fill="#FFFFFF" transform="translate(25.5, 26) rotate(30) translate(-25.5, -26)"></path>
-                <g id="Group-53" transform="translate(16.1225, 15.8148)" fill="#101827">
-                    <ellipse id="Oval" cx="9.68196703" cy="10.4839477" rx="2.91428571" ry="2.85925848"></ellipse>
-                    <g id="Group-52" transform="translate(7.7391, 0)">
+<svg width="158px" height="48px" viewBox="0 0 158 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>GOOGLE</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-6">
+            <g id="Group-2-Copy-7" transform="translate(0, -0)">
+                <rect id="Rectangle" x="0" y="0" width="158" height="48"></rect>
+            </g>
+            <rect id="Rectangle-Copy-35" x="24.5323167" y="2.70985281" width="114" height="42"></rect>
+            <g id="Group-54" transform="translate(25.5338, 6.0625)" fill-rule="nonzero">
+                <path d="M21.6714987,-1.32750741 L35.100826,6.2781236 C36.3750751,6.9997881 37.15786,8.3556113 37.1458545,9.8199756 L37.0177212,25.2529297 C37.0058739,26.6814355 36.2390248,27.9970283 35.0018599,28.7113057 L21.3284218,36.6056689 C20.091257,37.3199463 18.5684957,37.3262608 17.3254497,36.622268 L3.89612239,29.016637 C2.62187332,28.2949725 1.8390884,26.9391493 1.85109389,25.474785 L1.97922714,10.0418309 C1.99107452,8.6133251 2.75792362,7.2977323 3.99508848,6.5834549 L17.6685266,-1.31090827 C18.9056914,-2.02518574 20.4284527,-2.03150018 21.6714987,-1.32750741 Z" id="Polygon" fill="#FFFFFF" transform="translate(19.4985, 17.6474) rotate(-270) translate(-19.4985, -17.6474)"></path>
+                <g id="Group-53" transform="translate(10.1702, 7.4622)" fill="#101827">
+                    <ellipse id="Oval" cx="9.63275503" cy="10.4839477" rx="2.91428571" ry="2.85925848"></ellipse>
+                    <g id="Group-52" transform="translate(7.6899, 0)">
                         <ellipse id="Oval-Copy-15" cx="1.94285714" cy="1.90617232" rx="1.94285714" ry="1.90617232"></ellipse>
                         <rect id="Rectangle" x="1.45714286" y="2.85925848" width="1" height="3.81234463"></rect>
                     </g>
-                    <g id="Group-52-Copy" transform="translate(3.8534, 15.7259) rotate(-130) translate(-3.8534, -15.7259)translate(1.9105, 12.3901)">
+                    <g id="Group-52-Copy" transform="translate(3.8042, 15.7259) rotate(-130) translate(-3.8042, -15.7259)translate(1.8614, 12.3901)">
                         <ellipse id="Oval-Copy-15" cx="1.94285714" cy="1.90617232" rx="1.94285714" ry="1.90617232"></ellipse>
                         <rect id="Rectangle" x="1.45714286" y="2.85925848" width="1" height="3.81234463"></rect>
                     </g>
-                    <g id="Group-52-Copy-2" transform="translate(15.5105, 15.7259) scale(-1, 1) rotate(-130) translate(-15.5105, -15.7259)translate(13.5677, 12.3901)">
+                    <g id="Group-52-Copy-2" transform="translate(15.4613, 15.7259) scale(-1, 1) rotate(-130) translate(-15.4613, -15.7259)translate(13.5185, 12.3901)">
                         <ellipse id="Oval-Copy-15" cx="1.94285714" cy="1.90617232" rx="1.94285714" ry="1.90617232"></ellipse>
                         <rect id="Rectangle" x="1.45714286" y="2.85925848" width="1" height="3.81234463"></rect>
                     </g>
-                    <ellipse id="Oval" cx="2.39625275" cy="7.14814619" rx="1.45714286" ry="1.42962924"></ellipse>
-                    <ellipse id="Oval-Copy-16" cx="16.9676813" cy="7.14814619" rx="1.45714286" ry="1.42962924"></ellipse>
-                    <ellipse id="Oval-Copy-17" cx="9.68196703" cy="19.5382663" rx="1.45714286" ry="1.42962924"></ellipse>
+                    <ellipse id="Oval" cx="2.34704075" cy="7.14814619" rx="1.45714286" ry="1.42962924"></ellipse>
+                    <ellipse id="Oval-Copy-16" cx="16.9184693" cy="7.14814619" rx="1.45714286" ry="1.42962924"></ellipse>
+                    <ellipse id="Oval-Copy-17" cx="9.63275503" cy="19.5382663" rx="1.45714286" ry="1.42962924"></ellipse>
                 </g>
             </g>
-            <text id="GOOGLE" font-family="Poppins-SemiBold, Poppins" font-size="16" font-weight="500" letter-spacing="1" fill="#FFFFFF">
-                <tspan x="53" y="27.2501887">GOOGLE</tspan>
-            </text>
-            <text id="cloud-Pub/Sub" font-family="Poppins-Regular, Poppins" font-size="7" font-weight="normal" fill="#FFFFFF">
-                <tspan x="53" y="37.2501887">cloud Pub/Sub</tspan>
-            </text>
+            <g id="GOOGLE" transform="translate(72.5323, 7.7099)" fill="#FFFFFF" fill-rule="nonzero" font-family="Poppins-Medium, Poppins" font-size="16" font-weight="400">
+                <text>
+                    <tspan x="0" y="17">GOOGLE</tspan>
+                </text>
+            </g>
+            <g id="cloud-Pub/Sub" transform="translate(72.5323, 27.7099)" fill="#FFFFFF" fill-rule="nonzero" font-family="Poppins-Regular, Poppins" font-size="7" font-weight="normal">
+                <text>
+                    <tspan x="0" y="7">cloud Pub/Sub</tspan>
+                </text>
+            </g>
         </g>
     </g>
 </svg>
