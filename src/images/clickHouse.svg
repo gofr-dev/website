@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="158px" height="48px" viewBox="0 0 158 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Ch</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Ch">
+            <g id="Group-2-Copy-9">
+                <rect id="Rectangle" x="0" y="0" width="158" height="48"></rect>
+            </g>
+            <g id="Group-55" transform="translate(7, 0)">
+                <rect id="Rectangle" x="0" y="0" width="144" height="48"></rect>
+                <rect id="Rectangle" fill="#FFFFFF" fill-rule="nonzero" x="1" y="8" width="4" height="32"></rect>
+                <rect id="Rectangle-Copy-28" fill="#FFFFFF" fill-rule="nonzero" x="9" y="8" width="4" height="32"></rect>
+                <rect id="Rectangle-Copy-29" fill="#FFFFFF" fill-rule="nonzero" x="17" y="8" width="4" height="32"></rect>
+                <rect id="Rectangle-Copy-30" fill="#FFFFFF" fill-rule="nonzero" x="25" y="8" width="4" height="32"></rect>
+                <rect id="Rectangle-Copy-31" fill="#FFFFFF" fill-rule="nonzero" x="33" y="20" width="4" height="8"></rect>
+                <text id="ClickHouse" fill="#FFFFFF" fill-rule="nonzero" font-family="Mulish-ExtraBold, Mulish" font-size="18" font-weight="700">
+                    <tspan x="47" y="30">ClickHouse</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

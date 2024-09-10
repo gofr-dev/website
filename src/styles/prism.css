@@ -60,3 +60,34 @@ code::before {
 code::after {
   content: none !important;
 }
+
+.wrapper {
+  width: 100%;
+  max-width: 1536px;
+  margin-inline: auto;
+  position: relative;
+  height: 100px;
+  margin-top: 5rem;
+  overflow: hidden;
+}
+
+@keyframes scrollLeft {
+  to {
+    left: -158px;
+  }
+}
+
+.wrapper:hover .item {
+  animation-play-state: paused; /* Pause the animation for all items on hover */
+}
+
+.item {
+  border-radius: 6px;
+  position: absolute;
+  left: max(calc(158px * 10), 100%);
+  animation-name: scrollLeft;
+  animation-duration: 30s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-play-state: running; /* Ensure the animation runs by default */
+}

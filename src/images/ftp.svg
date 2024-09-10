@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="158px" height="48px" viewBox="0 0 158 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>FTP</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="FTP">
+            <g id="Group-2-Copy-3">
+                <rect id="Rectangle" x="0" y="0" width="158" height="48"></rect>
+            </g>
+            <g id="Group-56" transform="translate(34, 0)">
+                <rect id="Rectangle-Copy-32" x="0" y="0" width="89" height="48"></rect>
+                <text id="FTP" fill="#FFFFFF" fill-rule="nonzero" font-family="Poppins-Bold, Poppins" font-size="18" font-weight="bold">
+                    <tspan x="56" y="30">FTP</tspan>
+                </text>
+                <path d="M3.6545314,37.6000728 L9.7091304,15.4000728 C9.9345726,14.5734584 10.6853751,14 11.5421805,14 L34.5748593,14 L34.5748593,14 L32.5040885,23.4720753 C32.2799763,24.4972047 32.929329,25.5099151 33.9544584,25.7340273 C34.0877556,25.7631685 34.2238041,25.7778663 34.3602495,25.7778663 L44.3992883,25.7778663 L44.3992883,25.7778663 L40.4623617,38.655486 C40.2181303,39.4543627 39.4807524,40 38.6453765,40 L5.4875815,40 C4.4382405,40 3.5875815,39.149341 3.5875815,38.1 C3.5875815,37.9311228 3.6100965,37.7629994 3.6545314,37.6000728 Z" id="Path-14" stroke="#FFFFFF" stroke-width="1.9"></path>
+                <path d="M2,28 L6.0023618,10.4769255 C6.1997243,9.61283586 6.9683174,9 7.8546598,9 L35,9 L35,9" id="Path-19" stroke="#FFFFFF" stroke-width="1.9"></path>
+            </g>
+        </g>
+    </g>
+</svg>
