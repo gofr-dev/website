@@ -8,6 +8,7 @@ import { Layout } from '@/components/Layout'
 import '@/styles/tailwind.css'
 import FooterUi from '@/components/Footer'
 import { GoogleTagManager } from '@next/third-parties/google'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -44,9 +45,9 @@ export const metadata = {
     'fiber set',
     'fiber router',
   ],
-  other:{
-    "web-version" : "v0.4.3"
-  }
+  other: {
+    'web-version': 'v0.4.3',
+  },
 }
 
 export default function RootLayout({ children }) {
@@ -92,7 +93,9 @@ export default function RootLayout({ children }) {
 
       <body className="flex  flex-col  bg-white dark:bg-slate-900">
         <Providers>
-          <Layout>{children}</Layout>
+          <ErrorBoundary>
+            <Layout>{children}</Layout>
+          </ErrorBoundary>
           <FooterUi />
         </Providers>
       </body>
