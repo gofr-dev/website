@@ -63,7 +63,7 @@ const DBlistComponent = () => {
       <div className="mx-auto max-w-screen-2xl lg:px-8 xl:px-12">
         <div className="mx-auto max-w-2xl lg:max-w-none">
           <h2 className="text-center text-lg font-semibold leading-8 text-slate-400">
-            In Built Datasources Support
+            Built-in support for popular databases and messaging systems
           </h2>
           <div className="wrapper mx-auto mt-10 flex items-start ">
             {imageLink.map((item, idx) => {
