@@ -9,6 +9,7 @@ import { MobileNavigation } from '@/components/MobileNavigation'
 import { Search } from '@/components/Search'
 import { formatNumber } from '@/lib/common'
 import { ErrorBoundary } from './BugsnagWrapper'
+import FooterUi from "@/components/Footer";
 
 function GitHubIcon(props) {
   return (
@@ -125,11 +126,16 @@ const ErrorView = () => (
 )
 
 export function Layout({ children }) {
+  const pathname = usePathname()
+  console.log(pathname)
   return (
     <ErrorBoundary FallbackComponent={ErrorView}>
       <div className="flex w-full flex-col">
-        <Header />
+        {
+            pathname !== '/goforgofr' && <Header />
+        }
         {children}
+        <FooterUi />
       </div>
     </ErrorBoundary>
   )

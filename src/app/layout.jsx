@@ -6,7 +6,6 @@ import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
 
 import '@/styles/tailwind.css'
-import FooterUi from '@/components/Footer'
 import { GoogleTagManager } from '@next/third-parties/google'
 import ErrorBoundary from '@/components/ErrorBoundary'
 
@@ -96,7 +95,6 @@ export default function RootLayout({ children }) {
           <ErrorBoundary>
             <Layout>{children}</Layout>
           </ErrorBoundary>
-          <FooterUi />
         </Providers>
       </body>
     </html>
