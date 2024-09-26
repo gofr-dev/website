@@ -18,7 +18,7 @@ const GfgPrizes = () => {
                 readable content of a page when looking at its layout. It is a long established fact that a reader will be distracted.
                 readable content of a page when looking at its layout.
             </div>
-            <div className={`flex gap-4`}>
+            <div className={`flex flex-col justify-center items-center sm:items-stretch sm:flex-row gap-4`}>
                 <div className={`w-1/2 flex`}>
                     <Image src={Prize1} alt={"Prize1"} width={200} height={100} className={`w-full flex-1 object-cover rounded-2xl`}/>
                 </div>
