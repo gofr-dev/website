@@ -5,6 +5,7 @@ import GFGHero from "@/components/goforgofr/GFGHero";
 import GFGServices from "@/components/goforgofr/GFGServices";
 import GFGTracks from "@/components/goforgofr/GFGTracks";
 import GFGHackathon from "@/components/goforgofr/GFGHackathon";
+import GFGPrizes from "@/components/goforgofr/GFGPrizes";
 
 const Page = () => {
   return (
@@ -38,6 +39,8 @@ const Page = () => {
         <GFGTracks />
 
         <GFGHackathon />
+
+        <GFGPrizes />
 
         <GFGSponsor />
 
