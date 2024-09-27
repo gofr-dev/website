@@ -11,7 +11,7 @@ const Page = () => {
   return (
     <>
       <link href="https://fonts.cdnfonts.com/css/impact" rel="stylesheet" />
-      <div className={`flex min-h-screen flex-col gap-4`}>
+      <div className={`flex flex-col gap-4`}>
         <div className={`flex items-center gap-4 p-4`}>
           <a
             aria-label="Home page"
@@ -25,7 +25,7 @@ const Page = () => {
           </a>
 
           <div className={`ml-16 items-center gap-4 md:gap-16 font-semibold hidden md:flex`}>
-            <a href={'#'}>schedule</a>
+            <a href={'#'}>Schedule</a>
             <a href={'#sponsors_section'} className={`min-w-[120px]`}>Our sponsors</a>
             <a href={'#'}>Prizes</a>
             <a href={'#faq_section'}>Faq</a>

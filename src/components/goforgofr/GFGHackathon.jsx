@@ -16,7 +16,7 @@ const GFGHackathon = () => {
   }
 
   return (
-    <div className={`flex min-h-screen flex-col px-10 pt-20 md:px-20`}>
+    <div className={`flex flex-col px-10 pt-20 md:px-20`}>
       <div className={`flex flex-col gap-4`}>
         <Image src={Time} alt={'Time'} width={200} height={100} />
         <Image src={HACKATHON} alt={'Time'} width={400} height={100} />
@@ -32,7 +32,7 @@ const GFGHackathon = () => {
                 className="absolute inset-0 rounded-md"
                 style={{
                   background:
-                    'linear-gradient(136deg, rgba(56,189,248,1) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,1) 50%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.0) 60%, rgba(56,189,248,1) 100%);',
+                    'linear-gradient(136deg, rgba(56,189,248,1) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,1) 50%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.0) 60%, rgba(56,189,248,1) 100%)',
                 }}
               />
 
@@ -84,7 +84,7 @@ const GFGHackathon = () => {
                 className="absolute inset-0 rounded-md"
                 style={{
                   background:
-                    'linear-gradient(136deg, rgba(56,189,248,1) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,1) 50%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.0) 60%, rgba(56,189,248,1) 100%);',
+                    'linear-gradient(136deg, rgba(56,189,248,1) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,1) 50%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.0) 60%, rgba(56,189,248,1) 100%)',
                 }}
               />
 

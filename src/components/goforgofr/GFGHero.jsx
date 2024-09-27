@@ -16,7 +16,7 @@ const GfgHero = () => {
   }
 
   return (
-    <div className={`flex min-h-screen items-center justify-center -mt-10 px-10 md:px-14 md:pl-20 flex-col-reverse md:flex-row`}>
+    <div className={`flex items-center justify-center -mt-10 px-10 md:px-14 md:pl-20 flex-col-reverse md:flex-row`}>
       <div className={`flex w-full max-w-[300px] md:max-w-full md:w-1/2 justify-center flex-col`}>
         <div className={`flex flex-col gap-4 py-10`}>
           <div className={`text-6xl font-semibold`}>
