@@ -9,33 +9,33 @@ export function HomePage() {
       <Hero />
       <div className="not-prose my-12 grid grid-cols-1 gap-6 px-4 md:grid-cols-3 lg:px-8 xl:px-12">
         <QuickLink
-          title="Battle Tested at Enterprise Scale"
-          description="Built over years running production workload at great scales in variety of industries."
+          title="Battle-Tested at Enterprise Scale"
+          description="Built over years running production workloads at great scale in a variety of industries."
           icon="presets"
         />
         <QuickLink
-          title="Out of the box Observability"
+          title="Out-of-the-box Observability"
           description="Goodness of Metrics, Traces and Logs without a single line of code. Traces to OpenTelemetry compatible providers, Metrics in Prometheus Format."
           icon="lightbulb"
         />
         <QuickLink
           title="REST Standards by default"
-          description="Default behaviour is how 'you' would design a REST API. Status codes, response formats - all taken care by GoFr automagically."
+          description="Default behaviour is how 'you' would design a REST API. Status codes, response formats - all taken care of by GoFr automagically."
           icon="plugins"
         />
         <QuickLink
           title="Middleware support"
-          description="Elevate productivity effortlessly with predefined middleware's, while retaining flexibility through seamless integration of custom middleware tailored to your specific needs."
+          description="Elevate productivity effortlessly with predefined middleware, while retaining flexibility through seamless integration of custom middleware tailored to your specific needs."
           icon="middleware"
         />
         <QuickLink
-          title="Environment based config"
-          description="Following the 12-factor config principles for maintaining application configurations, simplify the integration of data sources like MySQL, Postgres, Kafka, Google Pubsub, and others."
+          title="Environment-based config"
+          description="Following the 12-factor config principles for maintaining application configurations, simplify the integration of data sources like MySQL, Postgres, Kafka, Google Pubsub, NATS JetStream and others."
           icon="env"
         />
         <QuickLink
           title="Crash Handling"
-          description="GoFr catches all and every panics and automatically recovers from them to maintain continuous availability of your server."
+          description="GoFr catches panics and automatically recovers to maintain continuous availability of your server."
           icon="crash"
         />
       </div>
