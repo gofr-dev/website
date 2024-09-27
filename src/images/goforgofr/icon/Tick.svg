@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 71</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#24B0ED" offset="0%"></stop>
+            <stop stop-color="#7790F7" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="HACKATONS" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="hackathon-new" transform="translate(-645, -2207)">
+            <g id="Group-71" transform="translate(645, 2207)">
+                <rect id="Rectangle-Copy-69" x="0" y="0" width="32" height="32"></rect>
+                <g id="Group-69" transform="translate(2.6667, 2.6667)">
+                    <circle id="Oval-Copy-49" fill="url(#linearGradient-1)" cx="13.3333333" cy="13.3333333" r="13.3333333"></circle>
+                    <polyline id="Path-52" stroke="#0F172B" stroke-width="1.5" stroke-linecap="round" points="7.58738326 15.1690715 12.1517417 18.6666667 19.7349409 8"></polyline>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

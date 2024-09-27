@@ -21,6 +21,14 @@
   }
 }
 
+html{
+  scroll-behavior: smooth;
+}
+
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-in-out;
+}
+
+.no-scroll::-webkit-scrollbar {
+  display: none;
 }
