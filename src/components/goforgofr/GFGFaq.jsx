@@ -27,7 +27,7 @@ const GfgFaq = () => {
     ]
 
     return (
-    <div className={`flex flex-col my-10 px-10 gap-4`} id={`faq_section`}>
+    <div className={`flex flex-col my-10 px-10 md:px-20 gap-4`} id={`faq_section`}>
       <span
         className={`text-[66px] font-semibold tracking-wider text-sky-400`}
         style={{ fontFamily: 'Impact, sans-serif' }}
