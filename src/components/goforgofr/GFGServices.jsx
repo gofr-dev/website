@@ -37,11 +37,11 @@ const GfgServices = () => {
         }
     ]
     return (
-        <div className={`flex justify-between gap-10 w-full flex-wrap px-20`}>
+        <div className={`flex justify-between gap-10 w-full flex-wrap px-10 md:px-20`}>
             {
                 icons.map((icon) => (
-                    <div key={icon.label} className={`flex flex-col items-center gap-2 text-xs`}>
-                        <Image src={icon.icon} alt={icon.label} width={50} height={50} className={`aspect-square w-[50px]`} />
+                    <div key={icon.label} className={`flex flex-col items-center gap-2 text-xs w-[80px]`}>
+                        <Image src={icon.icon} alt={icon.label} width={50} height={50} className={`aspect-square w-[70px]`} />
                         <span className={`max-w-[100px] text-center`}>{icon.label}</span>
                     </div>
                 ))

@@ -24,7 +24,7 @@ const Page = () => {
             </span>
           </a>
 
-          <div className={`ml-16 flex items-center gap-4 md:gap-16 font-semibold`}>
+          <div className={`ml-16 items-center gap-4 md:gap-16 font-semibold hidden md:flex`}>
             <a href={'#'}>schedule</a>
             <a href={'#sponsors_section'} className={`min-w-[120px]`}>Our sponsors</a>
             <a href={'#'}>Prizes</a>

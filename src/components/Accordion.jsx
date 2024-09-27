@@ -61,7 +61,7 @@ const AccordionCard = ({ data }) => {
       <div className="absolute inset-[1px] top-[1px] z-10 flex flex-col rounded-md bg-slate-900 p-4">
         <div className={`flex flex-col`}>
           <div className={`flex justify-between gap-2`}>
-            <span ref={titleRef} className={`font-semibold text-xl`}>{data.title}</span>
+            <span ref={titleRef} className={`font-semibold text-sm md:text-xl`}>{data.title}</span>
             <button
             >
               <Image
@@ -74,7 +74,7 @@ const AccordionCard = ({ data }) => {
             </button>
           </div>
           <AnimateHeight onChange={(w)=>{setHeight(w)}} customAnimation={'duration-300'}>
-            {isOpen && <span className={`text-gray-200 pt-4`}>{data.description}</span>}
+            {isOpen && <span className={`text-gray-400 pt-4 text-xs md:text-sm`}>{data.description}</span>}
           </AnimateHeight>
         </div>
       </div>

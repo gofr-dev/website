@@ -3,8 +3,9 @@ import Image from "next/image";
 
 const GfgTrackCard = ({ data }) => {
   return (
-    <div className={`mb-10`}>
-      <div className="relative h-40 w-64">
+    <div className={`relative`}>
+      <span className={`w-[20px] h-1 bg-sky-400 rounded-2xl absolute top-1/2 left-0 -translate-x-[calc(100%+4px)] md:hidden`}></span>
+      <div className="relative h-40 w-52 lg:w-64">
         <div
           className="absolute inset-0 rounded-md"
           style={{

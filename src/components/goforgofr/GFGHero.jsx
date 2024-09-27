@@ -16,8 +16,8 @@ const GfgHero = () => {
   }
 
   return (
-    <div className={`flex min-h-screen items-center justify-center -mt-10 px-14 pl-20`}>
-      <div className={`flex w-1/2 justify-center flex-col`}>
+    <div className={`flex min-h-screen items-center justify-center -mt-10 px-10 md:px-14 md:pl-20 flex-col-reverse md:flex-row`}>
+      <div className={`flex w-full max-w-[300px] md:max-w-full md:w-1/2 justify-center flex-col`}>
         <div className={`flex flex-col gap-4 py-10`}>
           <div className={`text-6xl font-semibold`}>
             <Image src={GO_FOR_GOFr} alt={"Go for GoFr"} className={`max-w-[400px] w-full`} />
@@ -34,7 +34,7 @@ const GfgHero = () => {
         </div>
       </div>
 
-      <div className={`flex w-1/2 items-center justify-end`}>
+      <div className={`flex w-full max-w-[300px] md:max-w-full md:w-1/2 items-center justify-end`}>
         <Image src={HeroSvg} alt={"Go for GoFr"} width={50} height={50} className={`w-full max-w-[500px] `} />
       </div>
     </div>
