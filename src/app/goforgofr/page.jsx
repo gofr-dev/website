@@ -27,7 +27,7 @@ const Page = () => {
 
         <GFGPrizes/>
 
-        <GFGSponsor/>
+        {/*<GFGSponsor/>*/}
 
         <GFGFaq/>
       </div>

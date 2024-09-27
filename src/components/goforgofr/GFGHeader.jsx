@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import Link from "next/link";
-import {GitHubIcon} from "@/components/Layout";
-import {formatNumber} from "@/lib/common";
+import Link from 'next/link'
+import { GitHubIcon } from '@/components/Layout'
+import { formatNumber } from '@/lib/common'
 
 const GfgHeader = () => {
   const [githubStars, setGithubStars] = useState(null)
@@ -25,7 +25,7 @@ const GfgHeader = () => {
   }, [])
 
   return (
-    <div className={`flex w-full justify-between items-center p-4`}>
+    <div className={`flex w-full items-center justify-between p-4`}>
       <div className={`flex items-center gap-4`}>
         <a
           aria-label="Home page"
@@ -39,12 +39,10 @@ const GfgHeader = () => {
         <div
           className={`ml-16 hidden items-center gap-4 font-semibold md:flex md:gap-16`}
         >
-          <a href={'#'}>Schedule</a>
-          <a href={'#sponsors_section'} className={`min-w-[120px]`}>
-            Our sponsors
-          </a>
-          <a href={'#'}>Prizes</a>
-          <a href={'#faq_section'}>Faq</a>
+          <a href={'#Tracks'}>Tracks</a>
+          <a href={'#Schedule'}>Schedule</a>
+          <a href={'#Prizes'}>Prizes</a>
+          <a href={'#Faq'}>Faq</a>
         </div>
       </div>
 

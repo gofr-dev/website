@@ -16,10 +16,16 @@ const GFGHackathon = () => {
   }
 
   return (
-    <div className={`flex flex-col px-10 pt-20 md:px-20`}>
+    <div className={`flex flex-col px-10 pt-20 md:px-20`} id={"Schedule"}>
       <div className={`flex flex-col gap-4`}>
         <Image src={Time} alt={'Time'} width={200} height={100} />
         <Image src={HACKATHON} alt={'Time'} width={400} height={100} />
+      </div>
+
+      <div className={`mt-10 text-gray-400`}>
+        Join our round-the-clock hackathon—where creativity flows, delicious
+        snacks are endless, stress-buster games await, and a feast of food keeps
+        you energized for innovation!
       </div>
 
       <div className={`flex w-full flex-col items-center justify-center pt-20`}>
@@ -61,15 +67,15 @@ const GFGHackathon = () => {
             <div className={`flex gap-4`}>
               <Image src={Tick} alt={'TICK'} />
               <span>
-                It is a long established fact that a reader will be distracted.
-                readable content of a page when looking at its layout.
+                Starts with an exciting opening ceremony, followed by the first
+                hack round.
               </span>
             </div>
             <div className={`flex gap-4`}>
               <Image src={Tick} alt={'TICK'} />
               <span>
-                It is a long established fact that a reader will be distracted.
-                readable content of a page when looking at its layout.
+                The first judging round will take place at 5 PM, with round two
+                scheduled for 10 PM to keep the momentum going.
               </span>
             </div>
           </div>
@@ -89,7 +95,9 @@ const GFGHackathon = () => {
               />
 
               <div className="absolute inset-[1px] z-10 flex flex-col rounded-md bg-slate-900 p-2 md:p-4">
-                <div className={`flex flex-col gap-4 text-xl md:text-4xl font-semibold`}>
+                <div
+                  className={`flex flex-col gap-4 text-xl font-semibold md:text-4xl`}
+                >
                   Day 2
                 </div>
               </div>
@@ -113,15 +121,16 @@ const GFGHackathon = () => {
             <div className={`flex gap-4`}>
               <Image src={Tick} alt={'TICK'} />
               <span>
-                It is a long established fact that a reader will be distracted.
-                readable content of a page when looking at its layout.
+                Recharge with a midnight stress-buster game, then continue
+                hacking through the night.
               </span>
             </div>
             <div className={`flex gap-4`}>
               <Image src={Tick} alt={'TICK'} />
               <span>
-                It is a long established fact that a reader will be distracted.
-                readable content of a page when looking at its layout.
+                The final technical round happens at 6 AM, followed by the final
+                pitch presentations at 10 AM, where the best solutions will take
+                the spotlight!
               </span>
             </div>
           </div>

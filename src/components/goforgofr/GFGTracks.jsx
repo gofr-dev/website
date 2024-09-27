@@ -4,7 +4,7 @@ import Location from '@/images/goforgofr/icon/Location.svg'
 import Links from '@/images/goforgofr/icon/Links.svg'
 import Image from 'next/image'
 import { Button } from '@/components/Button'
-import GFGTrackCard from "@/components/goforgofr/GFGTrackCard";
+import GFGTrackCard from '@/components/goforgofr/GFGTrackCard'
 
 const GfgTracks = () => {
   const tracks = [
@@ -25,7 +25,7 @@ const GfgTracks = () => {
     },
   ]
   return (
-    <div>
+    <div id={'Tracks'}>
       <div
         className={`relative mt-[120px] flex min-h-[500px] flex-col items-center justify-center px-10 lg:px-20`}
         style={{
@@ -36,7 +36,9 @@ const GfgTracks = () => {
         }}
       >
         <div className={`flex w-full flex-col items-center justify-center`}>
-          <span className={`text-base sm:text-xl md:text-2xl font-semibold text-red-500`}>
+          <span
+            className={`text-base font-semibold text-red-500 sm:text-xl md:text-2xl`}
+          >
             23-24 November , 2024
           </span>
           <Image
