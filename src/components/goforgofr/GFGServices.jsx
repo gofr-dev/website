@@ -20,24 +20,24 @@ const GfgServices = () => {
             label: "Cloud Native Applications",
         },
         {
-            icon : DApps,
-            label: "D Apps",
-        },
-        {
-            icon : BlockChain,
-            label: "Blockchain",
-        },
-        {
             icon : Analytics,
             label: "Analytics",
         },
         {
             icon : GenAI,
             label: "Gen AI",
+        },
+        {
+            icon : DApps,
+            label: "D Apps",
+        },
+        {
+            icon : BlockChain,
+            label: "Blockchain",
         }
     ]
     return (
-        <div className={`flex justify-between gap-10 w-full flex-wrap px-10 md:px-20`}>
+        <div className={`flex justify-between gap-10 w-full flex-wrap px-10 md:px-20 mt-20`}>
             {
                 icons.map((icon) => (
                     <div key={icon.label} className={`flex flex-col items-center gap-2 text-xs w-[80px]`}>
