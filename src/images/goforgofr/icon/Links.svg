@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="664px" height="122px" viewBox="0 0 664 122" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 45</title>
+    <g id="HACKATONS" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="hackathon-new" transform="translate(-264, -1509)" stroke="#42A6F1" stroke-width="3">
+            <g id="Group-45" transform="translate(265.6557, 1509.9505)">
+                <path d="M0,121 C-7.10542736e-15,90.6083824 24.637274,65.9711084 55.0288916,65.9711084 L269.969954,65.9711084 C303.107039,65.9711084 329.969954,39.1081934 329.969954,5.97110841 C329.969954,5.48288156 329.963994,4.99467289 329.952077,4.5065915 L329.842045,0 L329.842045,0" id="Path-2"></path>
+                <path d="M329,121 C329,90.6083824 353.637274,65.9711084 384.028892,65.9711084 L598.969954,65.9711084 C632.107039,65.9711084 658.969954,39.1081934 658.969954,5.97110841 C658.969954,5.48288156 658.963994,4.99467289 658.952077,4.5065915 L658.842045,0 L658.842045,0" id="Path-2-Copy-3" transform="translate(494.7264, 60.5) scale(-1, 1) translate(-494.7264, -60.5)"></path>
+                <line x1="329.842045" y1="4.99150691" x2="329.842045" y2="120.187253" id="Path-3"></line>
+            </g>
+        </g>
+    </g>
+</svg>
