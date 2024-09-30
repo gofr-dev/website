@@ -5,6 +5,7 @@ import GO_FOR_GOFr from '@/images/goforgofr/GO_FOR_GOFr.svg'
 import Hackathon from '@/images/goforgofr/Hackathon.svg'
 import HeroSvg from '@/images/goforgofr/HeroSvg.svg'
 import Image from "next/image";
+import Link from "next/link";
 
 const GfgHero = () => {
   const gradientText = {
@@ -29,7 +30,9 @@ const GfgHero = () => {
             <span className={`italic font-semibold`}>Innovate , Code, Create & Elevate</span>
           </div>
           <div className={`mt-6`}>
-            <Button className={` !px-8`}>Register Now</Button>
+            <Link href={'https://docs.google.com/forms/d/e/1FAIpQLSeAlrrQNyCYgEhbBtN5X-y97YzEXpNVM7RLNdtAvhgYMiBysA/viewform'} target={'_blank'}>
+              <Button className={` !px-8`}>Register Now</Button>
+            </Link>
           </div>
         </div>
       </div>
