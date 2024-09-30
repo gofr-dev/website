@@ -132,7 +132,7 @@ export function Layout({ children }) {
     <ErrorBoundary FallbackComponent={ErrorView}>
       <div className="flex w-full flex-col">
         {
-            pathname !== '/goforgofr' && <Header />
+            pathname !== '/hackathon' && <Header />
         }
         {children}
         <FooterUi />
