@@ -2,6 +2,7 @@ import React from 'react'
 import Unlock from '@/images/goforgofr/Text/Unlock.png'
 import Location from '@/images/goforgofr/icon/Location.svg'
 import Links from '@/images/goforgofr/icon/Links.svg'
+import TracksBg from '@/images/goforgofr/TracksBg.webp'
 import Image from 'next/image'
 import { Button } from '@/components/Button'
 import GFGTrackCard from '@/components/goforgofr/GFGTrackCard'
@@ -35,7 +36,15 @@ const GfgTracks = () => {
           backgroundPosition: 'center',
         }}
       >
-        <div className={`flex w-full flex-col items-center justify-center`}>
+          <Image
+              src={TracksBg}
+              alt={'Tracks'}
+              width={1080}
+              height={1080}
+              className={`absolute left-0 w-[100vw] h-full  z-0 bg-cover object-cover`}
+          />
+
+        <div className={`flex w-full flex-col items-center justify-center z-10`}>
           <span
             className={`text-base font-semibold text-red-500 sm:text-xl md:text-2xl`}
           >

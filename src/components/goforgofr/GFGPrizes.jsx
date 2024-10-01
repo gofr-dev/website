@@ -26,6 +26,7 @@ const GfgPrizes = () => {
             width={1080}
             height={1080}
             className={`w-full max-w-[800px] flex-1 rounded-2xl object-cover`}
+            loading={'lazy'}
           />
         </div>
         <div className={`flex w-full flex-col gap-4 sm:w-1/2`}>
@@ -35,6 +36,7 @@ const GfgPrizes = () => {
             width={1080}
             height={1080}
             className={`w-full max-w-[800px] rounded-2xl`}
+            loading={'lazy'}
           />
           <Image
             src={Prize3}
@@ -42,6 +44,7 @@ const GfgPrizes = () => {
             width={1080}
             height={1080}
             className={`w-full max-w-[800px] rounded-2xl`}
+            loading={'lazy'}
           />
           <Image
             src={Prize4}
@@ -49,6 +52,7 @@ const GfgPrizes = () => {
             width={1080}
             height={1080}
             className={`w-full max-w-[800px] rounded-2xl`}
+            loading={'lazy'}
           />
         </div>
       </div>
