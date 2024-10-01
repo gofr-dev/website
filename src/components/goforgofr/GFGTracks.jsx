@@ -6,6 +6,7 @@ import TracksBg from '@/images/goforgofr/TracksBg.webp'
 import Image from 'next/image'
 import { Button } from '@/components/Button'
 import GFGTrackCard from '@/components/goforgofr/GFGTrackCard'
+import Link from 'next/link'
 
 const GfgTracks = () => {
   const tracks = [
@@ -36,15 +37,17 @@ const GfgTracks = () => {
           backgroundPosition: 'center',
         }}
       >
-          <Image
-              src={TracksBg}
-              alt={'Tracks'}
-              width={1080}
-              height={1080}
-              className={`absolute left-0 w-[100vw] h-full  z-0 bg-cover object-cover`}
-          />
+        <Image
+          src={TracksBg}
+          alt={'Tracks'}
+          width={1080}
+          height={1080}
+          className={`absolute left-0 z-0 h-full  w-[100vw] bg-cover object-cover`}
+        />
 
-        <div className={`flex w-full flex-col items-center justify-center z-10`}>
+        <div
+          className={`z-10 flex w-full flex-col items-center justify-center`}
+        >
           <span
             className={`text-base font-semibold text-red-500 sm:text-xl md:text-2xl`}
           >
@@ -67,7 +70,12 @@ const GfgTracks = () => {
             />
             ZopSmart , Bengaluru
           </span>
-          <Button className={`mt-5 !px-10`}>View on map</Button>
+          <Link
+            href={`https://maps.app.goo.gl/N8GdxnioYtzBqVkc7`}
+            target={'_blank'}
+          >
+            <Button className={`mt-5 !px-10`}>View on map</Button>
+          </Link>
         </div>
       </div>
       <div className={`hidden justify-center md:flex`}>
