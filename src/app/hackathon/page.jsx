@@ -14,7 +14,7 @@ const Page = () => {
   return (
     <>
       <link href="https://fonts.cdnfonts.com/css/impact" rel="stylesheet" />
-      <div className={`flex flex-col gap-4`}>
+      <div className={`flex flex-col gap-4 overflow-hidden`}>
         <GFGHeader />
 
         <GFGHero/>
