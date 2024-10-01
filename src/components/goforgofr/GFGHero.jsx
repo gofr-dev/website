@@ -27,8 +27,6 @@ const GfgHero = () => {
           alt=""
           width={530}
           height={530}
-          unoptimized
-          priority
       />
 
         <Image
@@ -37,8 +35,6 @@ const GfgHero = () => {
             alt=""
             width={530}
             height={530}
-            unoptimized
-            priority
         />
       <div className={`flex w-full max-w-[300px] md:max-w-full md:w-1/2 justify-center flex-col`}>
         <div className={`flex flex-col gap-4 py-10 z-20`}>

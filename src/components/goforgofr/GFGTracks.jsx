@@ -30,12 +30,6 @@ const GfgTracks = () => {
     <div id={'Tracks'}>
       <div
         className={`relative mt-[120px] flex min-h-[500px] flex-col items-center justify-center px-10 lg:px-20`}
-        style={{
-          backgroundImage: `url("/goforgofr/TracksBg.webp")`,
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-        }}
       >
         <Image
           src={TracksBg}
