@@ -33,7 +33,7 @@ const GfgHeader = () => {
           href="/"
         >
           <span className="italic text-sky-400">Go</span>
-          <span className="not-italic text-slate-700 dark:text-white">Fr</span>
+          <span className="not-italic text-white">Fr</span>
         </a>
 
         <div
