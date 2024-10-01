@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="24px" viewBox="0 0 20 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 14</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#14B4EA" offset="0%"></stop>
+            <stop stop-color="#7E8DF8" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="HACKATONS" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="hackathon-new" transform="translate(-499, -1367)">
+            <g id="Group-42" transform="translate(384, 1109)">
+                <g id="Group-41" transform="translate(115, 258)">
+                    <g id="Group-14" transform="translate(0, 0)">
+                        <path d="M19.8392857,9.57272719 C19.8392857,17.0181818 9.91964286,23.4 9.91964286,23.4 C9.91964286,23.4 0,17.0181818 0,9.57272719 C0,4.28585592 4.44117544,0 9.91964286,0 C15.3981103,0 19.8392857,4.28585592 19.8392857,9.57272719 L19.8392857,9.57272719 Z" id="Path" fill="url(#linearGradient-1)"></path>
+                        <ellipse id="Oval" stroke="#0F172B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" cx="9.91964286" cy="9.57272719" rx="3.30654762" ry="3.19090911"></ellipse>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
