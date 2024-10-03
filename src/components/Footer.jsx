@@ -63,6 +63,7 @@ function FooterUi() {
             const { Icon, Link: link } = item
             return (
               <Link
+                  key={link}
                 href={link}
                 className="text-gray-400 hover:text-gray-500"
                 target="_blank"

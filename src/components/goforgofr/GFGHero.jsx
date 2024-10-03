@@ -6,6 +6,8 @@ import Hackathon from '@/images/goforgofr/Hackathon.svg'
 import HeroSvg from '@/images/goforgofr/HeroSvg.svg'
 import Image from "next/image";
 import Link from "next/link";
+import {HeroBackground} from "@/components/HeroBackground";
+import blurCyanImage from "@/images/blur-cyan.png";
 
 const GfgHero = () => {
   const gradientText = {
@@ -17,9 +19,25 @@ const GfgHero = () => {
   }
 
   return (
-    <div className={`flex items-center justify-center md:my-20 px-10 md:px-14 md:pl-20 flex-col-reverse md:flex-row`}>
+    <div className={`flex items-center justify-center md:py-20 px-10 md:px-14 md:pl-20 flex-col-reverse md:flex-row relative`}>
+      <HeroBackground className="absolute right-0 translate-x-1/2 top-1/2 -translate-y-1/2 lg:translate-y-[-60%] z-0 opacity-30" />
+      <Image
+          className="absolute top-[-100px] left-0 opacity-50 z-0"
+          src={blurCyanImage}
+          alt=""
+          width={530}
+          height={530}
+      />
+
+        <Image
+            className="absolute -right-2 -top-64 opacity-50 z-0"
+            src={blurCyanImage}
+            alt=""
+            width={530}
+            height={530}
+        />
       <div className={`flex w-full max-w-[300px] md:max-w-full md:w-1/2 justify-center flex-col`}>
-        <div className={`flex flex-col gap-4 py-10`}>
+        <div className={`flex flex-col gap-4 py-10 z-20`}>
           <div className={`text-6xl font-semibold`}>
             <Image src={GO_FOR_GOFr} alt={"Go for GoFr"} className={`max-w-[400px] w-full`} />
           </div>
@@ -38,7 +56,7 @@ const GfgHero = () => {
       </div>
 
       <div className={`flex w-full max-w-[300px] md:max-w-full md:w-1/2 items-center justify-end`}>
-        <Image src={HeroSvg} alt={"Go for GoFr"} width={50} height={50} className={`w-full max-w-[500px] `} />
+        <Image src={HeroSvg} alt={"Go for GoFr"} width={50} height={50} className={`z-10 w-full max-w-[500px] `} />
       </div>
     </div>
   )

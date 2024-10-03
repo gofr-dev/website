@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { GitHubIcon } from '@/components/Layout'
@@ -25,7 +27,7 @@ const GfgHeader = () => {
   }, [])
 
   return (
-    <div className={`flex w-full items-center justify-between p-4`}>
+    <div className={`flex w-full items-center justify-between p-4 z-10`}>
       <div className={`flex items-center gap-4`}>
         <a
           aria-label="Home page"
@@ -33,16 +35,16 @@ const GfgHeader = () => {
           href="/"
         >
           <span className="italic text-sky-400">Go</span>
-          <span className="not-italic text-slate-700 dark:text-white">Fr</span>
+          <span className="not-italic text-white">Fr</span>
         </a>
 
         <div
-          className={`ml-16 hidden items-center gap-4 font-semibold md:flex md:gap-16`}
+          className={`ml-16 hidden items-center gap-4 font-semibold md:flex md:gap-16 text-gray-400`}
         >
-          <a href={'#Tracks'}>Tracks</a>
-          <a href={'#Schedule'}>Schedule</a>
-          <a href={'#Prizes'}>Prizes</a>
-          <a href={'#Faq'}>Faq</a>
+          <a className={`hover:text-white transition-all`} href={'#Tracks'}>Tracks</a>
+          <a className={`hover:text-white transition-all`} href={'#Schedule'}>Schedule</a>
+          <a className={`hover:text-white transition-all`} href={'#Prizes'}>Prizes</a>
+          <a className={`hover:text-white transition-all`} href={'#Faq'}>Faq</a>
         </div>
       </div>
 

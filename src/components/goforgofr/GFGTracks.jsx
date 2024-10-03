@@ -2,9 +2,11 @@ import React from 'react'
 import Unlock from '@/images/goforgofr/Text/Unlock.png'
 import Location from '@/images/goforgofr/icon/Location.svg'
 import Links from '@/images/goforgofr/icon/Links.svg'
+import TracksBg from '@/images/goforgofr/TracksBg.webp'
 import Image from 'next/image'
 import { Button } from '@/components/Button'
 import GFGTrackCard from '@/components/goforgofr/GFGTrackCard'
+import Link from 'next/link'
 
 const GfgTracks = () => {
   const tracks = [
@@ -28,14 +30,18 @@ const GfgTracks = () => {
     <div id={'Tracks'}>
       <div
         className={`relative mt-[120px] flex min-h-[500px] flex-col items-center justify-center px-10 lg:px-20`}
-        style={{
-          backgroundImage: `url("/goforgofr/TracksBg.webp")`,
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-        }}
       >
-        <div className={`flex w-full flex-col items-center justify-center`}>
+        <Image
+          src={TracksBg}
+          alt={'Tracks'}
+          width={1080}
+          height={1080}
+          className={`absolute left-0 z-0 h-full  w-[100vw] bg-cover object-cover`}
+        />
+
+        <div
+          className={`z-10 flex w-full flex-col items-center justify-center`}
+        >
           <span
             className={`text-base font-semibold text-red-500 sm:text-xl md:text-2xl`}
           >
@@ -58,7 +64,12 @@ const GfgTracks = () => {
             />
             ZopSmart , Bengaluru
           </span>
-          <Button className={`mt-5 !px-10`}>View on map</Button>
+          <Link
+            href={`https://maps.app.goo.gl/N8GdxnioYtzBqVkc7`}
+            target={'_blank'}
+          >
+            <Button className={`mt-5 !px-10`}>View on map</Button>
+          </Link>
         </div>
       </div>
       <div className={`hidden justify-center md:flex`}>

@@ -24,7 +24,6 @@ const lexend = localFont({
 
 export const metadata = {
   title: {
-    template: '%s - Docs',
     default: 'GoFr - An opinionated Go Framework',
   },
   description: 'For accelerated microservice development',
@@ -45,7 +44,7 @@ export const metadata = {
     'fiber router',
   ],
   other: {
-    'web-version': 'v0.4.3',
+    'web-version': 'v0.5.1',
   },
 }
 
