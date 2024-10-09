@@ -52,6 +52,7 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <head>
+        <meta name="google-site-verification" content="MVkGpVWwO1qPJIoXAKXQs5b6oKwxLAMLWtDDMeD23hE" />
         <meta
           name="google-site-verification"
           content="9TFTpJ19XHm0dVVKTF5l6OTMLcahEn0M3aZFZ14gRFI"
