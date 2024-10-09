@@ -119,12 +119,12 @@ export function Hero() {
                 priority
               />
               <div className="relative text-center xl:text-left">
-                <p className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
+                <h1 className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
                   An Opinionated Go Framework
-                </p>
-                <p className="mt-3 text-2xl tracking-tight text-slate-400">
+                </h1>
+                <h2 className="mt-3 text-2xl tracking-tight text-slate-400">
                   For accelerated microservice development
-                </p>
+                </h2>
                 <div className="mt-9 flex justify-center gap-4 xl:justify-start">
                   <Link
                     className="rounded-full bg-sky-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
@@ -150,9 +150,7 @@ export function Hero() {
                 <div
                   className={`flex flex-wrap justify-center gap-x-1 pt-5 text-sm text-slate-400 xl:justify-start`}
                 >
-                  <span className={`opacity-50`}>
-                    Want to evaluate and adopt GoFr at your org?
-                  </span>
+                  <span>Want to evaluate and adopt GoFr at your org?</span>
                   <Link
                     href={
                       'https://calendly.com/aryan-mehrotra-gofr/30min?month=2024-10'

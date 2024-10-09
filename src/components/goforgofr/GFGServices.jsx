@@ -1,38 +1,31 @@
 import React from 'react';
 
-import Microservice from "@/images/goforgofr/icon/MicroService.png"
-import CloudNativeApp from "@/images/goforgofr/icon/CloudNativeApp.png"
-import DApps from "@/images/goforgofr/icon/DApps.png"
-import BlockChain from "@/images/goforgofr/icon/BlockChain.png"
-import Analytics from "@/images/goforgofr/icon/Analytics.png"
-import GenAI from "@/images/goforgofr/icon/GenAI.png"
-
 import Image from "next/image";
 
 const GfgServices = () => {
     const icons = [
         {
-            icon : Microservice,
+            icon : '/img/hackathon/icon/MicroService.png',
             label: "Micro Services",
         },
         {
-            icon : CloudNativeApp,
+            icon : '/img/hackathon/icon/CloudNativeApp.png',
             label: "Cloud Native Applications",
         },
         {
-            icon : Analytics,
+            icon : '/img/hackathon/icon/Analytics.png',
             label: "Analytics",
         },
         {
-            icon : GenAI,
+            icon : '/img/hackathon/icon/GenAI.png',
             label: "Gen AI",
         },
         {
-            icon : DApps,
+            icon : '/img/hackathon/icon/DApps.png',
             label: "D Apps",
         },
         {
-            icon : BlockChain,
+            icon : '/img/hackathon/icon/BlockChain.png',
             label: "Blockchain",
         }
     ]
@@ -41,7 +34,7 @@ const GfgServices = () => {
             {
                 icons.map((icon) => (
                     <div key={icon.label} className={`flex flex-col items-center gap-2 text-xs w-[80px]`}>
-                        <Image src={icon.icon} alt={icon.label} width={50} height={50} className={`aspect-square w-[70px]`} loading={'eager'} />
+                        <img src={icon.icon} alt={icon.label} className={`aspect-square w-[70px]`} loading={'eager'} />
                         <span className={`max-w-[100px] text-center`}>{icon.label}</span>
                     </div>
                 ))

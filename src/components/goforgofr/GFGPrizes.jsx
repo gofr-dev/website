@@ -1,10 +1,6 @@
 import React from 'react'
 
 import Prizes from '@/images/goforgofr/Text/PRIZES.svg'
-import Prize1 from '@/images/goforgofr/Prize1.webp'
-import Prize2 from '@/images/goforgofr/Prize2.webp'
-import Prize3 from '@/images/goforgofr/Prize3.webp'
-import Prize4 from '@/images/goforgofr/Prize4.webp'
 import Image from 'next/image'
 
 const GfgPrizes = () => {
@@ -20,39 +16,30 @@ const GfgPrizes = () => {
         className={`flex flex-col items-center justify-center gap-4 sm:flex-row sm:items-stretch`}
       >
         <div className={`flex w-full justify-end sm:w-1/2`}>
-          <Image
-            src={Prize1}
+          <img
+            src={'/img/hackathon/Prize1.webp'}
             alt={'Prize1'}
-            width={1080}
-            height={1080}
             className={`w-full max-w-[800px] flex-1 rounded-2xl object-cover`}
-            loading={'lazy'}
+            loading={'eager'}
           />
         </div>
         <div className={`flex w-full flex-col gap-4 sm:w-1/2`}>
-          <Image
-            src={Prize2}
+          <img
+            src={'/img/hackathon/Prize2.webp'}
             alt={'Prize1'}
-            width={1080}
-            height={1080}
             className={`w-full max-w-[800px] rounded-2xl`}
-            loading={'lazy'}
+            loading={'eager'}
           />
-          <Image
-            src={Prize3}
+          <img
+            src={'/img/hackathon/Prize3.webp'}
             alt={'Prize1'}
-            width={1080}
-            height={1080}
             className={`w-full max-w-[800px] rounded-2xl`}
-            loading={'lazy'}
+            loading={'eager'}
           />
-          <Image
-            src={Prize4}
+          <img
+            src={'/img/hackathon/Prize4.webp'}
             alt={'Prize1'}
-            width={1080}
-            height={1080}
             className={`w-full max-w-[800px] rounded-2xl`}
-            loading={'lazy'}
           />
         </div>
       </div>

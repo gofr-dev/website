@@ -23,10 +23,6 @@ const lexend = localFont({
 })
 
 export const metadata = {
-  title: {
-    default: 'GoFr - An opinionated Go Framework',
-  },
-  description: 'For accelerated microservice development',
   metadataBase: new URL('https://gofr.dev'),
   keywords: [
     'gofr',
@@ -70,6 +66,11 @@ export default function RootLayout({ children }) {
         ></meta>
         <meta property="og:url" content="https://gofr.dev/"></meta>
         <meta property="og:type" content="website"></meta>
+        <title>GoFr - An opinionated Go Framework</title>
+        <meta
+          name="description"
+          content="For accelerated microservice development"
+        ></meta>
 
         {/* <script
           async

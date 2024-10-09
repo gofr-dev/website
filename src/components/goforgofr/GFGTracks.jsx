@@ -2,7 +2,6 @@ import React from 'react'
 import Unlock from '@/images/goforgofr/Text/Unlock.png'
 import Location from '@/images/goforgofr/icon/Location.svg'
 import Links from '@/images/goforgofr/icon/Links.svg'
-import TracksBg from '@/images/goforgofr/TracksBg.webp'
 import Image from 'next/image'
 import { Button } from '@/components/Button'
 import GFGTrackCard from '@/components/goforgofr/GFGTrackCard'
@@ -31,11 +30,9 @@ const GfgTracks = () => {
       <div
         className={`relative mt-[120px] flex min-h-[500px] flex-col items-center justify-center px-10 lg:px-20`}
       >
-        <Image
-          src={TracksBg}
+        <img
+          src={'/img/hackathon/TracksBg.webp'}
           alt={'Tracks'}
-          width={1080}
-          height={1080}
           className={`absolute left-0 z-0 h-full  w-[100vw] bg-cover object-cover`}
         />
 
