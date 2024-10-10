@@ -18,7 +18,10 @@ export function DocsHeader({ title }) {
   return (
     <header className="mb-9 space-y-1">
       <title>{section.title + ' | ' + link?.title || ''}</title>
-      <meta name="description" content={section?.desc || ''}></meta>
+      <meta
+        name="description"
+        content={link?.desc || section?.desc || 'Quick Start Guide with Gofr'}
+      ></meta>
       {section && (
         <p className="font-display text-sm font-medium text-sky-500">
           {section.title}
