@@ -22,28 +22,6 @@ const lexend = localFont({
   variable: '--font-lexend',
 })
 
-export const metadata = {
-  metadataBase: new URL('https://gofr.dev'),
-  keywords: [
-    'gofr',
-    'go framework',
-    'golang framework',
-    'golang web framework',
-    'http services',
-    'gin gonic',
-    'go fiber',
-    'fiber',
-    'fiber app',
-    'fiber logs',
-    'go recover',
-    'fiber set',
-    'fiber router',
-  ],
-  other: {
-    'web-version': 'v0.5.1',
-  },
-}
-
 export default function RootLayout({ children }) {
   return (
     <html
@@ -67,11 +45,6 @@ export default function RootLayout({ children }) {
         ></meta>
         <meta property="og:url" content="https://gofr.dev/"></meta>
         <meta property="og:type" content="website"></meta>
-        <title>GoFr - An opinionated Go Framework</title>
-        <meta
-          name="description"
-          content="For accelerated microservice development"
-        ></meta>
 
         {/* <script
           async
