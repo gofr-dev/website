@@ -29,8 +29,7 @@ const GfgFaq = () => {
     return (
     <div className={`flex flex-col my-10 px-10 md:px-20 gap-4`} id={`Faq`}>
       <span
-        className={`text-[66px] font-semibold tracking-wider text-sky-400`}
-        style={{ fontFamily: 'Impact, sans-serif' }}
+        className={`text-[66px] font-semibold tracking-wider bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text text-transparent`}
       >
         FAQ
       </span>
