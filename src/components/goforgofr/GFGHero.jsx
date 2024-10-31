@@ -36,7 +36,7 @@ const GfgHero = () => {
         height={530}
       />
       <div
-        className={`flex w-full max-w-[300px] flex-col justify-center md:w-1/2 md:max-w-full`}
+        className={`flex w-full max-w-[300px] flex-col items-center justify-center md:w-1/2 md:max-w-full`}
       >
         <div className={`z-20 flex flex-col gap-4 py-10`}>
           <div className={`text-6xl font-semibold`}>
@@ -70,7 +70,7 @@ const GfgHero = () => {
       </div>
 
       <div
-        className={`flex w-full max-w-[300px] items-center justify-end md:w-1/2 md:max-w-full`}
+        className={`flex w-full max-w-[300px] items-center justify-center md:w-1/2 md:max-w-full`}
       >
         <Image
           src={HeroSvg}
