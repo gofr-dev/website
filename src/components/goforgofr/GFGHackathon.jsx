@@ -16,8 +16,8 @@ const GFGHackathon = () => {
   return (
     <div className={`flex flex-col px-10 pt-20 md:px-20`} id={"Schedule"}>
       <div className={`flex flex-col gap-4`}>
-        <h1 className='text-7xl text-left max-w-2xl font-extrabold bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text text-transparent'>24 hrs</h1>
-        <h1 className='text-7xl text-left max-w-2xl font-extrabold bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text text-transparent'>HACKATHON</h1>
+        <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-left max-w-2xl font-extrabold bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text text-transparent'>24 hrs</h1>
+        <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-left max-w-2xl font-extrabold bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text text-transparent'>HACKATHON</h1>
       </div>
 
       <div className={`mt-10 text-gray-400`}>

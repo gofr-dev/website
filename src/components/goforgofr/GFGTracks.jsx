@@ -43,7 +43,7 @@ const GfgTracks = () => {
           >
             23-24 November , 2024
           </span>
-          <h1 className='text-7xl text-center max-w-2xl font-extrabold bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text text-transparent'>UNLOCK THE TRACKS</h1>
+          <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-center max-w-2xl font-extrabold bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text text-transparent'>UNLOCK THE TRACKS</h1>
           <span className={`mt-5 flex gap-4 text-base font-semibold`}>
             <Image
               src={Location}
