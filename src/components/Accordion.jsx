@@ -42,7 +42,7 @@ const AccordionCard = ({ data }) => {
 
   return (
     <div
-      className={`relative flex flex-col gap-1 overflow-hidden rounded-md p-2 transition-all duration-500 cursor-pointer`}
+      className={`relative flex flex-col gap-1 overflow-hidden rounded-md p-2 transition-all duration-500 cursor-pointer group border border-slate-200 dark:border-slate-800`}
       style={{
         height: titleHeight + height,
       }}
@@ -50,11 +50,13 @@ const AccordionCard = ({ data }) => {
         setIsOpen((prevState) => !prevState)
       }}
     >
+      <div className="absolute inset-0 rounded-md border-2 border-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sky.50)),var(--quick-links-hover-bg,theme(colors.sky.50)))_padding-box,linear-gradient(to_top,theme(colors.indigo.400),theme(colors.cyan.400),theme(colors.sky.500))_border-box] dark:[--quick-links-hover-bg:theme(colors.slate.800)] pointer-events-none" style={{ clipPath: 'inset(0 round var(--rounded-md))' }}  />
       <div
-        className="absolute inset-0 rounded-md"
+        className="absolute inset-0 rounded-md transition-opacity duration-300"
         style={{
-          background:
-            'linear-gradient(136deg, rgba(56,189,248,1) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,1) 50%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.0) 60%, rgba(56,189,248,1) 100%)',
+          background: isOpen
+            ? 'linear-gradient(136deg, rgba(56, 189, 248, 1) 0%, rgb(129, 140, 248,1)50%, rgba(56, 189, 248, 1) 100%)':
+            'transparent'
         }}
       />
 
