@@ -10,6 +10,7 @@ import { Search } from '@/components/Search'
 import { formatNumber } from '@/lib/common'
 import { ErrorBoundary } from './BugsnagWrapper'
 import FooterUi from "@/components/Footer";
+import { HackathonLinkButton } from './goforgofr/HackathonLinkButton'
 
 export function GitHubIcon(props) {
   return (
@@ -128,13 +129,30 @@ const ErrorView = () => (
 export function Layout({ children }) {
   const pathname = usePathname()
   console.log(pathname)
+
+  const isHackathon = pathname === '/hackathon'
+
   return (
     <ErrorBoundary FallbackComponent={ErrorView}>
       <div className="flex w-full flex-col">
-        {
-            pathname !== '/hackathon' && <Header />
-        }
-        {children}
+        {!isHackathon && (
+          <>
+            <div className="fixed top-0 left-0 right-0 z-50">
+              <HackathonLinkButton />
+            </div>
+            <div className="fixed top-10 left-0 right-0 z-40">
+              <Header />
+            </div>
+            <div className="pt-24">
+              {children}
+            </div>
+          </>
+        )}
+        {isHackathon && (
+          <>
+            {children}
+          </>
+        )}
         <FooterUi />
       </div>
     </ErrorBoundary>
