@@ -1,7 +1,5 @@
 import React from 'react'
 
-import Time from '@/images/goforgofr/Text/24hrs.svg'
-import HACKATHON from '@/images/goforgofr/Text/HACKATHON.svg'
 import Tick from '@/images/goforgofr/icon/Tick.svg'
 
 import Image from 'next/image'
@@ -18,8 +16,8 @@ const GFGHackathon = () => {
   return (
     <div className={`flex flex-col px-10 pt-20 md:px-20`} id={"Schedule"}>
       <div className={`flex flex-col gap-4`}>
-        <Image src={Time} alt={'Time'} width={200} height={100} />
-        <Image src={HACKATHON} alt={'Time'} width={400} height={100} />
+        <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-left max-w-2xl font-extrabold bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text text-transparent'>24 hrs</h1>
+        <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-left max-w-2xl font-extrabold bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text text-transparent'>HACKATHON</h1>
       </div>
 
       <div className={`mt-10 text-gray-400`}>
@@ -116,7 +114,7 @@ const GFGHackathon = () => {
             }}
           ></div>
           <div
-            className={`flex w-full flex-col items-end gap-4 md:pl-10 lg:w-1/2 lg:pl-0 lg:pr-10 lg:pt-20 `}
+            className={`flex w-full flex-col gap-4 md:pl-10 lg:w-1/2 lg:pl-0 lg:pr-10 lg:pt-20 `}
           >
             <div className={`flex gap-4`}>
               <Image src={Tick} alt={'TICK'} />
