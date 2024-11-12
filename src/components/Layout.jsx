@@ -135,7 +135,7 @@ export function Layout({ children }) {
   return (
     <ErrorBoundary FallbackComponent={ErrorView}>
       <div className="flex w-full flex-col">
-      {!isHackathon && (
+        {!isHackathon && (
           <>
             <div className="fixed top-0 left-0 right-0 z-50">
               <HackathonLinkButton />
