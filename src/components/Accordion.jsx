@@ -56,7 +56,7 @@ const AccordionCard = ({ data }) => {
         style={{
           background: isOpen
             ? 'linear-gradient(136deg, rgba(56, 189, 248, 1) 0%, rgb(129, 140, 248,1)50%, rgba(56, 189, 248, 1) 100%)':
-            'transparent'
+            'transparent'        
         }}
       />
 
