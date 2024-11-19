@@ -10,7 +10,7 @@ export const HackathonLinkButton = () => {
     }
 
     return (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-black py-1 px-4">
+        <div className="sm:fixed top-0 left-0 right-0 z-50 bg-black py-1 px-4">
             <div className="relative z-30 flex items-center justify-center text-center text-white">
                 <span className="text-sm font-semibold md:text-sm bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text text-transparent">
                     Go for GoFr Hackathon is Live! Participate to win great prizes and goodies!
