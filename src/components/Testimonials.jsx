@@ -40,6 +40,7 @@ export function Testimonials() {
                 width={400}
                 height={400}
                 alt="profile"
+                unoptimized
               />
               <div className="text-base">
                 <div className="font-semibold text-white">
