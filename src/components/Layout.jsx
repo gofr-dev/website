@@ -134,23 +134,20 @@ export function Layout({ children }) {
 
   return (
     <ErrorBoundary FallbackComponent={ErrorView}>
-      <div className="flex w-full flex-col relative">
-        {!isHackathon && (
-          <>
-            <div className="relative sm:fixed sm:top-0 sm:left-0 sm:right-0 z-50">
+      <div className="flex w-full flex-col">
+        {
+            pathname !== '/hackathon' && 
+            <>
+            <div className='relative sm:fixed sm:top-0 sm:left-0 sm:right-0 z-50'>
               <HackathonLinkButton />
             </div>
             <div className="sticky top-0 sm:top-8 left-0 right-0 z-40">
               <Header />
             </div>
-            <div className="pt-24">{children}</div>
-          </>
-        )}
-        {isHackathon && (
-          <>
-            {children}
-          </>
-        )}
+            </>
+            
+        }
+        {children}
         <FooterUi />
       </div>
     </ErrorBoundary>
