@@ -12,6 +12,7 @@ COPY package.json .
 COPY postcss.config.js .
 COPY tailwind.config.js .
 COPY yarn.lock .
+COPY nginix.conf .
 
 
 
