@@ -9,7 +9,7 @@ import { MobileNavigation } from '@/components/MobileNavigation'
 import { Search } from '@/components/Search'
 import { formatNumber } from '@/lib/common'
 import { ErrorBoundary } from './BugsnagWrapper'
-import FooterUi from "@/components/Footer";
+import FooterUi from '@/components/Footer'
 import { HackathonLinkButton } from './goforgofr/HackathonLinkButton'
 
 export function GitHubIcon(props) {
@@ -135,18 +135,16 @@ export function Layout({ children }) {
   return (
     <ErrorBoundary FallbackComponent={ErrorView}>
       <div className="flex w-full flex-col">
-        {
-            pathname !== '/hackathon' && 
-            <>
-            <div className='relative sm:fixed sm:top-0 sm:left-0 sm:right-0 z-50'>
+        {pathname !== '/hackathon' && (
+          <>
+            {/* <div className='relative sm:fixed sm:top-0 sm:left-0 sm:right-0 z-50'>
               <HackathonLinkButton />
-            </div>
-            <div className="sticky top-0 sm:top-8 left-0 right-0 z-40">
+            </div> */}
+            <div className="sticky left-0 right-0 top-0 z-40">
               <Header />
             </div>
-            </>
-            
-        }
+          </>
+        )}
         {children}
         <FooterUi />
       </div>
