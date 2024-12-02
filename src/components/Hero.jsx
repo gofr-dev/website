@@ -85,9 +85,9 @@ const tabs = [
 function TrafficLightsIcon(props) {
   return (
     <svg aria-hidden="true" viewBox="0 0 42 10" fill="none" {...props}>
-      <circle cx="5" cy="5" r="4.5" />
-      <circle cx="21" cy="5" r="4.5" />
-      <circle cx="37" cy="5" r="4.5" />
+      <circle cx="5" cy="5" r="4.5" fill='red'/>
+      <circle cx="21" cy="5" r="4.5" fill='yellow'/>
+      <circle cx="37" cy="5" r="4.5" fill='green'/>
     </svg>
   )
 }
@@ -105,7 +105,7 @@ export function Hero() {
               src={completeGofrLogo}
               alt="gofrLogo"
               height={150}
-              unoptimized
+              unoptimizedtouc
               priority
             />
             <div className="relative z-10">
