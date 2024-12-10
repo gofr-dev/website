@@ -36,7 +36,7 @@ const AnimatedTimelineItem = ({ date, title, description, imageSrc, isLeft }) =>
     return (
         <div
             ref={itemRef}
-            className={`flex flex-col md:flex-row items-center w-full my-8 relative transition-all duration-1000 ease-out ${animationClass}`}
+            className={`flex flex-col md:flex-row items-center w-full mb-60 relative transition-all duration-1000 ease-out ${animationClass}`}
         >
 
             <div
