@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 
 const AnimatedTimelineItem = ({ date, title, description, imageSrc, isLeft }) => {
-    const itemRef = useRef(null); // Using useRef correctly for referencing the DOM element
+    const itemRef = useRef(null);
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -19,12 +19,12 @@ const AnimatedTimelineItem = ({ date, title, description, imageSrc, isLeft }) =>
         );
 
         if (itemRef.current) {
-            observer.observe(itemRef.current); // Observing the ref element for visibility
+            observer.observe(itemRef.current);
         }
 
         return () => {
             if (itemRef.current) {
-                observer.unobserve(itemRef.current); // Cleanup observer
+                observer.unobserve(itemRef.current);
             }
         };
     }, []);
