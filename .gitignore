@@ -2,5 +2,7 @@
 .next
 node_modules
 out
+src/app/docs
+
 
 
