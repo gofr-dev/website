@@ -1,11 +1,12 @@
+"use client"
 import React, { useEffect } from 'react';
 import VerticalTimeline from './VerticalTimeline';
 import events from '../app/events/events.json'
 
 const EventsTimeline = () => {
     useEffect(() => {
-        if (window.innerWidth >= 768) {
-            window.scrollBy(0, 70);
+        if (window?.innerWidth >= 768) {
+            window?.scrollBy(0, 70);
         }
     }, []);
     return (

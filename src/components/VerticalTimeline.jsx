@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import AnimatedTimelineItem from "./AnimatedTimelineItem";
 import Image from "next/image";
 import blurCyanImage from "@/images/blur-cyan.png";
-import TimelineObserver from "react-timeline-animation";
+
+const TimelineObserver = dynamic(() => import("react-timeline-animation"), { ssr: false });
 
 const Timeline = ({ setObserver, customHeight }) => {
     const timelineRef = useRef(null);
@@ -16,7 +18,6 @@ const Timeline = ({ setObserver, customHeight }) => {
             id="timeline"
             ref={timelineRef}
             style={{ height: customHeight }}
-            
             className="absolute left-3 xs:left-0 md:left-1/2 py-8 top-0 w-1 transform md:-translate-x-1/2 md:block hidden transition-all duration-100 ease-in-out"
         />
     );
@@ -66,10 +67,7 @@ const VerticalTimeline = ({ events }) => {
 
             <div className="relative z-10">
                 {events.map((event, index) => (
-                    <div
-                        key={index}
-                        className="timeline-item"
-                    >
+                    <div key={index} className="timeline-item">
                         <AnimatedTimelineItem
                             date={event.date}
                             title={event.title}

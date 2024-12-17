@@ -1,5 +1,4 @@
-'use client'
-import React, {useEffect, useRef, useState} from 'react';
+"use client"
 import Events from "@/components/EventsTimeline";
 
 const EventsTimeline = () => {
