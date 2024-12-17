@@ -1,0 +1,38 @@
+[
+    {
+        "date": "10-02-2020",
+        "title": "GopherCon Africa",
+        "description": "GoFr received an amazing response at GopherCon Africa! We showcased our seamless database integration, HTTP/gRPC support, observability, and WebSockets.",
+        "imageSrc": "https://media.discordapp.net/attachments/1230609009162059836/1301136150156677141/1729836948894.jpeg?ex=67620038&is=6760aeb8&hm=4cbee5de4bec5f526b941db402a3d1607c990054c3cf1853edb4934c70f776ba&=&format=webp&width=2160&height=944"
+    },
+    {
+        "date": "2021",
+        "title": "Open Source India 2024",
+        "description": "At Open Source India in Bengaluru, we kicked off with an amazing response at our booth on 23rd and an interactive Developer’s Meet on Oct 24th. It was a pleasure connecting with everyone at our booth, where demos highlighted GoFr’s innovative approach to writing microservices, making backend development simpler and more efficient.",
+        "imageSrc": "https://media.discordapp.net/attachments/1230609009162059836/1301136149749698650/1729836948365.jpeg?ex=67620038&is=6760aeb8&hm=f43bbf9dacbc631f36dfa7ae4402f61caaddcde1c8e4357236418d11c86d8006&=&format=webp&width=1418&height=1056"
+    },
+    {
+        "date": "2022",
+        "title": "GoFr is on a roll with its workshops!",
+        "description": "Past two months, we’ve hosted workshops at top colleges such as IIT BHU, IIIT Sri City, Thapar University, JIIT Noida, NIT Jalandhar, and NIT Nagpur. At Gravitas in VIT Vellore, we proudly supported the Hack the Hackathon event, where students explored GoFr and contributed innovative ideas to enhance the framework.",
+        "imageSrc": "https://media.discordapp.net/attachments/1230609050899710052/1301491118780973137/WhatsApp_Image_2024-10-30_at_15.47.27.jpeg?ex=6761f94f&is=6760a7cf&hm=4bc52e39b921aeb00e444522fa49744dcbfa9d6fb7e35b1d3b2c167b6b6111d9&=&format=webp&width=1408&height=1056"
+    },
+    {
+        "date": "2020",
+        "title": "GopherCon Africa",
+        "description": "GoFr received an amazing response at GopherCon Africa! We showcased our seamless database integration, HTTP/gRPC support, observability, and WebSockets.",
+        "imageSrc": "https://media.discordapp.net/attachments/1230609009162059836/1301136150156677141/1729836948894.jpeg?ex=67620038&is=6760aeb8&hm=4cbee5de4bec5f526b941db402a3d1607c990054c3cf1853edb4934c70f776ba&=&format=webp&width=2160&height=944"
+    },
+    {
+        "date": "2021",
+        "title": "Open Source India 2024",
+        "description": "At Open Source India in Bengaluru, we kicked off with an amazing response at our booth on 23rd and an interactive Developer’s Meet on Oct 24th. It was a pleasure connecting with everyone at our booth, where demos highlighted GoFr’s innovative approach to writing microservices, making backend development simpler and more efficient.",
+        "imageSrc": "https://media.discordapp.net/attachments/1230609009162059836/1301136149749698650/1729836948365.jpeg?ex=67620038&is=6760aeb8&hm=f43bbf9dacbc631f36dfa7ae4402f61caaddcde1c8e4357236418d11c86d8006&=&format=webp&width=1418&height=1056"
+    },
+    {
+        "date": "2022",
+        "title": "GoFr is on a roll with its workshops!",
+        "description": "Past two months, we’ve hosted workshops at top colleges such as IIT BHU, IIIT Sri City, Thapar University, JIIT Noida, NIT Jalandhar, and NIT Nagpur. At Gravitas in VIT Vellore, we proudly supported the Hack the Hackathon event, where students explored GoFr and contributed innovative ideas to enhance the framework.",
+        "imageSrc": "https://media.discordapp.net/attachments/1230609050899710052/1301491118780973137/WhatsApp_Image_2024-10-30_at_15.47.27.jpeg?ex=6761f94f&is=6760a7cf&hm=4bc52e39b921aeb00e444522fa49744dcbfa9d6fb7e35b1d3b2c167b6b6111d9&=&format=webp&width=1408&height=1056"
+    }
+]

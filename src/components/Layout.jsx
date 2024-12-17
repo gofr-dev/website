@@ -24,6 +24,7 @@ function Header() {
   let [isScrolled, setIsScrolled] = useState(false)
   let pathname = usePathname()
   const isCertificate = pathname.includes('certificate')
+  const isEvents = pathname.includes('events');
   const [githubStars, setGithubStars] = useState(null)
 
   useEffect(() => {
@@ -76,12 +77,13 @@ function Header() {
           </span>
         </Link>
       </div>
-      {!isCertificate && (
+      {!isCertificate && !isEvents && (
         <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
           <Search />
         </div>
       )}
-      <div className="relative flex basis-0 items-center justify-end gap-2 sm:gap-2 md:flex-grow">
+      {isEvents && <div className='relative flex flex-grow basis-0 items-center justify-center sm:block hidden'><h1 className="justify-center items-center text-xl sm:text-3xl md:text-4xl font-bold text-center text-white">Events</h1></div>}
+      <div className="relative flex flex-grow basis-0 items-center justify-end gap-2 sm:gap-3 md:flex-grow">
         <Link
           href="https://github.com/gofr-dev/gofr"
           className="group"
