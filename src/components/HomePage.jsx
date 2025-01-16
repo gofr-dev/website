@@ -1,4 +1,5 @@
 'use client'
+import CompanyList from './CompanyTrustedList'
 import DBlistComponent from './DBlistComponent'
 import { Hero } from './Hero'
 import { Testimonials } from './Testimonials'
@@ -7,6 +8,7 @@ export function HomePage() {
   return (
     <div className="m-auto w-auto max-w-screen-2xl">
       <Hero />
+      <CompanyList />
       <div className="not-prose my-12 grid grid-cols-1 gap-6 px-4 md:grid-cols-3 lg:px-8 xl:px-12">
         <QuickLink
           title="Battle-Tested at Enterprise Scale"
