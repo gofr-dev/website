@@ -49,7 +49,7 @@ export default function CompanyList() {
         <h2 className="text-center text-lg/8 font-semibold text-white">
           Trusted by {githubStars} Developers at Companies Like:
         </h2>
-        <div className="mt-10 flex flex-wrap justify-center gap-x-0 gap-y-10 sm:max-w-xl lg:mx-0 lg:max-w-none">
+        <div className="mt-10 flex flex-wrap justify-center gap-x-0 gap-y-10 sm:max-w-none lg:mx-0">
           {imageLink.map((item, index) => (
             <div
               key={index}
