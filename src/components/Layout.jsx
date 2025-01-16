@@ -24,7 +24,7 @@ function Header() {
   let [isScrolled, setIsScrolled] = useState(false)
   let pathname = usePathname()
   const isCertificate = pathname.includes('certificate')
-  const isEvents = pathname.includes('events');
+  const isEvents = pathname.includes('events')
   const [githubStars, setGithubStars] = useState(null)
 
   useEffect(() => {
@@ -37,7 +37,11 @@ function Header() {
           throw new Error('Network response was not ok')
         }
         const data = await response.json()
-        if (data?.watchers) setGithubStars(data?.watchers)
+
+        if (data?.watchers) {
+          setGithubStars(data.watchers)
+          localStorage.setItem('githubStars', data.watchers)
+        }
       } catch (error) {
         console.error('Error fetching the repo data:', error)
       }
@@ -82,7 +86,13 @@ function Header() {
           <Search />
         </div>
       )}
-      {isEvents && <div className='relative flex flex-grow basis-0 items-center justify-center sm:block hidden'><h1 className="justify-center items-center text-xl sm:text-3xl md:text-4xl font-bold text-center text-white">Events</h1></div>}
+      {isEvents && (
+        <div className="relative flex hidden flex-grow basis-0 items-center justify-center sm:block">
+          <h1 className="items-center justify-center text-center text-xl font-bold text-white sm:text-3xl md:text-4xl">
+            Events
+          </h1>
+        </div>
+      )}
       <div className="relative flex flex-grow basis-0 items-center justify-end gap-2 sm:gap-3 md:flex-grow">
         <Link
           href="https://github.com/gofr-dev/gofr"
