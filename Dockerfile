@@ -6,6 +6,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY src src/.
+COPY utils utils/.
 COPY jsconfig.json .
 COPY next.config.mjs .
 COPY package.json .
