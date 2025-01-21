@@ -18,7 +18,7 @@
     "@headlessui/react": "^1.7.13",
     "@markdoc/markdoc": "0.3.0",
     "@markdoc/next.js": "0.3.1",
-    "@mui/icons-material": "^5.15.13",
+    "@mui/icons-material": "^5.16.13",
     "@mui/material": "^5.15.13",
     "@next/third-parties": "^14.2.5",
     "@sindresorhus/slugify": "^2.1.0",
