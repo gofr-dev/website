@@ -20,14 +20,15 @@ const imageLink = [
     image: company3,
   },
   {
-    image: company6,
-  },
-  {
-    image: company7,
+    image: company10,
   },
   {
     image: company8,
   },
+  {
+    image: company9,
+  },
+
   {
     image: company1,
   },
@@ -37,11 +38,12 @@ const imageLink = [
   {
     image: company5,
   },
+
   {
-    image: company9,
+    image: company6,
   },
   {
-    image: company10,
+    image: company7,
   },
 ]
 
