@@ -1,11 +1,13 @@
 import { formatGitHubStars } from '../../utils'
-import company1 from '@/images/logo1.svg'
-import company2 from '@/images/logo2.svg'
-import company3 from '@/images/logo3.svg'
-import company4 from '@/images/logo4.svg'
-import company5 from '@/images/logo5.svg'
-import company6 from '@/images/logo6.svg'
-import company8 from '@/images/logo8.svg'
+import company1 from '@/images/doceree.svg'
+import company2 from '@/images/americanExpress.svg'
+import company3 from '@/images/ibm.svg'
+import company4 from '@/images/mydbops.svg'
+import company5 from '@/images/guidewire.svg'
+import company6 from '@/images/weave.svg'
+import company8 from '@/images/blinkit.svg'
+import company9 from '@/images/zopsmart.svg'
+import company10 from '@/images/mcafee.svg'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
@@ -17,11 +19,15 @@ const imageLink = [
     image: company3,
   },
   {
-    image: company6,
+    image: company10,
   },
   {
     image: company8,
   },
+  {
+    image: company9,
+  },
+
   {
     image: company1,
   },
@@ -30,6 +36,10 @@ const imageLink = [
   },
   {
     image: company5,
+  },
+
+  {
+    image: company6,
   },
 ]
 
