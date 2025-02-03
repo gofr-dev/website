@@ -5,7 +5,6 @@ import company3 from '@/images/logo3.svg'
 import company4 from '@/images/logo4.svg'
 import company5 from '@/images/logo5.svg'
 import company6 from '@/images/logo6.svg'
-import company7 from '@/images/logo7.svg'
 import company8 from '@/images/logo8.svg'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
@@ -19,9 +18,6 @@ const imageLink = [
   },
   {
     image: company6,
-  },
-  {
-    image: company7,
   },
   {
     image: company8,
