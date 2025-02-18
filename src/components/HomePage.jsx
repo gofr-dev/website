@@ -4,6 +4,7 @@ import DBlistComponent from './DBlistComponent'
 import { Hero } from './Hero'
 import { Testimonials } from './Testimonials'
 import { QuickLink } from '@/components/QuickLinks'
+import Reviews from "@/components/Reviews";
 export function HomePage() {
   return (
     <div className="m-auto w-auto max-w-screen-2xl">
@@ -42,9 +43,10 @@ export function HomePage() {
         />
       </div>
       <DBlistComponent />
-      <div className="mx-4 flex flex-col {{ sm:flex-col xs:flex-col md:flex-row lg:flex-row }}  gap-x-8 overflow-y-auto pb-10 gap-y-16 lg:mx-8 xl:mx-12 xl:gap-x-16">
-        <Testimonials />
-      </div>
+      {/*<div className="mx-4 flex flex-col {{ sm:flex-col xs:flex-col md:flex-row lg:flex-row }}  gap-x-8 overflow-y-auto pb-10 gap-y-16 lg:mx-8 xl:mx-12 xl:gap-x-16">*/}
+      {/*  <Testimonials />*/}
+      {/*</div>*/}
+        <Reviews/>
     </div>
   )
 }
