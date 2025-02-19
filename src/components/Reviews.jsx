@@ -142,7 +142,8 @@ export default function Reviews() {
                                     </div>
                                 </div>
                                 <button
-                                    className="rounded-md bg-slate-200 dark:bg-slate-700 px-4 py-1 text-sm text-slate-900 dark:text-white transition hover:bg-slate-300 dark:hover:bg-slate-600">
+                                    className="rounded-md">
+                                    {/*className="rounded-md bg-slate-200 dark:bg-slate-700 px-4 py-1 text-sm text-slate-900 dark:text-white transition hover:bg-slate-300 dark:hover:bg-slate-600">*/}
                                     {testimonial?.logo ? (
                                             // <Image
                                             //     className="h-6 w-6 object-cover"
