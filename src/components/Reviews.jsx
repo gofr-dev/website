@@ -8,7 +8,7 @@ const testimonials = [
         author: "Praveen Kumar",
         role: "Founder of apnerve labs",
         profile: "https://randomuser.me/api/portraits/men/1.jpg",
-        logo: "https://randomuser.me/api/portraits/men/1.jpg"
+
     },
     {
         quote:
@@ -155,7 +155,7 @@ export default function Reviews() {
                                             // />
                                         <img src={testimonial?.logo} alt="Logo" className="h-6 w-6 object-contain"/>
                                     ) : (
-                                        "Logo"
+                                        ''
                                     )}
                                 </button>
 
