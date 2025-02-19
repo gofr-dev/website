@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import testimonials from '../app/testimonials/testimonials.json'
+import testimonials from 'utils/testimonials.json'
 
 
 export default function Testimonials() {
