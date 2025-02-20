@@ -5,7 +5,7 @@ import testimonials from 'utils/testimonials.json'
 
 export default function Testimonials() {
     return (
-        <div className="mx-10 min-h-screen bg-[#101827]">
+        <div className="mx-10 bg-[#101827]">
             {/*<h2 className="text-center text-lg font-semibold leading-8 text-white mb-10">*/}
             {/*    User Testimonials*/}
             {/*</h2>*/}
