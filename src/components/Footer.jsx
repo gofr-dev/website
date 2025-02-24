@@ -36,7 +36,7 @@ const footerLinks = [
   // { title: 'Releases', link: '/releases' },
   { title: 'Documentation', link: '/docs' },
   { title: 'Blogs', link: 'https://medium.com/gofr', target_blank: true },
-  { title: 'Events', link: '/events' }
+  { title: 'Events', link: '/events' },
 ]
 
 function FooterUi() {
@@ -45,7 +45,7 @@ function FooterUi() {
       <div className="mx-auto max-w-screen-2xl overflow-hidden px-6 py-4 lg:px-8">
         <nav
           aria-label="Footer"
-          className="-mb-6 flex gap-5 justify-center sm:space-x-12"
+          className="relative z-10 -mb-6 flex justify-center gap-5 sm:space-x-12"
         >
           {footerLinks.map((item) => (
             <div key={item.title} className="pb-6">
@@ -64,7 +64,7 @@ function FooterUi() {
             const { Icon, Link: link } = item
             return (
               <Link
-                  key={link}
+                key={link}
                 href={link}
                 className="text-gray-400 hover:text-gray-500"
                 target="_blank"
