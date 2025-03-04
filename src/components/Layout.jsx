@@ -101,9 +101,9 @@ function Header() {
           aria-label="GitHub"
         >
           <div className="group relative rounded-xl border border-slate-200 dark:border-slate-800">
-            <div className="absolute -inset-px rounded-xl border-2 border-transparent opacity-10 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sky.50)),var(--quick-links-hover-bg,theme(colors.sky.50)))_padding-box,linear-gradient(to_top,theme(colors.indigo.400),theme(colors.cyan.400),theme(colors.sky.500))_border-box] group-hover:opacity-100 dark:[--quick-links-hover-bg:theme(colors.slate.800)]" />
-            <div className="relative flex items-center justify-center space-x-1 overflow-hidden rounded-xl px-2 py-1">
-              <GitHubIcon className="mr-1 h-5 w-5 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
+            <div className="absolute -z-10 transition-all duration-300 -inset-px rounded-xl border-2 border-transparent opacity-10 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sky.50)),var(--quick-links-hover-bg,theme(colors.sky.50)))_padding-box,linear-gradient(to_top,theme(colors.indigo.400),theme(colors.cyan.400),theme(colors.sky.500))_border-box] group-hover:opacity-100 dark:[--quick-links-hover-bg:theme(colors.slate.800)]" />
+            <div className="flex items-center justify-center space-x-1 overflow-hidden rounded-xl px-2 py-1">
+              <GitHubIcon className="mr-1 h-5 w-5 transition-colors duration-300 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
 
               {githubStars && (
                 <div className="animate-fadeIn flex items-center gap-1">

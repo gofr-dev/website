@@ -127,13 +127,13 @@ export function Hero() {
                 </h2>
                 <div className="mt-9 flex justify-center gap-4 xl:justify-start">
                   <Link
-                    className="rounded-full bg-sky-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
+                    className="rounded-full transition-colors duration-300 bg-sky-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
                     href="/docs"
                   >
                     Get Started
                   </Link>
                   <Link
-                    className="flex items-center gap-1 rounded-full bg-white bg-opacity-[0.08] px-4 py-1 text-sm font-semibold text-white transition-all duration-200 hover:bg-opacity-[.15]"
+                    className="flex items-center gap-1 rounded-full bg-white bg-opacity-[0.08] px-4 py-1 text-sm font-semibold text-white transition-all duration-300 hover:bg-opacity-[.15]"
                     href="https://github.com/gofr-dev/gofr"
                     target="_blank"
                   >
@@ -219,7 +219,7 @@ export function Hero() {
                     ))}
                   </div>
                   <div
-                    className={`mt-6 flex max-h-[315px] items-start px-1 px-4 text-sm ${
+                    className={`mt-6 flex max-h-[315px] items-start px-4 text-sm ${
                       activeTab === 'main_test.go' ? 'overflow-auto' : ''
                     }`}
                   >
