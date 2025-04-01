@@ -10,7 +10,7 @@
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
-    "@algolia/autocomplete-core": "^1.9.2",
+    "@algolia/autocomplete-core": "^1.17.8",
     "@bugsnag/js": "^8.0.0",
     "@bugsnag/plugin-react": "^8.0.0",
     "@emotion/react": "^11.11.4",
