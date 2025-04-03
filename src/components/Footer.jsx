@@ -52,7 +52,7 @@ function FooterUi() {
               <Link
                 href={item.link}
                 target={item?.target_blank ? '_blank' : '_self'}
-                className="text-sm leading-6 text-slate-400 hover:text-slate-300"
+                className="text-sm leading-6 text-slate-400 transition-colors duration-300 hover:text-slate-300"
               >
                 {item.title}
               </Link>
@@ -66,11 +66,11 @@ function FooterUi() {
               <Link
                 key={link}
                 href={link}
-                className="text-gray-400 hover:text-gray-500"
+                className="text-gray-400 transition-colors duration-300 hover:text-gray-500"
                 target="_blank"
                 aria-label="social media link"
               >
-                <Icon className="h-6 w-6 fill-slate-400 hover:fill-slate-300 dark:hover:fill-slate-300"></Icon>
+                <Icon className="h-6 w-6 fill-slate-400 transition-colors duration-300 hover:fill-slate-300 dark:hover:fill-slate-300"></Icon>
               </Link>
             )
           })}
