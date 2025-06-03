@@ -149,10 +149,10 @@ export function Layout({ children }) {
       <div className="flex w-full flex-col">
         {pathname !== '/hackathon' && (
           <>
-            {/* <div className='relative sm:fixed sm:top-0 sm:left-0 sm:right-0 z-50'>
+            <div className="relative z-50 sm:fixed sm:left-0 sm:right-0 sm:top-0">
               <HackathonLinkButton />
-            </div> */}
-            <div className="sticky left-0 right-0 top-0 z-40">
+            </div>
+            <div className="sticky left-0 right-0 top-0 z-40 sm:top-8">
               <Header />
             </div>
           </>
