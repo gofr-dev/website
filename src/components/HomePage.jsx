@@ -44,21 +44,19 @@ export function HomePage() {
           description="GoFr catches panics and automatically recovers to maintain continuous availability of your server."
           icon="crash"
         />
-          <Image
-              className="absolute opacity-25 mt-80"
-              src={blurCyanImage}
-              alt=""
-              width={'h-44'}
-              unoptimized
-              priority
-          />
       </div>
+      <Image
+        className="absolute -mt-80 opacity-25"
+        src={blurCyanImage}
+        unoptimized
+        priority
+      />
 
       <DBlistComponent />
       {/*<div className="mx-4 flex flex-col {{ sm:flex-col xs:flex-col md:flex-row lg:flex-row }}  gap-x-8 overflow-y-auto pb-10 gap-y-16 lg:mx-8 xl:mx-12 xl:gap-x-16">*/}
       {/*  <Testimonials />*/}
       {/*</div>*/}
-        <Testimonials/>
+      <Testimonials />
     </div>
   )
 }
