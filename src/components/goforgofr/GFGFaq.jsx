@@ -21,7 +21,7 @@ const GfgFaq = () => {
         },
         {
             "title": "Have any other queries?",
-            "description": "Feel free to join our Discord community to start discussions or connect with fellow participants. You can also join the WhatsApp group linked in the registration form. Register now and be part of this exciting event!"
+            "description": "Feel free to join our Discord community to start discussions or connect with fellow participants. You can also join the WhatsApp group linked in the registration form. "
         }
     ];
 
