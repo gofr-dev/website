@@ -26,8 +26,22 @@ function Header() {
   const isCertificate = pathname.includes('certificate')
   const isEvents = pathname.includes('events')
   const [githubStars, setGithubStars] = useState(null)
+  const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
+    // On mount, set theme from localStorage or system preference
+    const saved = localStorage.getItem('theme')
+    if (
+      saved === 'dark' ||
+      (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      document.documentElement.classList.add('dark')
+      setIsDark(true)
+    } else {
+      document.documentElement.classList.remove('dark')
+      setIsDark(false)
+    }
+
     const fetchRepoData = async () => {
       try {
         const response = await fetch(
@@ -56,6 +70,18 @@ function Header() {
       window.removeEventListener('scroll', onScroll)
     }
   }, [])
+
+  function toggleTheme() {
+    if (document.documentElement.classList.contains('dark')) {
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
+      setIsDark(false)
+    } else {
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+      setIsDark(true)
+    }
+  }
 
   return (
     <header
@@ -127,6 +153,13 @@ function Header() {
             </div>
           </div>
         </Link>
+        <button
+          onClick={toggleTheme}
+          aria-label="Toggle dark mode"
+          className="ml-4 rounded px-3 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 transition"
+        >
+          {isDark ? '☀️ Light' : '🌙 Dark'}
+        </button>
       </div>
     </header>
   )
