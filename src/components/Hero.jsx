@@ -127,10 +127,23 @@ export function Hero() {
                 </h2>
                 <div className="mt-9 flex justify-center gap-4 xl:justify-start">
                   <Link
-                    className="rounded-full bg-sky-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
+                    className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-400 to-blue-500 px-6 py-3 text-base font-bold text-white shadow-lg shadow-sky-500/25 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-sky-500/40 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 active:scale-95"
                     href="/docs"
                   >
-                    Get Started
+                    <span>Get Started</span>
+                    <svg
+                      className="h-6 w-6 transition-transform duration-300 group-hover:translate-x-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
+                    </svg>
                   </Link>
                   <Link
                     className="flex items-center gap-1 rounded-full bg-white bg-opacity-[0.08] px-4 py-1 text-sm font-semibold text-white transition-all duration-200 hover:bg-opacity-[.15]"
@@ -159,7 +172,7 @@ export function Hero() {
                     className={`text-sky-400`}
                   >
                     {' '}
-                    block our calendar.
+                    Block our calendar.
                   </Link>
                 </div>
               </div>
