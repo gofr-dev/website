@@ -10,6 +10,8 @@ export const HackathonLinkButton = () => {
   }
 
   return (
+    <>
+     {/* Hackathon banner temporarily removed for future reuse */}
     <div className="left-0 right-0 top-0 z-50 bg-black px-4 py-1 sm:fixed">
       <div className="relative z-30 flex items-center justify-center text-center text-white">
 
@@ -51,5 +53,6 @@ export const HackathonLinkButton = () => {
         </Link>
       </div>
     </div>
+    </>
   )
 }
