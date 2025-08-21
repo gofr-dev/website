@@ -1,16 +1,10 @@
-import React from 'react';
+export const metadata = {
+    other: {
+        'go-import': 'gofr.dev git https://github.com/gofr-dev/gofr',
+        'go-source': 'gofr.dev https://github.com/gofr-dev/gofr https://github.com/gofr-dev/gofr/tree/main{/dir} https://github.com/gofr-dev/gofr/blob/main{/dir}/{file}#L{line}'
+    },
+}
 
-
-const Page = () => {
-    return (
-        <div className={`flex justify-center items-center min-h-[70vh]`}>
-            <div className={`text-4xl font-semibold flex gap-3 flex-wrap justify-center`}>
-                <span>
-                </span>
-                <span className={`text-sky-400`}></span>
-            </div>
-        </div>
-    );
-};
-
-export default Page;
+export default function RootLayout({ children }) {
+    return children
+}
