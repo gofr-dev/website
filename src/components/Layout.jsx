@@ -10,7 +10,7 @@ import { Search } from '@/components/Search'
 import { formatNumber } from '@/lib/common'
 import { ErrorBoundary } from './BugsnagWrapper'
 import FooterUi from '@/components/Footer'
-import { HackathonLinkButton } from './goforgofr/HackathonLinkButton'
+// import { HackathonLinkButton } from './goforgofr/HackathonLinkButton'
 
 export function GitHubIcon(props) {
   return (
@@ -149,10 +149,10 @@ export function Layout({ children }) {
       <div className="flex w-full flex-col">
         {pathname !== '/hackathon' && (
           <>
-            <div className="relative z-50 sm:fixed sm:left-0 sm:right-0 sm:top-0">
+            {/* <div className="relative z-50 sm:fixed sm:left-0 sm:right-0 sm:top-0">
               <HackathonLinkButton />
-            </div>
-            <div className="sticky left-0 right-0 top-0 z-40 sm:top-8">
+            </div> */}
+            <div className="sticky left-0 right-0 top-0 z-40 sm:top-0">
               <Header />
             </div>
           </>
