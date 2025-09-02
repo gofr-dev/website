@@ -1,5 +1,5 @@
 # Install dependencies only when needed
-FROM node:alpine
+FROM node:23.11.1-alpine3.21
 
 RUN apk add --no-cache libc6-compat
 
