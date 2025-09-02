@@ -110,18 +110,123 @@ export default function withSearch(nextConfig = {}) {
               }
 
               export function search(query, options = {}) {
-                let result = sectionIndex.search(query, {
-                  ...options,
-                  enrich: true,
-                })
-                if (result.length === 0) {
-                  return []
+                try {
+                  let defaultOptions = {
+                    limit: 10,
+                    ...options
+                  }
+                  
+                  let queryLower = query.toLowerCase().trim()
+                  let results = []
+                  
+                  // Search through all indexed content
+                  for (let [url, data] of urlToData) {
+                    let score = 0
+                    
+                    // Exact phrase match (highest priority)
+                    if (data.searchText.includes(queryLower)) {
+                      score += 10
+                      
+                      // Bonus for title matches
+                      if (data.title.toLowerCase().includes(queryLower)) {
+                        score += 5
+                      }
+                      
+                      // Bonus for early position in content
+                      let position = data.searchText.indexOf(queryLower)
+                      if (position < 100) {
+                        score += 3
+                      }
+                      
+                      results.push({
+                        url: data.url || url,
+                        title: data.title || '',
+                        pageTitle: data.pageTitle || '',
+                        content: data.content || '',
+                        score: score
+                      })
+                    }
+                    // Partial word matching
+                    else {
+                      let queryWords = queryLower.split(/\\s+/).filter(w => w.length > 2)
+                      let matchCount = 0
+                      
+                      for (let word of queryWords) {
+                        if (data.searchText.includes(word)) {
+                          matchCount++
+                        }
+                      }
+                      
+                      if (matchCount > 0) {
+                        score = matchCount / queryWords.length
+                        results.push({
+                          ...data,
+                          score: score
+                        })
+                      }
+                    }
+                  }
+                  
+                  
+                  // Sort by score and limit results
+                  results.sort((a, b) => b.score - a.score)
+                  results = results.slice(0, defaultOptions.limit)
+                  return { items: results }
+                } catch (error) {
+                  console.error('Search failed:', error)
+                  return { items: [] }
                 }
-                return result[0].result.map((item) => ({
-                  url: item.id,
-                  title: item.doc.title,
-                  pageTitle: item.doc.pageTitle,
-                }))
+              }
+              
+              export function searchExact(query, options = {}) {
+                try {
+                  let queryLower = query.toLowerCase().trim()
+                  let exactMatches = []
+                  
+                  for (let [url, data] of urlToData) {
+                    if (data.searchText.includes(queryLower)) {
+                      exactMatches.push({
+                        url: data.url || url,
+                        title: data.title || '',
+                        pageTitle: data.pageTitle || '',
+                        content: data.content || '',
+                        score: 10
+                      })
+                    }
+                  }
+                  
+                  return { items: exactMatches.slice(0, options.limit || 10) }
+                } catch (error) {
+                  console.error('Exact search failed:', error)
+                  return { items: [] }
+                }
+              }
+              
+              // Debug function to check what content is indexed
+              export function debugSearch(query) {
+                console.log('Total indexed items:', urlToData.size)
+                console.log('Sample content:')
+                let count = 0
+                for (let [url, data] of urlToData) {
+                  if (count < 3) {
+                    console.log('URL:', url)
+                    console.log('Content preview:', data.content.substring(0, 200) + '...')
+                    console.log('---')
+                    count++
+                  }
+                }
+                
+                if (query) {
+                  let queryLower = query.toLowerCase()
+                  for (let [url, data] of urlToData) {
+                    if (data.searchText.includes(queryLower)) {
+                      console.log('Found in:', url)
+                      let index = data.searchText.indexOf(queryLower)
+                      console.log('Context:', data.searchText.substring(Math.max(0, index - 50), index + query.length + 50))
+                      break
+                    }
+                  }
+                }
               }
             `
           }),
