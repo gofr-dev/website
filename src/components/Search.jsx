@@ -123,27 +123,45 @@ function HighlightQuery({ text, query }) {
   )
 }
 
-function SearchResult({ result, autocomplete, collection, query }) {
-  let id = useId()
-
+function SearchResult({ result, autocomplete, collection, query, index }) {
   let sectionTitle = navigation.find((section) =>
     section.links.find((link) => link.href === result.url.split('#')[0]),
   )?.title
+
   let hierarchy = [sectionTitle, result.pageTitle].filter(
     (x) => typeof x === 'string',
   )
 
+  const id = useId()
+
   return (
     <li
-      className="group block cursor-default rounded-lg px-3 py-2 aria-selected:bg-slate-100 dark:aria-selected:bg-slate-700/30"
+      className="block cursor-default rounded-lg px-3 py-2 "
       aria-labelledby={`${id}-hierarchy ${id}-title`}
       {...autocomplete.getItemProps({
         item: result,
         source: collection.source,
       })}
+      onMouseEnter={(e) => {
+        e.currentTarget.classList.add('bg-slate-100', 'dark:bg-slate-700/30')
+        const titleEl = e.currentTarget.querySelector('[data-title]')
+        if (titleEl) {
+          titleEl.classList.add('text-sky-600', 'dark:text-sky-400')
+          titleEl.classList.remove('text-slate-700', 'dark:text-slate-300')
+        }
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.classList.remove('bg-slate-100', 'dark:bg-slate-700/30')
+        const titleEl = e.currentTarget.querySelector('[data-title]')
+        if (titleEl) {
+          titleEl.classList.remove('text-sky-600', 'dark:text-sky-400')
+          titleEl.classList.add('text-slate-700', 'dark:text-slate-300')
+        }
+      }}
     >
       <div
         id={`${id}-title`}
+        data-title
         aria-hidden="true"
         className="text-sm text-slate-700 group-aria-selected:text-sky-600 dark:text-slate-300 dark:group-aria-selected:text-sky-400"
       >
@@ -155,20 +173,22 @@ function SearchResult({ result, autocomplete, collection, query }) {
           aria-hidden="true"
           className="mt-0.5 truncate whitespace-nowrap text-xs text-slate-500 dark:text-slate-400"
         >
-          {hierarchy.map((item, itemIndex, items) => (
-            <Fragment key={itemIndex}>
-              <HighlightQuery text={item} query={query} />
-              <span
-                className={
-                  itemIndex === items.length - 1
-                    ? 'sr-only'
-                    : 'mx-2 text-slate-300 dark:text-slate-700'
-                }
-              >
-                /
-              </span>
-            </Fragment>
-          ))}
+          {hierarchy
+            .filter((item) => item && item.trim().toLowerCase() !== 'untitled')
+            .map((item, itemIndex, items) => (
+              <Fragment key={itemIndex}>
+                <HighlightQuery text={item} query={query} />
+                <span
+                  className={
+                    itemIndex === items.length - 1
+                      ? 'sr-only'
+                      : 'mx-2 text-slate-300 dark:text-slate-700'
+                  }
+                >
+                  /
+                </span>
+              </Fragment>
+            ))}
         </div>
       )}
     </li>
@@ -176,7 +196,7 @@ function SearchResult({ result, autocomplete, collection, query }) {
 }
 
 function SearchResults({ autocomplete, query, collection }) {
-  if (collection.items.length === 0) {
+  if (collection.items[0].items.length === 0) {
     return (
       <p className="px-4 py-8 text-center text-sm text-slate-700 dark:text-slate-400">
         Couldn't find what you are looking for?&nbsp;
@@ -191,21 +211,55 @@ function SearchResults({ autocomplete, query, collection }) {
     )
   }
 
+  let rawItems = []
+
+  rawItems = collection.items[0].items
+
+  let filtered = rawItems.filter(
+    (item) =>
+      item &&
+      item.title &&
+      item.title.trim() !== '' &&
+      item.title.trim().toLowerCase() !== 'untitled',
+  )
+
+  // if (filtered.length === 0) {
+  //   return (
+  //     <p className="px-4 py-8 text-center text-sm text-slate-700 dark:text-slate-400">
+  //       No results found for &ldquo;
+  //       <span className="break-words text-slate-900 dark:text-white">
+  //         {query}
+  //       </span>
+  //       &rdquo;
+  //     </p>
+  //   )
+  // }
+  let seenUrls = new Set()
+  let deduped = []
+  for (let item of filtered) {
+    // Only the part before the '#'
+    let baseUrl = item.url.split('#')
+    if (!seenUrls.has(baseUrl)) {
+      seenUrls.add(baseUrl)
+      deduped.push(item)
+    }
+  }
+
   return (
     <ul {...autocomplete.getListProps()}>
-      {collection.items.map((result) => (
+      {deduped.map((result, index) => (
         <SearchResult
-          key={result.url}
+          key={`${result.url}-${index}`}
           result={result}
           autocomplete={autocomplete}
           collection={collection}
           query={query}
+          index={index}
         />
       ))}
     </ul>
   )
 }
-
 const SearchInput = forwardRef(function SearchInput(
   { autocomplete, autocompleteState, onClose },
   inputRef,
