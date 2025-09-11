@@ -70,8 +70,9 @@ function useAutocomplete({ close }) {
                 return search(query, { limit: 5 })
               },
               getItemUrl({ item }) {
-                return item.url
+                return item?.url || ''
               },
+
               onSelect: navigate,
             },
           ]
@@ -125,7 +126,7 @@ function HighlightQuery({ text, query }) {
 
 function SearchResult({ result, autocomplete, collection, query, index }) {
   let sectionTitle = navigation.find((section) =>
-    section.links.find((link) => link.href === result.url.split('#')[0]),
+    section.links.find((link) => link.href === result?.url.split('#')[0]),
   )?.title
 
   let hierarchy = [sectionTitle, result.pageTitle].filter(
@@ -200,12 +201,16 @@ function SearchResults({ autocomplete, query, collection }) {
     return (
       <p className="px-4 py-8 text-center text-sm text-slate-700 dark:text-slate-400">
         Couldn't find what you are looking for?&nbsp;
-        <Link href="https://github.com/gofr-dev/gofr/issues" target="_blank" className='underline'>
+        <Link
+          href="https://github.com/gofr-dev/gofr/issues"
+          target="_blank"
+          className="underline"
+        >
           Create an Issue on GitHub for &ldquo;
-        <span className="break-words text-slate-900 dark:text-white">
-          {query}
-        </span>
-        &rdquo;
+          <span className="break-words text-slate-900 dark:text-white">
+            {query}
+          </span>
+          &rdquo;
         </Link>
       </p>
     )

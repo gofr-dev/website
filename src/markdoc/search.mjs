@@ -9,34 +9,68 @@ import * as url from 'url'
 const __filename = url.fileURLToPath(import.meta.url)
 const slugify = slugifyWithCounter()
 
-function toString(node) {
-  let str =
-    node.type === 'text' && typeof node.attributes?.content === 'string'
-      ? node.attributes.content
-      : ''
-  if ('children' in node) {
+// Comprehensive text extraction that gets EVERYTHING
+function extractAllTextFromNode(node) {
+  let texts = []
+
+  // Direct text content
+  if (node.type === 'text' && node.attributes?.content) {
+    texts.push(node.attributes.content)
+  }
+
+  // Code content
+  if (node.type === 'code' && node.attributes?.content) {
+    texts.push(node.attributes.content)
+  }
+
+  // Code block content
+  if (node.type === 'code_block' && node.attributes?.content) {
+    texts.push(node.attributes.content)
+  }
+
+  // Process all children recursively
+  if (node.children && Array.isArray(node.children)) {
     for (let child of node.children) {
-      str += toString(child)
+      texts.push(...extractAllTextFromNode(child))
     }
   }
-  return str
+
+  return texts
 }
 
-function extractSections(node, sections, isRoot = true) {
+function extractSectionsAndContent(node, sections, isRoot = true) {
   if (isRoot) {
     slugify.reset()
   }
-  if (node.type === 'heading' || node.type === 'paragraph') {
-    let content = toString(node).trim()
-    if (node.type === 'heading' && node.attributes.level <= 2) {
+
+  if (node.type === 'heading') {
+    let content = extractAllTextFromNode(node).join('').trim()
+    if (node.attributes.level <= 2) {
       let hash = node.attributes?.id ?? slugify(content)
       sections.push([content, hash, []])
     } else {
+      // Include smaller headings as content
+      if (sections.length > 0) {
+        sections.at(-1)[2].push(content)
+      }
+    }
+  } else if (
+    node.type === 'paragraph' ||
+    node.type === 'list' ||
+    node.type === 'item' ||
+    node.type === 'blockquote' ||
+    node.type === 'code_block'
+  ) {
+    let content = extractAllTextFromNode(node).join(' ').trim()
+    if (content && sections.length > 0) {
       sections.at(-1)[2].push(content)
     }
-  } else if ('children' in node) {
+  }
+
+  // Recursively process children
+  if (node.children && Array.isArray(node.children)) {
     for (let child of node.children) {
-      extractSections(child, sections, false)
+      extractSectionsAndContent(child, sections, false)
     }
   }
 }
@@ -60,21 +94,33 @@ export default function withSearch(nextConfig = {}) {
               let md = fs.readFileSync(path.join(pagesDir, file), 'utf8')
 
               let sections
+              let fullRawText = ''
 
               if (cache.get(file)?.[0] === md) {
                 sections = cache.get(file)[1]
+                fullRawText = cache.get(file)[2]
               } else {
                 let ast = Markdoc.parse(md)
                 let title =
                   ast.attributes?.frontmatter?.match(
                     /^title:\s*(.*?)\s*$/m,
                   )?.[1]
-                sections = [[title, null, []]]
-                extractSections(ast, sections)
-                cache.set(file, [md, sections])
+
+                // Extract structured sections
+                sections = [[title || 'Untitled', null, []]]
+                extractSectionsAndContent(ast, sections)
+
+                // Extract ALL raw text content (this is the key improvement)
+                let allRawText = extractAllTextFromNode(ast)
+                fullRawText = allRawText.join(' ').replace(/\s+/g, ' ').trim()
+
+                // Also include the original markdown for fallback
+                fullRawText += ' ' + md.replace(/^---[\s\S]*?---/, '').trim()
+
+                cache.set(file, [md, sections, fullRawText])
               }
 
-              return { url, sections }
+              return { url, sections, fullRawText }
             })
 
             // When this file is imported within the application
@@ -82,30 +128,39 @@ export default function withSearch(nextConfig = {}) {
             return `
               import FlexSearch from 'flexsearch'
 
-              let sectionIndex = new FlexSearch.Document({
-                tokenize: 'full',
-                document: {
-                  id: 'url',
-                  index: 'content',
-                  store: ['title', 'pageTitle'],
-                },
-                context: {
-                  resolution: 9,
-                  depth: 2,
-                  bidirectional: true
-                }
-              })
-
+              const searchIndex = new Map()
+              const urlToData = new Map()
+              
               let data = ${JSON.stringify(data)}
 
-              for (let { url, sections } of data) {
+              // Build comprehensive search data
+              for (let { url, sections, fullRawText } of data) {
+                let pageTitle = sections[0][0] || 'Untitled'
+                
+                // Index full page
+                let pageData = {
+                  url: url,
+                  title: pageTitle,
+                  pageTitle: undefined,
+                  content: fullRawText,
+                  searchText: (pageTitle + ' ' + fullRawText).toLowerCase()
+                }
+                urlToData.set(url, pageData)
+                
+                // Index individual sections
                 for (let [title, hash, content] of sections) {
-                  sectionIndex.add({
-                    url: url + (hash ? ('#' + hash) : ''),
-                    title,
-                    content: [title, ...content].join('\\n'),
-                    pageTitle: hash ? sections[0][0] : undefined,
-                  })
+                  if (hash && title) {
+                    let sectionUrl = url + '#' + hash
+                    let sectionContent = [title, ...content].join(' ')
+                    let sectionData = {
+                      url: sectionUrl,
+                      title: title,
+                      pageTitle: pageTitle,
+                      content: sectionContent,
+                      searchText: (title + ' ' + sectionContent + ' ' + pageTitle + ' ' + fullRawText).toLowerCase()
+                    }
+                    urlToData.set(sectionUrl, sectionData)
+                  }
                 }
               }
 
