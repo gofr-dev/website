@@ -41,14 +41,14 @@ const footerLinks = [
 
 function FooterUi() {
   return (
-    <footer className="border-t border-slate-800 px-12 pb-4 pt-4 dark:bg-slate-900">
-      <div className="mx-auto max-w-screen-2xl overflow-hidden px-6 py-4 lg:px-8">
+    <footer className="border-t border-slate-800 px-4 py-2 dark:bg-slate-900">
+      <div className="mx-auto max-w-screen-2xl px-2 py-2 ">
         <nav
           aria-label="Footer"
-          className="relative z-10 -mb-6 flex justify-center gap-5 sm:space-x-12"
+          className="relative z-10 flex justify-center gap-5 sm:space-x-12"
         >
           {footerLinks.map((item) => (
-            <div key={item.title} className="pb-6">
+            <div key={item.title} className="pb-2">
               <Link
                 href={item.link}
                 target={item?.target_blank ? '_blank' : '_self'}
@@ -59,7 +59,7 @@ function FooterUi() {
             </div>
           ))}
         </nav>
-        <div className="mt-8 flex justify-center space-x-10">
+        <div className="mt-4 flex justify-center space-x-6">
           {socialMediaLinks.map((item, idx) => {
             const { Icon, Link: link } = item
             return (
@@ -70,7 +70,7 @@ function FooterUi() {
                 target="_blank"
                 aria-label="social media link"
               >
-                <Icon className="h-6 w-6 fill-slate-400 hover:fill-slate-300 dark:hover:fill-slate-300"></Icon>
+                <Icon className="h-5 w-5 fill-slate-400 hover:fill-slate-300 dark:hover:fill-slate-300"></Icon>
               </Link>
             )
           })}
