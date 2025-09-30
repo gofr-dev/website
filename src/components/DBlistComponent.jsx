@@ -10,6 +10,7 @@ import sql from '@/images/sql.svg'
 import mqtt from '@/images/mqtt.svg'
 import Badger from '@/images/Badger.svg'
 import cassandra from '@/images/cassandra.svg'
+import eventhub from '@/images/event_hub.svg'
 import Image from 'next/image'
 
 const imageLink = [
@@ -24,6 +25,10 @@ const imageLink = [
   {
     image: redis,
     link: '/docs/quick-start/connecting-redis',
+  },
+  {
+    image: eventhub,
+    link: '/docs/advanced-guide/using-publisher-subscriber#publisher-subscriber'
   },
   {
     image: mongoDb,
@@ -55,7 +60,7 @@ const imageLink = [
   },
 ]
 
-const getAnimationDelay = (index) => `calc(30s / 10 * (10 - ${index + 1}) * -1)`
+const getAnimationDelay = (index) => `calc(30s / 11 * (11 - ${index + 1}) * -1)`
 
 const DBlistComponent = () => {
   return (
