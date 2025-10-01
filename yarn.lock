@@ -349,11 +349,12 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@markdoc/markdoc@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/@markdoc/markdoc/-/markdoc-0.3.0.tgz"
-  integrity sha512-QWCF8krIIw52ulflfnoff0yG1eKl9CCGA3KAiOjHyYtHNzSEouFh8lO52nAaO3qV2Ctj1GTB8TTb2rTfvISQfA==
+"@markdoc/markdoc@0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@markdoc/markdoc/-/markdoc-0.5.4.tgz#11f87678ed68e2cb4fe670a8ab6f99ae0f7f1b34"
+  integrity sha512-36YFNlqFk//gVNGm5xZaTWVwbAVF2AOmVjf1tiUrS6tCoD/YSkVy2E3CkAfhc5MlKcjparL/QFHCopxL4zRyaQ==
   optionalDependencies:
+    "@types/linkify-it" "^3.0.1"
     "@types/markdown-it" "12.2.3"
 
 "@markdoc/next.js@0.3.1":
@@ -597,6 +598,11 @@
   version "3.0.3"
   resolved "https://registry.npmjs.org/@types/linkify-it/-/linkify-it-3.0.3.tgz"
   integrity sha512-pTjcqY9E4nOI55Wgpz7eiI8+LzdYnw3qxXCfHyBDdPbYvbyLgWLJGh8EdPvqawwMK1Uo1794AUkkR38Fr0g+2g==
+
+"@types/linkify-it@^3.0.1":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@types/linkify-it/-/linkify-it-3.0.5.tgz#1e78a3ac2428e6d7e6c05c1665c242023a4601d8"
+  integrity sha512-yg6E+u0/+Zjva+buc3EIb+29XEg4wltq7cSmd4Uc2EE/1nUVmxyzpX6gUXD0V8jIrG0r7YeOGVIbYRkxeooCtw==
 
 "@types/markdown-it@12.2.3":
   version "12.2.3"
