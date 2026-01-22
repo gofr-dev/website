@@ -8,6 +8,8 @@ import { GithubIcon } from './icons/GithubIcon'
 import { DiscordIcon } from './icons/DiscordIcon'
 import { LinkedinIcon } from './icons/LinkedinIcon'
 import { TwitterIcon } from './icons/TwitterIcon'
+import EmailIcon from './icons/EmailIcon'
+
 
 const socialMediaLinks = [
   {
@@ -29,6 +31,10 @@ const socialMediaLinks = [
   {
     Icon: TwitterIcon,
     Link: 'https://twitter.com/gofr_dev',
+  },
+    {
+    Icon: EmailIcon,
+    Link: 'mailto:connect@gofr.dev',
   },
 ]
 
