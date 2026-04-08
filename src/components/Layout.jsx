@@ -7,10 +7,10 @@ import clsx from 'clsx'
 
 import { MobileNavigation } from '@/components/MobileNavigation'
 import { Search } from '@/components/Search'
+
 import { formatNumber } from '@/lib/common'
 import { ErrorBoundary } from './BugsnagWrapper'
 import FooterUi from '@/components/Footer'
-// import { HackathonLinkButton } from './goforgofr/HackathonLinkButton'
 
 export function GitHubIcon(props) {
   return (
@@ -19,6 +19,13 @@ export function GitHubIcon(props) {
     </svg>
   )
 }
+
+const navLinks = [
+  { title: 'Docs', href: '/docs', match: '/docs' },
+  { title: 'Changelog', href: '/changelog', match: '/changelog' },
+  { title: 'Examples', href: '/examples', match: '/examples' },
+  { title: 'Community', href: '/community', match: '/community' },
+]
 
 function Header() {
   let [isScrolled, setIsScrolled] = useState(false)
@@ -71,7 +78,7 @@ function Header() {
           <MobileNavigation />
         </div>
       )}
-      <div className="relative flex flex-grow basis-0 items-center">
+      <div className="relative flex flex-grow basis-0 items-center gap-6">
         <Link href="/" aria-label="Home page" className="flex items-center">
           <span className="text-3xl font-bold italic text-sky-400">
             Go{' '}
@@ -80,6 +87,31 @@ function Header() {
             </span>
           </span>
         </Link>
+        {!isCertificate && (
+          <nav className="hidden lg:flex lg:items-center lg:gap-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.title}
+                href={link.href}
+                target={link.external ? '_blank' : undefined}
+                className={clsx(
+                  'text-xs transition-colors',
+                  link.match && pathname.startsWith(link.match)
+                    ? 'text-sky-400'
+                    : 'text-slate-400 hover:text-slate-300',
+                )}
+              >
+                {link.title}
+                {link.external && (
+                  <svg className="ml-0.5 inline-block h-3 w-3 opacity-50" fill="none" viewBox="0 0 12 12">
+                    <path d="M3.5 3.5h5v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M8.5 3.5L3 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                )}
+              </Link>
+            ))}
+          </nav>
+        )}
       </div>
       {!isCertificate && !isEvents && (
         <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
@@ -93,7 +125,7 @@ function Header() {
           </h1>
         </div>
       )}
-      <div className="relative flex flex-grow basis-0 items-center justify-end gap-2 sm:gap-3 md:flex-grow">
+      <div className="relative flex flex-grow basis-0 items-center justify-end gap-3 sm:gap-4 md:flex-grow">
         <Link
           href="https://github.com/gofr-dev/gofr"
           className="group"
@@ -140,18 +172,12 @@ const ErrorView = () => (
 
 export function Layout({ children }) {
   const pathname = usePathname()
-  console.log(pathname)
-
-  const isHackathon = pathname === '/hackathon'
 
   return (
     <ErrorBoundary FallbackComponent={ErrorView}>
       <div className="flex w-full flex-col">
         {pathname !== '/hackathon' && (
           <>
-            {/* <div className="relative z-50 sm:fixed sm:left-0 sm:right-0 sm:top-0">
-              <HackathonLinkButton />
-            </div> */}
             <div className="sticky left-0 right-0 top-0 z-40 sm:top-0">
               <Header />
             </div>

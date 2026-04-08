@@ -39,9 +39,12 @@ const socialMediaLinks = [
 ]
 
 const footerLinks = [
-  // { title: 'Releases', link: '/releases' },
   { title: 'Documentation', link: '/docs' },
-  { title: 'Blogs', link: 'https://medium.com/gofr', target_blank: true },
+  { title: 'Changelog', link: '/changelog' },
+  { title: 'Examples', link: '/examples' },
+  { title: 'Community', link: '/community' },
+  { title: 'Showcase', link: '/showcase' },
+  { title: 'Blog', link: 'https://medium.com/gofr', target_blank: true },
   { title: 'Events', link: '/events' },
 ]
 

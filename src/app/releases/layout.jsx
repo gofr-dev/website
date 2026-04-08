@@ -1,8 +1,22 @@
 'use client'
-import { ReleasesPage } from '@/components/ReleasesPage'
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 const Layout = ({ children }) => {
-  return <ReleasesPage>{children}</ReleasesPage>
+  const router = useRouter()
+
+  useEffect(() => {
+    router.replace('/changelog')
+  }, [router])
+
+  return (
+    <div className="flex min-h-[70vh] items-center justify-center">
+      <p className="text-slate-500">
+        Redirecting to changelog...
+      </p>
+    </div>
+  )
 }
 
 export default Layout

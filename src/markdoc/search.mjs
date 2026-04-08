@@ -164,35 +164,72 @@ export default function withSearch(nextConfig = {}) {
                 }
               }
 
+              // Check if query matches at a word boundary (start of word)
+              function wordBoundaryMatch(text, query) {
+                try {
+                  let escaped = query.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\\\$&')
+                  let regex = new RegExp('(?:^|[\\\\s\\\\-_\\\\/,.;:()])' + escaped, 'i')
+                  return regex.test(text)
+                } catch(e) {
+                  return text.toLowerCase().includes(query.toLowerCase())
+                }
+              }
+
               export function search(query, options = {}) {
                 try {
-                  let defaultOptions = {
-                    limit: 10,
-                    ...options
-                  }
-                  
+                  let limit = (options && options.limit) || 10
                   let queryLower = query.toLowerCase().trim()
+
+                  if (queryLower.length === 0) return { items: [] }
+
                   let results = []
-                  
-                  // Search through all indexed content
+
                   for (let [url, data] of urlToData) {
+                    let titleLower = (data.title || '').toLowerCase()
                     let score = 0
-                    
-                    // Exact phrase match (highest priority)
-                    if (data.searchText.includes(queryLower)) {
-                      score += 10
-                      
-                      // Bonus for title matches
-                      if (data.title.toLowerCase().includes(queryLower)) {
-                        score += 5
+
+                    // 1. Exact title match (highest)
+                    if (titleLower === queryLower) {
+                      score = 100
+                    }
+                    // 2. Title starts with query
+                    else if (titleLower.startsWith(queryLower)) {
+                      score = 50
+                    }
+                    // 3. Title contains query at word boundary
+                    else if (wordBoundaryMatch(titleLower, queryLower)) {
+                      score = 30
+                    }
+                    // 4. Title contains query anywhere (mid-word like "BadgerDB" matching "ad")
+                    else if (titleLower.includes(queryLower)) {
+                      score = 5
+                    }
+                    // 5. Content contains query at word boundary
+                    else if (wordBoundaryMatch(data.searchText, queryLower)) {
+                      score = 15
+                    }
+                    // 6. Content contains query anywhere
+                    else if (data.searchText.includes(queryLower)) {
+                      score = 3
+                    }
+                    // 7. Multi-word: check if all words match
+                    else if (queryLower.includes(' ')) {
+                      let words = queryLower.split(/\\s+/).filter(w => w.length > 1)
+                      let matched = words.filter(w => data.searchText.includes(w))
+                      if (matched.length === words.length) {
+                        score = 20
+                      } else if (matched.length > 0) {
+                        score = matched.length * 2
                       }
-                      
-                      // Bonus for early position in content
-                      let position = data.searchText.indexOf(queryLower)
-                      if (position < 100) {
-                        score += 3
-                      }
-                      
+                    }
+
+                    if (score > 0) {
+                      // Bonus: page-level results over section-level (cleaner results)
+                      if (!url.includes('#')) score += 2
+
+                      // For very short queries (1-2 chars), suppress mid-word matches
+                      if (queryLower.length <= 2 && score <= 5) continue
+
                       results.push({
                         url: data.url || url,
                         title: data.title || '',
@@ -201,31 +238,10 @@ export default function withSearch(nextConfig = {}) {
                         score: score
                       })
                     }
-                    // Partial word matching
-                    else {
-                      let queryWords = queryLower.split(/\\s+/).filter(w => w.length > 2)
-                      let matchCount = 0
-                      
-                      for (let word of queryWords) {
-                        if (data.searchText.includes(word)) {
-                          matchCount++
-                        }
-                      }
-                      
-                      if (matchCount > 0) {
-                        score = matchCount / queryWords.length
-                        results.push({
-                          ...data,
-                          score: score
-                        })
-                      }
-                    }
                   }
-                  
-                  
-                  // Sort by score and limit results
+
                   results.sort((a, b) => b.score - a.score)
-                  results = results.slice(0, defaultOptions.limit)
+                  results = results.slice(0, limit)
                   return { items: results }
                 } catch (error) {
                   console.error('Search failed:', error)

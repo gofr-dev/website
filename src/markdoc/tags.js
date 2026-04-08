@@ -1,6 +1,8 @@
 import { Callout } from '@/components/Callout'
 import { NewTabLink } from '@/components/NewTabLinks'
 import { QuickLink, QuickLinks } from '@/components/QuickLinks'
+import { Tabs, Tab } from '@/components/Tabs'
+import { SectionCards } from '@/components/SectionCards'
 
 const tags = {
   callout: {
@@ -52,6 +54,22 @@ const tags = {
       title: { type: String },
       newtab: { type: Boolean },
     },
+  },
+  tabs: {
+    render: Tabs,
+    attributes: {
+      labels: { type: Array },
+    },
+  },
+  tab: {
+    render: Tab,
+    attributes: {
+      label: { type: String },
+    },
+  },
+  'section-cards': {
+    selfClosing: true,
+    render: SectionCards,
   },
 }
 
