@@ -7,6 +7,7 @@ WORKDIR /app
 
 COPY src src/.
 COPY utils utils/.
+COPY public public/.
 COPY jsconfig.json .
 COPY next.config.mjs .
 COPY package.json .
