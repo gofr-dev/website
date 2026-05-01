@@ -106,7 +106,7 @@ export default function RoadmapPage() {
   )
 
   // Group visible items: each milestone → its items, then a final
-  // "no milestone" group.
+  // bucket for items that aren't on any milestone yet.
   const grouped = useMemo(() => {
     const byMs = new Map()
     for (const m of milestones) byMs.set(m.title, { milestone: m, items: [] })
@@ -253,9 +253,11 @@ export default function RoadmapPage() {
         <div className="mt-8 space-y-12">
           {grouped.map((g) => (
             <section key={g.milestone?.title || 'no-milestone'}>
-              <h2 className="font-display text-lg font-semibold text-white">
-                {g.milestone ? g.milestone.title : 'Without a milestone'}
-              </h2>
+              {g.milestone && (
+                <h2 className="font-display text-lg font-semibold text-white">
+                  {g.milestone.title}
+                </h2>
+              )}
               {g.milestone?.description && (
                 <p className="mt-1 text-sm text-slate-400">{g.milestone.description}</p>
               )}
