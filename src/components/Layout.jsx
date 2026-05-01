@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
@@ -9,8 +9,92 @@ import { MobileNavigation } from '@/components/MobileNavigation'
 import { Search } from '@/components/Search'
 
 import { formatNumber } from '@/lib/common'
-import { ErrorBoundary } from './BugsnagWrapper'
 import FooterUi from '@/components/Footer'
+import githubStarsData from '@/data/github-stars.json'
+
+// Lazy ErrorBoundary that defers @bugsnag/js (~30-40 kB shared) off
+// the critical path. Behaviour:
+//  - On idle (or after a short timeout) we dynamic-import the Bugsnag
+//    SDK + React plugin and swap the live boundary in via setState.
+//  - Until then, the fallback boundary catches errors and renders the
+//    FallbackComponent. If an error occurs before Bugsnag has loaded
+//    we accept the silent no-op on telemetry — the user-visible UX is
+//    identical (fallback still renders), only the report is lost.
+class FallbackErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false }
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+  componentDidCatch() {
+    // Pre-Bugsnag: swallow. The user-visible fallback still renders.
+  }
+  render() {
+    if (this.state.hasError) {
+      const Fallback = this.props.FallbackComponent
+      return Fallback ? <Fallback /> : null
+    }
+    return this.props.children
+  }
+}
+
+function LazyBugsnagBoundary({ FallbackComponent, children }) {
+  const [LiveBoundary, setLiveBoundary] = useState(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    let cancelled = false
+    const init = async () => {
+      try {
+        const [{ default: Bugsnag }, { default: BugsnagPluginReact }] =
+          await Promise.all([
+            import('@bugsnag/js'),
+            import('@bugsnag/plugin-react'),
+          ])
+        if (cancelled) return
+        Bugsnag.start({
+          apiKey: 'b6dc4b3bd26c10a6d7b062b15be8a26f',
+          plugins: [new BugsnagPluginReact()],
+        })
+        const Boundary = Bugsnag.getPlugin('react').createErrorBoundary(React)
+        setLiveBoundary(() => Boundary)
+      } catch {
+        // Network or chunk-load failure — keep using the fallback.
+      }
+    }
+
+    const ric = window.requestIdleCallback
+    if (typeof ric === 'function') {
+      const handle = ric(init, { timeout: 4000 })
+      return () => {
+        cancelled = true
+        if (typeof window.cancelIdleCallback === 'function') {
+          window.cancelIdleCallback(handle)
+        }
+      }
+    }
+    const t = setTimeout(init, 1500)
+    return () => {
+      cancelled = true
+      clearTimeout(t)
+    }
+  }, [])
+
+  if (LiveBoundary) {
+    return (
+      <LiveBoundary FallbackComponent={FallbackComponent}>
+        {children}
+      </LiveBoundary>
+    )
+  }
+  return (
+    <FallbackErrorBoundary FallbackComponent={FallbackComponent}>
+      {children}
+    </FallbackErrorBoundary>
+  )
+}
 
 export function GitHubIcon(props) {
   return (
@@ -31,33 +115,44 @@ function Header() {
   let pathname = usePathname()
   const isCertificate = pathname.includes('certificate')
   const isEvents = pathname.includes('events')
-  const [githubStars, setGithubStars] = useState(null)
+  // Stars are baked in at build time by utils/fetch-github-stars.mjs
+  // so the Header renders the real number on first paint without an
+  // API round-trip. We optionally re-sync once per session in the
+  // background to keep long-lived browsers fresh — but never block.
+  const initialStars =
+    (githubStarsData && githubStarsData.stars) || null
+  const [githubStars, setGithubStars] = useState(initialStars)
 
   useEffect(() => {
-    const fetchRepoData = async () => {
-      try {
-        const response = await fetch(
-          'https://api.github.com/repos/gofr-dev/gofr',
-        )
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-        const data = await response.json()
-
-        if (data?.watchers) {
-          setGithubStars(data.watchers)
-          localStorage.setItem('githubStars', data.watchers)
-        }
-      } catch (error) {
-        console.error('Error fetching the repo data:', error)
-      }
-    }
-    fetchRepoData()
     function onScroll() {
       setIsScrolled(window.scrollY > 0)
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
+
+    // Once-per-session refresh. Skipped if a previous tab already did
+    // it. Failures are silent — we still have the build-time number.
+    try {
+      const SESSION_KEY = 'githubStarsSyncedAt'
+      const already = sessionStorage.getItem(SESSION_KEY)
+      if (!already) {
+        sessionStorage.setItem(SESSION_KEY, String(Date.now()))
+        fetch('https://api.github.com/repos/gofr-dev/gofr')
+          .then((r) => (r.ok ? r.json() : null))
+          .then((data) => {
+            if (data?.watchers) {
+              setGithubStars(data.watchers)
+              try {
+                localStorage.setItem('githubStars', String(data.watchers))
+              } catch {}
+            }
+          })
+          .catch(() => {})
+      }
+    } catch {
+      // sessionStorage may throw in privacy mode — non-fatal.
+    }
+
     return () => {
       window.removeEventListener('scroll', onScroll)
     }
@@ -173,7 +268,7 @@ export function Layout({ children }) {
   const pathname = usePathname()
 
   return (
-    <ErrorBoundary FallbackComponent={ErrorView}>
+    <LazyBugsnagBoundary FallbackComponent={ErrorView}>
       <div className="flex w-full flex-col">
         {/* Skip-to-main link — first focusable element so keyboard */}
         {/* and screen-reader users can bypass the global nav per */}
@@ -194,6 +289,6 @@ export function Layout({ children }) {
         <main id="main">{children}</main>
         <FooterUi />
       </div>
-    </ErrorBoundary>
+    </LazyBugsnagBoundary>
   )
 }

@@ -54,14 +54,23 @@ export function HomePage() {
           {/* without it, this absolutely-positioned image floats over */}
           {/* sections below the feature grid (DBlist, ecosystem cards, */}
           {/* testimonials) and silently swallows their clicks. */}
+          {/* `select-none` prevents accidental drag-selection of the */}
+          {/* decorative image on touch devices. Hidden on small */}
+          {/* screens — purely decorative and overflows the viewport */}
+          {/* on mobile due to negative margins / absolute positioning. */}
+          {/* Dropped `unoptimized`: orb PNGs are 200+ KB each, letting */}
+          {/* Next.js serve WebP/AVIF cuts ~60-70% off the wire. Below */}
+          {/* the fold, so swap `priority` for native lazy loading. */}
           <Image
-              className="absolute mt-80 opacity-25 pointer-events-none"
+              aria-hidden="true"
+              className="absolute mt-80 opacity-25 pointer-events-none select-none hidden sm:block"
               src={blurCyanImage}
               alt=""
-              width={'h-44'}
-              unoptimized
-              priority
+              width={530}
+              height={530}
+              loading="lazy"
           />
+
       </div>
 
       <DBlistComponent />

@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { RedditIcon } from './icons/RedditIcon'
 import { GithubIcon } from './icons/GithubIcon'
@@ -77,7 +75,7 @@ function FooterUi() {
         <div className="grid grid-cols-2 gap-8 text-center sm:grid-cols-4 sm:text-left">
           {columns.map((col) => (
             <div key={col.title}>
-              <h3 className="font-display text-sm font-semibold text-slate-900 dark:text-white">
+              <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {col.title}
               </h3>
               <ul className="mt-4 space-y-2.5">
