@@ -6,7 +6,7 @@
     <atom:link href="https://gofr.dev/changelog.xml" rel="self" type="application/rss+xml"/>
     <description>Release notes for GoFr — an opinionated Go framework for production microservices.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 May 2026 15:03:48 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 01 May 2026 15:50:13 GMT</lastBuildDate>
     <item>
       <title>GoFr v1.56.4</title>
       <link>https://github.com/gofr-dev/gofr/releases/tag/v1.56.4</link>

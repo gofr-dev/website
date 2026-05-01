@@ -127,16 +127,17 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                 className="absolute bottom-full right-full -mb-56 -mr-72 opacity-50"
                 src={blurCyanImage}
                 alt=""
+                aria-hidden="true"
                 width={530}
                 height={530}
                 unoptimized
-                priority
+                loading="lazy"
               />
               <div className="relative text-center xl:text-left">
                 <h1 className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
                   {t.h1}
                 </h1>
-                <h2 className="mt-3 text-2xl tracking-tight text-slate-400">
+                <h2 className="mt-3 text-2xl tracking-tight text-slate-300">
                   {t.h2}
                 </h2>
                 {/* Subtle "Latest release: vX · N days ago" line above */}
@@ -175,7 +176,7 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                 {/* /AGENTS.md, while AI search crawlers consume the */}
                 {/* full sectioned link map below it. One URL covers */}
                 {/* both audiences. */}
-                <div className="mt-4 flex flex-wrap justify-center gap-x-1.5 text-xs text-slate-500 xl:justify-start">
+                <div className="mt-4 flex flex-wrap justify-center gap-x-1.5 text-xs text-slate-400 xl:justify-start">
                   <span>Building with an AI coding assistant?</span>
                   <a
                     href="/llms.txt"
@@ -198,19 +199,21 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                 className="absolute -right-2 -top-64"
                 src={blurCyanImage}
                 alt=""
+                aria-hidden="true"
                 width={530}
                 height={530}
                 unoptimized
-                priority
+                loading="lazy"
               />
               <Image
                 className="absolute -bottom-40 -right-1"
                 src={blurIndigoImage}
                 alt=""
+                aria-hidden="true"
                 width={567}
                 height={567}
                 unoptimized
-                priority
+                loading="lazy"
               />
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-sky-300 via-sky-300/70 to-blue-300 opacity-10 blur-lg" />
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-sky-300 via-sky-300/70 to-blue-300 opacity-10" />

@@ -23,5 +23,16 @@ export const metadata = {
   },
 }
 
-const Layout = ({ children }) => children
+// Preconnect to GitHub's avatar CDN — every team card and every
+// contributor avatar dot pulls from avatars.githubusercontent.com,
+// so opening the connection early saves ~200-400ms of DNS+TLS RTT
+// per visitor on first paint of the contributor wall.
+const Layout = ({ children }) => (
+  <>
+    <link rel="preconnect" href="https://avatars.githubusercontent.com" crossOrigin="anonymous" />
+    <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
+    {children}
+  </>
+)
+
 export default Layout

@@ -22,11 +22,71 @@ const lexend = localFont({
   variable: '--font-lexend',
 })
 
-// Default metadataBase for any page that doesn't override it. Makes
-// social Open Graph / Twitter image URLs resolve to gofr.dev instead of
-// localhost during build.
+// Site-wide defaults. Per-route metadata (page.jsx `metadata` exports
+// or Markdoc `nextjs.metadata` frontmatter) overrides the title /
+// description / openGraph.{title,description,url} on a per-page basis;
+// site-wide values like the social image, the Twitter handles, and
+// type=website inherit through unless explicitly overridden.
+//
+// Important: this used to be hardcoded as <meta> tags inside the
+// <head> JSX, which silently overrode every per-page metadata setting
+// — every subpage was sharing the home page's social card. Moving it
+// into the metadata export lets Next's metadata-merge actually do its
+// job.
 export const metadata = {
   metadataBase: new URL('https://gofr.dev'),
+  title: {
+    default: 'GoFr — An Opinionated Go Framework',
+    template: '%s | GoFr',
+  },
+  description:
+    'An Opinionated Go Framework. For accelerated microservice development.',
+  // Canonical intentionally omitted from the root layout — setting it
+  // to '/' would brand every subpage as a duplicate of the home page.
+  // Per-page metadata sets its own canonical via `alternates.canonical`
+  // (or via Next's URL-based default when metadataBase is set).
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-snippet': -1,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    siteName: 'GoFr',
+    title: 'GoFr — An Opinionated Go Framework',
+    description:
+      'An Opinionated Go Framework. For accelerated microservice development.',
+    url: 'https://gofr.dev/',
+    images: [
+      {
+        url: '/opengraph-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'GoFr — An Opinionated Go Framework',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@gofr_dev',
+    creator: '@gofr_dev',
+    title: 'GoFr — An Opinionated Go Framework',
+    description:
+      'An Opinionated Go Framework. For accelerated microservice development.',
+    images: ['/twitter-image.png'],
+  },
+  verification: {
+    google: [
+      'MVkGpVWwO1qPJIoXAKXQs5b6oKwxLAMLWtDDMeD23hE',
+      '9TFTpJ19XHm0dVVKTF5l6OTMLcahEn0M3aZFZ14gRFI',
+    ],
+  },
 }
 
 export default function RootLayout({ children }) {
@@ -37,41 +97,6 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <head>
-        {/* Allow AI Overviews / answer engines to quote the full body */}
-        {/* without truncation, and let large image previews appear in */}
-        {/* SERP cards. `index,follow` makes the intent explicit even */}
-        {/* though it's the default; when multiple meta-robots tags are */}
-        {/* parsed, the most restrictive wins, so leaving these defaults */}
-        {/* explicit prevents a per-page tag from accidentally narrowing */}
-        {/* visibility site-wide. */}
-        <meta
-          name="robots"
-          content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1"
-        />
-        <meta name="google-site-verification" content="MVkGpVWwO1qPJIoXAKXQs5b6oKwxLAMLWtDDMeD23hE" />
-        <meta
-          name="google-site-verification"
-          content="9TFTpJ19XHm0dVVKTF5l6OTMLcahEn0M3aZFZ14gRFI"
-        />
-        <meta
-          property="og:title"
-          content="GoFr — An Opinionated Go Framework"
-        />
-        <meta
-          property="og:description"
-          content="An Opinionated Go Framework. For accelerated microservice development."
-        ></meta>
-        <meta property="og:url" content="https://gofr.dev/"></meta>
-        <meta property="og:type" content="website"></meta>
-        <meta property="og:image" content="https://gofr.dev/opengraph-image.png" />
-        <meta property="og:site_name" content="GoFr" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@gofr_dev" />
-        <meta name="twitter:creator" content="@gofr_dev" />
-        <meta name="twitter:title" content="GoFr — An Opinionated Go Framework" />
-        <meta name="twitter:description" content="An Opinionated Go Framework. For accelerated microservice development." />
-        <meta name="twitter:image" content="https://gofr.dev/twitter-image.png" />
-
         {/* AI / LLM discoverability. Two signals every page emits: */}
         {/*  - `rel="alternate"` with text/plain + text/markdown so */}
         {/*    crawlers that follow rel-alternate links pick them up. */}
