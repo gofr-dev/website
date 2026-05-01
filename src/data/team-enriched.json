@@ -1,6 +1,6 @@
 {
   "repo": "gofr-dev/gofr",
-  "fetchedAt": "2026-05-01T11:47:57.157Z",
+  "fetchedAt": "2026-05-01T15:29:24.306Z",
   "team": [
     {
       "github": "aryanmehrotra",
@@ -79,25 +79,6 @@
       }
     },
     {
-      "github": "srijan-27",
-      "linkedin": "https://www.linkedin.com/in/srijan27/",
-      "role": "Maintainer",
-      "name": "Srijan Rastogi",
-      "github_data": {
-        "login": "srijan-27",
-        "avatar_url": "https://avatars.githubusercontent.com/u/44723623?v=4",
-        "profile_url": "https://github.com/srijan-27",
-        "profile_name": "Srijan Rastogi",
-        "bio": "GoLang apprentice by day, sensei by night. Learning and building cool stuff, one commit at a time.",
-        "blog": "https://srijan-27.github.io/portfolio",
-        "company": null,
-        "location": "Bengaluru",
-        "followers": 9,
-        "public_repos": 17,
-        "gofr_contributions": 160
-      }
-    },
-    {
       "github": "vipul-rawat",
       "linkedin": "https://www.linkedin.com/in/vipul-rawat-b724b217a/",
       "role": "Maintainer",
@@ -118,6 +99,16 @@
     }
   ],
   "contributors": [
+    {
+      "login": "srijan-27",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44723623?v=4",
+      "profile_url": "https://github.com/srijan-27",
+      "contributions": 160,
+      "prs_merged": 89,
+      "reviews_authored": 210,
+      "comments_authored": 269,
+      "score": 1159.5
+    },
     {
       "login": "ccoVeille",
       "avatar_url": "https://avatars.githubusercontent.com/u/3875889?v=4",
@@ -263,10 +254,7 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/56474834?v=4",
       "profile_url": "https://github.com/Sumit-Kumar1",
       "contributions": 13,
-      "prs_merged": 1,
-      "reviews_authored": 1,
-      "comments_authored": 2,
-      "score": 21
+      "score": 13
     },
     {
       "login": "nitin-999-code",

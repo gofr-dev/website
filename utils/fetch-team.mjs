@@ -164,9 +164,28 @@ async function fetchAllContributors() {
   return { items: all, partial: false }
 }
 
+// In CI, gofr-dev/gofr's docs/Dockerfile overlays team.json from the
+// framework into this repo before yarn refresh-data runs. Locally
+// (where the website is checked out without the framework alongside),
+// team.json is no longer committed here. Fall back to the sibling
+// gofr-dev/gofr clone if it's available — same source of truth.
+const FRAMEWORK_FALLBACK = path.resolve(repoRoot, '../gofr/docs/team.json')
+
+function locateTeamFile() {
+  if (fs.existsSync(inFile)) return inFile
+  if (fs.existsSync(FRAMEWORK_FALLBACK)) {
+    console.warn(
+      `[team] using framework fallback ${path.relative(repoRoot, FRAMEWORK_FALLBACK)}`,
+    )
+    return FRAMEWORK_FALLBACK
+  }
+  return null
+}
+
 async function main() {
-  if (!fs.existsSync(inFile)) {
-    console.warn(`[team] no team.json at ${inFile}; skipping enrichment.`)
+  const teamFile = locateTeamFile()
+  if (!teamFile) {
+    console.warn(`[team] no team.json at ${inFile} or framework fallback; skipping enrichment.`)
     process.exit(0)
   }
 
@@ -186,7 +205,7 @@ async function main() {
     if (m.github && m.github_data) snapshotByGithub.set(m.github, m.github_data)
   }
 
-  const team = JSON.parse(fs.readFileSync(inFile, 'utf8'))
+  const team = JSON.parse(fs.readFileSync(teamFile, 'utf8'))
 
   // Enrich each team member with GitHub profile data when handle is provided.
   // If the live fetch fails, fall back to the snapshot's data for that member.
