@@ -46,18 +46,27 @@ pre[class*='language-'] {
   color: theme('colors.slate.400');
 }
 
-code {
+/*
+ * Inline-code styling. Scoped to `:not(pre) > code` so it ONLY hits
+ * inline `<code>` (in paragraphs, list items, headings, etc.) and not
+ * the `<code>` element that lives inside a `<pre>` for fenced code
+ * blocks. Without this scope, the inline background + border-radius +
+ * margin-right paints across each rendered line box of a multiline
+ * `<pre><code>`, producing per-line "pill" stripes — which is what was
+ * happening site-wide on every fenced code block.
+ */
+:not(pre) > code {
   background-color: var(--tw-prose-background);
   padding: 1px 2px;
   border-radius: 3px;
   margin-right: 2px;
 }
 
-code::before {
+:not(pre) > code::before {
   content: none !important;
 }
 
-code::after {
+:not(pre) > code::after {
   content: none !important;
 }
 

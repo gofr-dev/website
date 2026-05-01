@@ -1,0 +1,211 @@
+#!/usr/bin/env node
+// Build-time enrichment for the team page.
+//
+// Inputs:
+//   - src/data/team.json  — manually maintained list of core team
+//     entries (role, optional github handle, optional linkedin URL).
+//
+// What this script does:
+//   1. For every team member with a `github` handle, fetches their
+//      public GitHub profile (name, bio, avatar, blog, company,
+//      location, followers, public repos).
+//   2. Paginates through every contributor of gofr-dev/gofr so the
+//      page can render an "All contributors" grid below the core team.
+//   3. Writes the merged data to src/data/team-enriched.json.
+//
+// What it does NOT do:
+//   - Scrape LinkedIn. LinkedIn URLs in team.json come straight from
+//     maintainers themselves and are surfaced as click-through links.
+//
+// Failure mode: every fetch is per-entry resilient — if a specific
+// profile or the contributors endpoint fails (rate-limit, network),
+// we fall back to that entry's previous snapshot data instead of
+// losing it. This avoids the "one half-rate-limited run blows away
+// the cached avatars" failure mode.
+//
+// Auth: optional GITHUB_TOKEN raises the rate limit dramatically
+// (5,000/hr authenticated vs 60/hr unauthenticated).
+
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const repoRoot = path.resolve(__dirname, '..')
+const inFile = path.join(repoRoot, 'src/data/team.json')
+const outFile = path.join(repoRoot, 'src/data/team-enriched.json')
+
+const REPO = 'gofr-dev/gofr'
+const TIMEOUT_MS = 15000
+
+function headers() {
+  const h = {
+    Accept: 'application/vnd.github+json',
+    'User-Agent': 'gofr.dev build script',
+    'X-GitHub-Api-Version': '2022-11-28',
+  }
+  if (process.env.GITHUB_TOKEN) h.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`
+  return h
+}
+
+async function fetchJson(url) {
+  const ctrl = new AbortController()
+  const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS)
+  try {
+    const res = await fetch(url, { headers: headers(), signal: ctrl.signal })
+    if (!res.ok) throw new Error(`HTTP ${res.status} on ${url}`)
+    return await res.json()
+  } finally {
+    clearTimeout(t)
+  }
+}
+
+async function fetchGithubProfile(login) {
+  try {
+    const u = await fetchJson(`https://api.github.com/users/${encodeURIComponent(login)}`)
+    return {
+      login: u.login,
+      avatar_url: u.avatar_url,
+      profile_url: u.html_url,
+      profile_name: u.name || null,
+      bio: u.bio || null,
+      blog: u.blog || null,
+      company: u.company || null,
+      location: u.location || null,
+      followers: u.followers || 0,
+      public_repos: u.public_repos || 0,
+    }
+  } catch (err) {
+    return { __error: err.message }
+  }
+}
+
+async function fetchAllContributors() {
+  // Paginate until empty so the count is exact, not capped at 100.
+  const all = []
+  for (let page = 1; page <= 20; page++) {
+    try {
+      const batch = await fetchJson(
+        `https://api.github.com/repos/${REPO}/contributors?per_page=100&page=${page}`,
+      )
+      if (!Array.isArray(batch) || batch.length === 0) break
+      all.push(...batch)
+      if (batch.length < 100) break
+    } catch (err) {
+      console.warn(
+        `[team] contributors page ${page} failed (${err.message}); have ${all.length} so far.`,
+      )
+      // Return what we have plus an error marker so the caller can
+      // fall back to snapshot if appropriate.
+      return { items: all, partial: true, error: err.message }
+    }
+  }
+  return { items: all, partial: false }
+}
+
+async function main() {
+  if (!fs.existsSync(inFile)) {
+    console.warn(`[team] no team.json at ${inFile}; skipping enrichment.`)
+    process.exit(0)
+  }
+
+  let snapshot = null
+  if (fs.existsSync(outFile)) {
+    try {
+      snapshot = JSON.parse(fs.readFileSync(outFile, 'utf8'))
+    } catch {
+      snapshot = null
+    }
+  }
+
+  // Snapshot lookup helpers — used to fall back per-member when the
+  // current fetch fails for that individual.
+  const snapshotByGithub = new Map()
+  for (const m of snapshot?.team || []) {
+    if (m.github && m.github_data) snapshotByGithub.set(m.github, m.github_data)
+  }
+
+  const team = JSON.parse(fs.readFileSync(inFile, 'utf8'))
+
+  // Enrich each team member with GitHub profile data when handle is provided.
+  // If the live fetch fails, fall back to the snapshot's data for that member.
+  const coreTeam = []
+  let profileFailures = 0
+  for (const member of team) {
+    const enriched = { ...member }
+    if (member.github) {
+      const profile = await fetchGithubProfile(member.github)
+      if (profile?.__error) {
+        profileFailures++
+        const fallback = snapshotByGithub.get(member.github)
+        if (fallback) {
+          enriched.github_data = fallback
+          console.warn(
+            `[team] live fetch failed for "${member.github}" (${profile.__error}); using snapshot data.`,
+          )
+        } else {
+          console.warn(
+            `[team] live fetch failed for "${member.github}" (${profile.__error}); no snapshot fallback.`,
+          )
+        }
+      } else if (profile) {
+        enriched.github_data = profile
+        if (!enriched.name && profile.profile_name) enriched.name = profile.profile_name
+      }
+    }
+    coreTeam.push(enriched)
+  }
+
+  // Fetch all contributors (paginated). Fall back to snapshot if the
+  // request failed mid-flight or returned nothing.
+  const contributorsResult = await fetchAllContributors()
+  const coreLogins = new Set(coreTeam.map((m) => m.github).filter(Boolean))
+
+  let contributors = (contributorsResult.items || [])
+    .filter((c) => c.type === 'User' && !c.login.includes('[bot]'))
+    .filter((c) => !coreLogins.has(c.login)) // de-dupe core team from grid
+    .map((c) => ({
+      login: c.login,
+      avatar_url: c.avatar_url,
+      profile_url: c.html_url,
+      contributions: c.contributions,
+    }))
+
+  // Total contributors INCLUDING the core team — so the page can show
+  // a true "X+ contributors" stat without having to add anything.
+  let totalContributors = (contributorsResult.items || []).filter(
+    (c) => c.type === 'User' && !c.login.includes('[bot]'),
+  ).length
+
+  // If the live contributor fetch failed AND we have a snapshot with
+  // useful contributor data, prefer the snapshot rather than blank.
+  if (
+    (contributorsResult.partial || contributors.length === 0) &&
+    Array.isArray(snapshot?.contributors) &&
+    snapshot.contributors.length > contributors.length
+  ) {
+    console.warn(
+      `[team] contributor fetch incomplete (got ${contributors.length}); using snapshot of ${snapshot.contributors.length}.`,
+    )
+    contributors = snapshot.contributors
+    totalContributors = snapshot.totalContributors || contributors.length + coreTeam.length
+  }
+
+  const data = {
+    repo: REPO,
+    fetchedAt: new Date().toISOString(),
+    team: coreTeam,
+    contributors,
+    totalContributors,
+  }
+
+  fs.mkdirSync(path.dirname(outFile), { recursive: true })
+  fs.writeFileSync(outFile, JSON.stringify(data, null, 2) + '\n')
+  console.log(
+    `[team] wrote ${coreTeam.length} core member(s), ${contributors.length} contributor(s) (total ${totalContributors}) to ${path.relative(repoRoot, outFile)}.${
+      profileFailures ? ` ${profileFailures} profile fetch(es) used snapshot fallback.` : ''
+    }`,
+  )
+}
+
+main()

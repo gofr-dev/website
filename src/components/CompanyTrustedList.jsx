@@ -6,7 +6,6 @@ import company4 from '@/images/mydbops.svg'
 import company5 from '@/images/guidewire.svg'
 import company6 from '@/images/weave.svg'
 import company8 from '@/images/blinkit.svg'
-import company9 from '@/images/zopsmart.svg'
 import company11 from '@/images/walmart.svg'
 import company10 from '@/images/mcafee.svg'
 import Image from 'next/image'
@@ -39,9 +38,6 @@ const imageLink = [
   },
   {
     image: company6,
-  },
-  {
-    image: company9,
   },
 ]
 

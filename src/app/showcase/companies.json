@@ -7,6 +7,5 @@
   { "name": "Doceree", "industry": "AdTech" },
   { "name": "Mydbops", "industry": "Database Consulting" },
   { "name": "Guidewire", "industry": "Insurance Technology" },
-  { "name": "Weave", "industry": "Technology" },
-  { "name": "ZopSmart", "industry": "E-commerce Technology" }
+  { "name": "Weave", "industry": "Technology" }
 ]

@@ -14,7 +14,6 @@ import company4 from '@/images/mydbops.svg'
 import company5 from '@/images/guidewire.svg'
 import company6 from '@/images/weave.svg'
 import company8 from '@/images/blinkit.svg'
-import company9 from '@/images/zopsmart.svg'
 import company10 from '@/images/mcafee.svg'
 import company11 from '@/images/walmart.svg'
 
@@ -28,15 +27,29 @@ const logoMap = {
   'Mydbops': company4,
   'Guidewire': company5,
   'Weave': company6,
-  'ZopSmart': company9,
 }
 
 export default function ShowcasePage() {
-  const [githubStars, setGithubStars] = useState('3500+')
+  // Display the cached count if available; otherwise leave empty rather
+  // than show a stale fallback ("3500+" was years out of date).
+  const [githubStars, setGithubStars] = useState(null)
 
   useEffect(() => {
     let cached = localStorage.getItem('githubStars')
-    if (cached) setGithubStars(formatNumber(Number(cached)))
+    if (cached) {
+      setGithubStars(formatNumber(Number(cached)))
+      return
+    }
+    // No cached value — fetch live so first-time visitors see a number.
+    fetch('https://api.github.com/repos/gofr-dev/gofr')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.watchers) {
+          setGithubStars(formatNumber(d.watchers))
+          try { localStorage.setItem('githubStars', String(d.watchers)) } catch {}
+        }
+      })
+      .catch(() => {})
   }, [])
 
   return (
@@ -45,17 +58,16 @@ export default function ShowcasePage() {
         {/* Hero */}
         <div className="text-center">
           <h1 className="font-display text-4xl font-bold tracking-tight text-white">
-            Trusted by Engineers Worldwide
+            Used by engineers around the world
           </h1>
-          <p className="mt-3 text-lg text-slate-400">
-            GoFr powers production microservices at companies of all sizes — from startups to Fortune 500.
-          </p>
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm text-slate-300">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#fcd34d" className="h-4 w-4">
-              <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clipRule="evenodd" />
-            </svg>
-            {githubStars} stars on GitHub
-          </div>
+          {githubStars && (
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm text-slate-300">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#fcd34d" className="h-4 w-4">
+                <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clipRule="evenodd" />
+              </svg>
+              {githubStars} stars on GitHub
+            </div>
+          )}
         </div>
 
         {/* Company Grid */}

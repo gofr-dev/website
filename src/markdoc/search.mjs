@@ -101,10 +101,12 @@ export default function withSearch(nextConfig = {}) {
                 fullRawText = cache.get(file)[2]
               } else {
                 let ast = Markdoc.parse(md)
-                let title =
-                  ast.attributes?.frontmatter?.match(
-                    /^title:\s*(.*?)\s*$/m,
-                  )?.[1]
+                let rawTitle = ast.attributes?.frontmatter?.match(
+                  /^title:\s*(.*?)\s*$/m,
+                )?.[1]
+                // Strip surrounding YAML quotes (single or double) so search
+                // results don't render the quoted form: `"My Title"`.
+                let title = rawTitle?.replace(/^["'](.*)["']$/, '$1')
 
                 // Extract structured sections
                 sections = [[title || 'Untitled', null, []]]

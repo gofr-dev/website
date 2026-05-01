@@ -78,6 +78,49 @@ export default function CommunityPage() {
           </p>
         </div>
 
+        {/* Where to ask what — gives visitors a clear decision tree before */}
+        {/* dropping them into 5 channels. Reduces "I don't know where to */}
+        {/* post this" hesitation that depresses community engagement. */}
+        <div className="mt-10 rounded-xl border border-slate-800 bg-slate-900/40 p-6">
+          <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-slate-500">
+            Where to ask what
+          </h2>
+          <dl className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <dt className="text-sm font-medium text-white">Bug or feature?</dt>
+              <dd className="mt-1 text-xs text-slate-400">
+                <Link href="https://github.com/gofr-dev/gofr/issues" target="_blank" className="text-sky-400 hover:text-sky-300">
+                  GitHub Issues →
+                </Link>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-white">Question or help?</dt>
+              <dd className="mt-1 text-xs text-slate-400">
+                <Link href="https://discord.gg/5ACeSKGt37" target="_blank" className="text-indigo-400 hover:text-indigo-300">
+                  Discord →
+                </Link>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-white">Discussion or idea?</dt>
+              <dd className="mt-1 text-xs text-slate-400">
+                <Link href="https://www.reddit.com/r/gofr/" target="_blank" className="text-orange-400 hover:text-orange-300">
+                  r/gofr →
+                </Link>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-white">Release news?</dt>
+              <dd className="mt-1 text-xs text-slate-400">
+                <Link href="https://twitter.com/gofr_dev" target="_blank" className="text-sky-400 hover:text-sky-300">
+                  @gofr_dev →
+                </Link>
+              </dd>
+            </div>
+          </dl>
+        </div>
+
         {/* Channel Cards */}
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {channels.map((channel) => (

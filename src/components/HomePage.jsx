@@ -2,17 +2,23 @@
 import CompanyList from './CompanyTrustedList'
 import DBlistComponent from './DBlistComponent'
 import { Hero } from './Hero'
-// import { Testimonials } from './Testimonials'
 import { QuickLink } from '@/components/QuickLinks'
+import { EcosystemRecognition } from '@/components/EcosystemRecognition'
 import blurCyanImage from "@/images/blur-cyan.png";
 import Image from "next/image";
 import React from "react";
 import Testimonials from "@/components/Reviews";
+// Substance first: pitch the framework's value, then prove it. Hero →
+// features → datasources establishes what GoFr does and what it
+// integrates with; the trailing block (logos → ecosystem →
+// testimonials) is one cohesive credibility cluster instead of being
+// split across the page. DBlist + CompanyList share the same dark
+// `bg-gray-900` band, so the transition between them reads as one
+// continuous strip rather than two seams.
 export function HomePage() {
   return (
     <div className="m-auto w-auto max-w-screen-2xl">
       <Hero />
-      <CompanyList />
       <div className="not-prose my-12 grid grid-cols-1 gap-6 px-4 md:grid-cols-3 lg:px-8 xl:px-12">
         <QuickLink
           title="Battle-Tested at Enterprise Scale"
@@ -55,10 +61,9 @@ export function HomePage() {
       </div>
 
       <DBlistComponent />
-      {/*<div className="mx-4 flex flex-col {{ sm:flex-col xs:flex-col md:flex-row lg:flex-row }}  gap-x-8 overflow-y-auto pb-10 gap-y-16 lg:mx-8 xl:mx-12 xl:gap-x-16">*/}
-      {/*  <Testimonials />*/}
-      {/*</div>*/}
-        <Testimonials/>
+      <CompanyList />
+      <EcosystemRecognition />
+      <Testimonials />
     </div>
   )
 }

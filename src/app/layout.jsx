@@ -22,6 +22,13 @@ const lexend = localFont({
   variable: '--font-lexend',
 })
 
+// Default metadataBase for any page that doesn't override it. Makes
+// social Open Graph / Twitter image URLs resolve to gofr.dev instead of
+// localhost during build.
+export const metadata = {
+  metadataBase: new URL('https://gofr.dev'),
+}
+
 export default function RootLayout({ children }) {
   return (
     <html
@@ -37,30 +44,22 @@ export default function RootLayout({ children }) {
         />
         <meta
           property="og:title"
-          content="GoFr - An opinionated Go Framework"
+          content="GoFr — An Opinionated Go Framework"
         />
         <meta
           property="og:description"
-          content="For accelerated microservice development"
+          content="An Opinionated Go Framework. For accelerated microservice development."
         ></meta>
         <meta property="og:url" content="https://gofr.dev/"></meta>
         <meta property="og:type" content="website"></meta>
-
-        {/* <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-QEC53YYXB8"
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer = window.dataLayer || [];
-          function gtag(){
-            window.dataLayer.push(arguments)
-          }
-          gtag('js', new Date());
-          gtag('config', 'G-QEC53YYXB8');
-          `,
-          }}
-        /> */}
+        <meta property="og:image" content="https://gofr.dev/opengraph-image.png" />
+        <meta property="og:site_name" content="GoFr" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@gofr_dev" />
+        <meta name="twitter:creator" content="@gofr_dev" />
+        <meta name="twitter:title" content="GoFr — An Opinionated Go Framework" />
+        <meta name="twitter:description" content="An Opinionated Go Framework. For accelerated microservice development." />
+        <meta name="twitter:image" content="https://gofr.dev/twitter-image.png" />
         <GoogleTagManager gtmId="GTM-5G6KD5VJ" />
       </head>
 

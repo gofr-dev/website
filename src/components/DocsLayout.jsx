@@ -9,7 +9,7 @@ export function DocsLayout({ children, frontmatter: { title }, nodes }) {
 
   return (
     <>
-      <div className="min-w-0 max-w-2xl flex-auto px-4 py-16 lg:max-w-none lg:pl-8 lg:pr-0 xl:px-16">
+      <div className="min-w-0 max-w-2xl flex-auto px-4 py-16 lg:max-w-4xl lg:pl-8 lg:pr-0 xl:px-16">
         <article>
           <DocsHeader title={title} />
           <Prose>{children}</Prose>

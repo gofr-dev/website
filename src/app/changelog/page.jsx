@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import releases from './releases.json'
 
@@ -9,6 +9,38 @@ function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric',
   })
+}
+
+// Returns a month key like "2026-04" used both for grouping and for
+// generating the anchor ID we link to from the right-rail.
+function monthKey(dateStr) {
+  if (!dateStr) return 'unknown'
+  const d = new Date(dateStr)
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`
+}
+
+function formatMonthLabel(key) {
+  if (!key || key === 'unknown') return 'Unknown'
+  const [y, m] = key.split('-')
+  const d = new Date(Number(y), Number(m) - 1, 1)
+  return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+}
+
+// Group releases by month, preserving the chronological order of the
+// source array (newest first).
+function groupByMonth(items) {
+  const groups = []
+  const seen = new Map()
+  for (const item of items) {
+    const key = monthKey(item.date)
+    if (!seen.has(key)) {
+      const g = { key, label: formatMonthLabel(key), releases: [] }
+      seen.set(key, g)
+      groups.push(g)
+    }
+    seen.get(key).releases.push(item)
+  }
+  return groups
 }
 
 // Simple markdown-to-JSX renderer for GitHub release notes
@@ -197,18 +229,40 @@ const sectionStyles = {
 }
 
 function ReleaseCard({ release, isLatest }) {
-  let [expanded, setExpanded] = useState(isLatest)
+  // Open by default if it's the latest release OR if the URL hash
+  // matches this release tag (deep-linking from /changelog#v1.56.0).
+  const hashMatch =
+    typeof window !== 'undefined' &&
+    decodeURIComponent(window.location.hash || '').slice(1) === release.tag
+  let [expanded, setExpanded] = useState(isLatest || hashMatch)
   let sections = parseRelease(release.body)
   let sectionTypes = sections.map(s => s.type)
 
   return (
-    <div className={`relative border-l-2 pl-8 pb-12 ${isLatest ? 'border-sky-500' : 'border-slate-800'}`}>
-      <div className={`absolute -left-[9px] top-0 h-4 w-4 rounded-full border-2 ${isLatest ? 'border-sky-500 bg-sky-500' : 'border-slate-700 bg-slate-900'}`} />
+    <div
+      id={release.tag}
+      // Single uniform timeline color so the spine flows continuously
+      // through every release. The latest release is distinguished by
+      // the dot fill + the "Latest" pill below, not by recoloring the
+      // line itself (which created visual jumps between cards).
+      className="relative scroll-mt-24 border-l-2 border-slate-800 pl-8 pb-12"
+    >
+      <div
+        className={`absolute -left-[9px] top-0 h-4 w-4 rounded-full border-2 ${
+          isLatest
+            ? 'border-sky-400 bg-sky-400 ring-4 ring-sky-400/20'
+            : 'border-slate-700 bg-slate-900'
+        }`}
+      />
 
       <div className="flex flex-wrap items-center gap-3">
-        <span className={`rounded-full px-3 py-1 text-sm font-bold ${isLatest ? 'bg-sky-500/20 text-sky-400' : 'bg-slate-800 text-slate-300'}`}>
+        <Link
+          href={`#${release.tag}`}
+          className={`rounded-full px-3 py-1 text-sm font-bold transition-opacity hover:opacity-80 ${isLatest ? 'bg-sky-500/20 text-sky-400' : 'bg-slate-800 text-slate-300'}`}
+          aria-label={`Permalink to ${release.tag}`}
+        >
           {release.tag}
-        </span>
+        </Link>
         <span className="text-sm text-slate-500">{formatDate(release.date)}</span>
         {isLatest && (
           <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-400">
@@ -272,32 +326,155 @@ function ReleaseCard({ release, isLatest }) {
   )
 }
 
+// Right-rail timeline. Lists every month that contains a release, with
+// a count badge. Active month is the one closest to the top of the
+// viewport — same pattern as docs "On this page". Click → smooth-scroll
+// to the month anchor; the URL hash updates so the navigation is
+// shareable.
+function MonthRail({ groups, activeKey, onClick }) {
+  return (
+    <nav aria-label="Releases by month" className="text-sm">
+      <p className="font-display text-xs font-medium uppercase tracking-wider text-slate-500">
+        Browse by month
+      </p>
+      <ol className="mt-4 space-y-2 border-l border-slate-800">
+        {groups.map((g) => {
+          const isActive = g.key === activeKey
+          return (
+            <li key={g.key}>
+              <Link
+                href={`#month-${g.key}`}
+                onClick={(e) => onClick?.(e, g.key)}
+                className={`-ml-px flex items-center justify-between gap-3 border-l py-1.5 pl-4 pr-2 text-xs transition-colors ${
+                  isActive
+                    ? 'border-sky-500 font-semibold text-sky-400'
+                    : 'border-transparent text-slate-500 hover:border-slate-600 hover:text-slate-300'
+                }`}
+              >
+                <span>{g.label}</span>
+                <span className="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">
+                  {g.releases.length}
+                </span>
+              </Link>
+            </li>
+          )
+        })}
+      </ol>
+    </nav>
+  )
+}
+
 export default function ChangelogPage() {
+  const groups = groupByMonth(releases)
+  const [activeKey, setActiveKey] = useState(groups[0]?.key)
+
+  // Track which month is currently in view so the rail highlights it.
+  // Standard scrollspy: pick the last month-anchor whose top is above
+  // a threshold (here: 120px from viewport top, matching scroll-mt-24).
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const headers = groups
+      .map((g) => document.getElementById(`month-${g.key}`))
+      .filter(Boolean)
+
+    function onScroll() {
+      const offset = 120
+      let current = headers[0]
+      for (const h of headers) {
+        if (h.getBoundingClientRect().top - offset <= 0) current = h
+        else break
+      }
+      if (current) setActiveKey(current.id.replace(/^month-/, ''))
+    }
+
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [groups])
+
+  // Make hash deep-links work even when the page mounts after the
+  // browser has already tried to scroll (the release-card is rendered
+  // by React, so the anchor isn't in the DOM at initial load).
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const hash = decodeURIComponent(window.location.hash || '')
+    if (!hash) return
+    const target = document.getElementById(hash.slice(1))
+    if (target) {
+      // Defer one tick so layout has settled.
+      setTimeout(() => target.scrollIntoView({ behavior: 'instant', block: 'start' }), 0)
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-slate-900">
-      <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-        <h1 className="font-display text-4xl font-bold tracking-tight text-white">
-          Changelog
-        </h1>
-        <p className="mt-3 text-lg text-slate-400">
-          Release notes and version history for GoFr.
-        </p>
+      <div className="mx-auto flex max-w-screen-xl gap-12 px-4 py-16 sm:px-6 lg:px-8">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="font-display text-4xl font-bold tracking-tight text-white">
+              Changelog
+            </h1>
+            <Link
+              href="/changelog.xml"
+              className="inline-flex items-center gap-1.5 rounded-md border border-slate-800 px-3 py-1.5 text-xs text-slate-400 transition-colors hover:border-amber-500/40 hover:text-amber-400"
+              aria-label="Subscribe via RSS"
+            >
+              <svg className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M5 3a16 16 0 0 1 16 16 1 1 0 0 1-2 0A14 14 0 0 0 5 5a1 1 0 0 1 0-2Zm0 6a10 10 0 0 1 10 10 1 1 0 0 1-2 0A8 8 0 0 0 5 11a1 1 0 0 1 0-2Zm1.5 8a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z" />
+              </svg>
+              RSS
+            </Link>
+          </div>
+          <p className="mt-3 text-lg text-slate-400">
+            Release notes and version history for GoFr. Pick a month from the right rail or deep-link to a specific tag (e.g. <code className="rounded bg-slate-800 px-1 text-xs text-slate-300">/changelog#{releases[0]?.tag || 'v1.0.0'}</code>).
+          </p>
 
-        <div className="mt-12">
-          {releases.map((release, index) => (
-            <ReleaseCard key={release.tag} release={release} isLatest={index === 0} />
-          ))}
+          {/* Month-grouped release list. Each month gets a sticky-ish */}
+          {/* header anchor (id="month-YYYY-MM") so the right rail can */}
+          {/* link directly to it. */}
+          <div className="mt-12">
+            {groups.map((group, gIdx) => (
+              <section key={group.key} className="mb-2">
+                <h2
+                  id={`month-${group.key}`}
+                  className="scroll-mt-24 -ml-px border-l-2 border-slate-800 bg-slate-900/80 pl-8 pb-4 pt-2 font-display text-sm font-semibold uppercase tracking-wider text-slate-400 backdrop-blur"
+                >
+                  {group.label}
+                  <span className="ml-2 text-xs font-normal text-slate-600">
+                    {group.releases.length} release{group.releases.length === 1 ? '' : 's'}
+                  </span>
+                </h2>
+                {group.releases.map((release, rIdx) => (
+                  <ReleaseCard
+                    key={release.tag}
+                    release={release}
+                    isLatest={gIdx === 0 && rIdx === 0}
+                  />
+                ))}
+              </section>
+            ))}
+          </div>
+
+          <div className="mt-8 border-t border-slate-800 pt-6 text-center">
+            <Link
+              href="https://github.com/gofr-dev/gofr/releases"
+              target="_blank"
+              className="text-sm text-slate-400 transition-colors hover:text-sky-400"
+            >
+              View all releases on GitHub →
+            </Link>
+          </div>
         </div>
 
-        <div className="mt-8 border-t border-slate-800 pt-6 text-center">
-          <Link
-            href="https://github.com/gofr-dev/gofr/releases"
-            target="_blank"
-            className="text-sm text-slate-400 transition-colors hover:text-sky-400"
-          >
-            View all releases on GitHub →
-          </Link>
-        </div>
+        {/* Sticky right rail — hides on small screens. Mirrors the */}
+        {/* docs "On this page" treatment. With ~28+ months in the */}
+        {/* index, the rail itself needs to scroll independently of */}
+        {/* the page so distant months stay reachable. */}
+        <aside className="hidden w-56 flex-none xl:block">
+          <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2">
+            <MonthRail groups={groups} activeKey={activeKey} />
+          </div>
+        </aside>
       </div>
     </div>
   )

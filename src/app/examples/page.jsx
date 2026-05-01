@@ -53,6 +53,33 @@ export default function ExamplesPage() {
           <p className="mt-3 text-lg text-slate-400">
             Learn GoFr by example. Each recipe is a working project you can clone and run.
           </p>
+          {/* Quick clone snippet — answers the "ok how do I run these?" question */}
+          {/* immediately, without making the visitor hunt for instructions. */}
+          <div className="mx-auto mt-6 max-w-2xl">
+            <div className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950/60 p-3 text-left font-mono text-xs text-slate-400">
+              <span className="flex-none select-none text-slate-600">$</span>
+              {/* whitespace-nowrap so the command never breaks mid-word; */}
+              {/* the code element scrolls horizontally if it's too long. */}
+              <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap">
+                git clone https://github.com/gofr-dev/gofr
+              </code>
+              <Link
+                href="https://github.com/codespaces/new?repo=gofr-dev/gofr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex flex-none items-center gap-1 rounded-md bg-slate-800 px-2.5 py-1 text-[11px] font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+              >
+                <svg className="h-3 w-3" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M2 5a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V5Zm3-1.5A1.5 1.5 0 0 0 3.5 5v3A1.5 1.5 0 0 0 5 9.5h6A1.5 1.5 0 0 0 12.5 8V5A1.5 1.5 0 0 0 11 3.5H5Z" />
+                  <path d="M0 11.25A2.25 2.25 0 0 1 2.25 9h11.5A2.25 2.25 0 0 1 16 11.25v1.5A2.25 2.25 0 0 1 13.75 15H2.25A2.25 2.25 0 0 1 0 12.75v-1.5Z" />
+                </svg>
+                Codespaces
+              </Link>
+            </div>
+            <p className="mt-2 text-center text-xs text-slate-500">
+              Examples live under <code className="font-mono">gofr/examples</code> — pick any subfolder and run <code className="font-mono">go run main.go</code>.
+            </p>
+          </div>
         </div>
 
         {/* Featured */}

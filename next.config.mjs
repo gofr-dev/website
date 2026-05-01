@@ -12,8 +12,12 @@ const nextConfig = {
       test: /\.md$/,
       use: [
         createLoader(function (source) {
+          // Inject metadataBase so Open Graph and Twitter image URLs
+          // resolve to gofr.dev in production builds. The frontmatter
+          // `nextjs.metadata` block layers title/description on top.
           return (
-            source + '\nexport const metadata = frontmatter.nextjs?.metadata;'
+            source +
+            '\nexport const metadata = { metadataBase: new URL("https://gofr.dev"), ...(frontmatter.nextjs?.metadata || {}) };'
           )
         }),
       ],

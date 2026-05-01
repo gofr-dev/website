@@ -11,6 +11,7 @@ import { Search } from '@/components/Search'
 import { formatNumber } from '@/lib/common'
 import { ErrorBoundary } from './BugsnagWrapper'
 import FooterUi from '@/components/Footer'
+import { LocaleAutoRedirect } from '@/components/LocaleAutoRedirect'
 
 export function GitHubIcon(props) {
   return (
@@ -24,7 +25,6 @@ const navLinks = [
   { title: 'Docs', href: '/docs', match: '/docs' },
   { title: 'Changelog', href: '/changelog', match: '/changelog' },
   { title: 'Examples', href: '/examples', match: '/examples' },
-  { title: 'Community', href: '/community', match: '/community' },
 ]
 
 function Header() {
@@ -176,6 +176,7 @@ export function Layout({ children }) {
   return (
     <ErrorBoundary FallbackComponent={ErrorView}>
       <div className="flex w-full flex-col">
+        <LocaleAutoRedirect />
         {pathname !== '/hackathon' && (
           <>
             <div className="sticky left-0 right-0 top-0 z-40 sm:top-0">

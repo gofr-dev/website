@@ -1,0 +1,7 @@
+# Industry-standard discoverable security contact (RFC 9116).
+# Reachable at https://gofr.dev/.well-known/security.txt
+Contact: mailto:connect@gofr.dev
+Contact: https://github.com/gofr-dev/gofr/security/advisories/new
+Preferred-Languages: en
+Canonical: https://gofr.dev/.well-known/security.txt
+Policy: https://github.com/gofr-dev/gofr/blob/main/SECURITY.md

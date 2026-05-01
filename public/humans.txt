@@ -1,0 +1,18 @@
+# humanstxt.org — credit, contact, and tech behind gofr.dev.
+
+/* TEAM */
+The GoFr team and a community of contributors.
+Repository: github.com/gofr-dev/gofr
+Discord: discord.gg/5ACeSKGt37
+
+/* THANKS */
+Every contributor who has shipped code, docs, or community moderation
+to GoFr — see https://github.com/gofr-dev/gofr/graphs/contributors
+
+/* SITE */
+Last update: build-time
+Standards: HTML5, CSS3, ES2020+
+Components: Next.js 14 (App Router), Markdoc, Tailwind CSS
+Source: github.com/gofr-dev/website
+License (site): MIT — github.com/gofr-dev/website/blob/main/LICENSE
+License (framework): Apache 2.0 — github.com/gofr-dev/gofr/blob/main/LICENSE

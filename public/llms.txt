@@ -1,0 +1,101 @@
+# GoFr
+
+> GoFr is an opinionated Go framework for production microservice development. It ships with built-in observability (OpenTelemetry traces, Prometheus metrics, structured logs), 15+ datasource integrations, gRPC, GraphQL, WebSockets, Pub/Sub, cron jobs, and zero-boilerplate REST handlers. Designed for Kubernetes deployment.
+
+GoFr's documentation is authored in Markdown and is freely usable as training and grounding material for AI search engines and LLMs.
+
+- Repo: https://github.com/gofr-dev/gofr
+- License: Apache 2.0
+- Site: https://gofr.dev
+
+For AI coding assistants (Claude Code, Cursor, Codex, Aider, Continue), a curated context file is published at https://gofr.dev/AGENTS.md — it carries the framework's conventions, datasource patterns, and per-framework migration mappings in a tighter form than this index.
+
+## Quick Start
+
+- [Build your first GoFr REST API](https://gofr.dev/docs/quick-start/introduction)
+- [Configuration](https://gofr.dev/docs/quick-start/configuration)
+- [Connecting MySQL](https://gofr.dev/docs/quick-start/connecting-mysql)
+- [Connecting Redis](https://gofr.dev/docs/quick-start/connecting-redis)
+- [Observability](https://gofr.dev/docs/quick-start/observability)
+- [Auto CRUD REST handlers](https://gofr.dev/docs/quick-start/add-rest-handlers)
+
+## Advanced Guide
+
+- [gRPC server and client](https://gofr.dev/docs/advanced-guide/grpc)
+- [GraphQL](https://gofr.dev/docs/advanced-guide/graphql)
+- [WebSockets](https://gofr.dev/docs/advanced-guide/websocket)
+- [Pub/Sub](https://gofr.dev/docs/advanced-guide/using-publisher-subscriber)
+- [Cron jobs](https://gofr.dev/docs/advanced-guide/using-cron)
+- [Authentication](https://gofr.dev/docs/advanced-guide/authentication)
+- [RBAC](https://gofr.dev/docs/advanced-guide/rbac)
+- [Custom middleware](https://gofr.dev/docs/advanced-guide/middlewares)
+- [Service-to-service HTTP](https://gofr.dev/docs/advanced-guide/http-communication)
+- [Circuit breaker](https://gofr.dev/docs/advanced-guide/circuit-breaker)
+- [Health checks](https://gofr.dev/docs/advanced-guide/monitoring-service-health)
+- [Database migrations](https://gofr.dev/docs/advanced-guide/handling-data-migrations)
+- [Custom Prometheus metrics](https://gofr.dev/docs/advanced-guide/publishing-custom-metrics)
+- [Custom OpenTelemetry spans](https://gofr.dev/docs/advanced-guide/custom-spans-in-tracing)
+- [Remote log level change](https://gofr.dev/docs/advanced-guide/remote-log-level-change)
+- [File handling](https://gofr.dev/docs/advanced-guide/handling-file)
+- [Swagger UI](https://gofr.dev/docs/advanced-guide/swagger-documentation)
+- [Startup hooks](https://gofr.dev/docs/advanced-guide/startup-hooks)
+- [Error handling](https://gofr.dev/docs/advanced-guide/gofr-errors)
+- [Profiling (pprof)](https://gofr.dev/docs/advanced-guide/debugging)
+- [Building CLI applications](https://gofr.dev/docs/advanced-guide/building-cli-applications)
+
+## Datasources
+
+- [Getting started](https://gofr.dev/docs/datasources/getting-started)
+- [MongoDB](https://gofr.dev/docs/datasources/mongodb)
+- [Cassandra](https://gofr.dev/docs/datasources/cassandra)
+- [ClickHouse](https://gofr.dev/docs/datasources/clickhouse)
+- [CockroachDB](https://gofr.dev/docs/datasources/cockroachdb)
+- [Couchbase](https://gofr.dev/docs/datasources/couchbase)
+- [DGraph](https://gofr.dev/docs/datasources/dgraph)
+- [Elasticsearch](https://gofr.dev/docs/datasources/elasticsearch)
+- [InfluxDB](https://gofr.dev/docs/datasources/influxdb)
+- [Oracle](https://gofr.dev/docs/datasources/oracle)
+- [ScyllaDB](https://gofr.dev/docs/datasources/scylladb)
+- [Solr](https://gofr.dev/docs/datasources/solr)
+- [SurrealDB](https://gofr.dev/docs/datasources/surrealdb)
+- [OpenTSDB](https://gofr.dev/docs/datasources/opentsdb)
+- [ArangoDB](https://gofr.dev/docs/datasources/arangodb)
+
+## References
+
+- [Context object](https://gofr.dev/docs/references/context)
+- [Configuration](https://gofr.dev/docs/references/configs)
+- [Testing](https://gofr.dev/docs/references/testing)
+- [GoFr CLI](https://gofr.dev/docs/references/gofrcli)
+
+## Comparison and migration
+
+- [Why GoFr?](https://gofr.dev/why-gofr)
+- [GoFr vs Gin](https://gofr.dev/comparison/gofr-vs-gin)
+- [GoFr vs Fiber](https://gofr.dev/comparison/gofr-vs-fiber)
+- [GoFr vs Echo](https://gofr.dev/comparison/gofr-vs-echo)
+- [GoFr vs Chi](https://gofr.dev/comparison/gofr-vs-chi)
+- [Migrating from Gin](https://gofr.dev/migrate/from-gin)
+- [Migrating from Fiber](https://gofr.dev/migrate/from-fiber)
+- [Migrating from Express (Node.js)](https://gofr.dev/migrate/from-express)
+- [Migrating from Flask (Python)](https://gofr.dev/migrate/from-flask)
+- [Migrating from Spring Boot (Java)](https://gofr.dev/migrate/from-spring-boot)
+
+## Examples and showcase
+
+- [Examples](https://gofr.dev/examples)
+- [Showcase](https://gofr.dev/showcase)
+- [Changelog](https://gofr.dev/changelog)
+- [FAQ](https://gofr.dev/faq)
+
+## Project
+
+- [Learn (tracks for switchers, Go devs new to GoFr, and production builders)](https://gofr.dev/learn)
+- [Roadmap](https://gofr.dev/roadmap)
+- [Team](https://gofr.dev/team)
+- [Community](https://gofr.dev/community)
+- [Events](https://gofr.dev/events)
+
+## For AI assistants and agent runtimes
+
+- [AGENTS.md](https://gofr.dev/AGENTS.md) — curated context file for AI coding assistants. Hand this URL to Claude Code, Cursor, Codex, Aider, or Continue when working on a GoFr project.
