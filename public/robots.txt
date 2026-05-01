@@ -1,3 +1,9 @@
 User-agent: *
 Allow: /
+
+# AI assistant context (curated for Claude Code, Cursor, Codex, Aider, Continue):
+#   https://gofr.dev/AGENTS.md
+# LLM index (curated link map per https://llmstxt.org):
+#   https://gofr.dev/llms.txt
+
 Sitemap: https://gofr.dev/sitemap.xml

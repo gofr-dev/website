@@ -60,6 +60,20 @@ export default function RootLayout({ children }) {
         <meta name="twitter:title" content="GoFr — An Opinionated Go Framework" />
         <meta name="twitter:description" content="An Opinionated Go Framework. For accelerated microservice development." />
         <meta name="twitter:image" content="https://gofr.dev/twitter-image.png" />
+
+        {/* AI / LLM discoverability. Two signals every page emits: */}
+        {/*  - `rel="alternate"` with text/plain + text/markdown so */}
+        {/*    crawlers that follow rel-alternate links pick them up. */}
+        {/*  - The original "ai" + "llm" rel values are not yet a W3C */}
+        {/*    standard but match the convention emerging across sites */}
+        {/*    that have published llms.txt — costs nothing to emit. */}
+        {/* The hreflang on rel="alternate" is intentionally omitted */}
+        {/* because these resources are language-neutral indexes. */}
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM index (llmstxt.org)" />
+        <link rel="alternate" type="text/markdown" href="/AGENTS.md" title="AI assistant context" />
+        <link rel="llm" type="text/plain" href="/llms.txt" />
+        <link rel="ai-context" type="text/markdown" href="/AGENTS.md" />
+
         <GoogleTagManager gtmId="GTM-5G6KD5VJ" />
       </head>
 

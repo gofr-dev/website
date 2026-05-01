@@ -50,8 +50,12 @@ export function HomePage() {
           description="GoFr catches panics and automatically recovers to maintain continuous availability of your server."
           icon="crash"
         />
+          {/* Decorative blur orb. `pointer-events-none` is critical: */}
+          {/* without it, this absolutely-positioned image floats over */}
+          {/* sections below the feature grid (DBlist, ecosystem cards, */}
+          {/* testimonials) and silently swallows their clicks. */}
           <Image
-              className="absolute opacity-25 mt-80"
+              className="absolute mt-80 opacity-25 pointer-events-none"
               src={blurCyanImage}
               alt=""
               width={'h-44'}

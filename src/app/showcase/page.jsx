@@ -129,15 +129,18 @@ export default function ShowcasePage() {
           </div>
         </div>
 
-        {/* CTA */}
+        {/* CTA — asking for a testimonial rather than a company logo */}
+        {/* keeps the credibility signal individual-developer-shaped */}
+        {/* (which matches who actually adopts GoFr) instead of pushing */}
+        {/* contributors to get corporate sign-off they may not have. */}
         <div className="mt-16 text-center">
           <p className="text-slate-400">Using GoFr in production?</p>
           <Link
-            href="https://github.com/gofr-dev/gofr/issues/new?title=Showcase:+Add+our+company&body=Company+name:+%0AIndustry:+%0AHow+we+use+GoFr:+"
+            href="https://github.com/gofr-dev/gofr/issues/new?title=Testimonial:+How+I+use+GoFr&body=Name:+%0ARole+/+team:+%0AHow+we+use+GoFr:+%0AHappy+to+be+quoted+publicly:+yes/no"
             target="_blank"
             className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300"
           >
-            Add your company to the showcase
+            Share a testimonial
             <svg className="h-3.5 w-3.5" viewBox="0 0 12 12" fill="none">
               <path d="M3.5 3.5h5v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               <path d="M8.5 3.5L3 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />

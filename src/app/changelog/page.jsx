@@ -50,6 +50,33 @@ function groupByMonth(items) {
   return groups
 }
 
+// Returns a minor-version key like "v1.56" — drops the patch number.
+// Releases without a parseable v<major>.<minor>.<patch> tag fall into
+// "other" so the rail still has somewhere to put them.
+function versionKey(tag) {
+  if (!tag) return 'other'
+  const m = /^v?(\d+)\.(\d+)\.\d+/.exec(tag)
+  return m ? `v${m[1]}.${m[2]}` : 'other'
+}
+
+// Group releases by minor version line. Same shape as groupByMonth so
+// MonthRail can render either set without knowing the difference.
+function groupByVersion(items) {
+  const groups = []
+  const seen = new Map()
+  for (const item of items) {
+    const key = versionKey(item.tag)
+    const label = key === 'other' ? 'Other' : key
+    if (!seen.has(key)) {
+      const g = { key, label, releases: [] }
+      seen.set(key, g)
+      groups.push(g)
+    }
+    seen.get(key).releases.push(item)
+  }
+  return groups
+}
+
 // Simple markdown-to-JSX renderer for GitHub release notes
 function RenderMarkdown({ text }) {
   if (!text) return null
@@ -344,29 +371,45 @@ function ReleaseCard({ release, isLatest }) {
 // viewport — same pattern as docs "On this page". Click → smooth-scroll
 // to the month anchor; the URL hash updates so the navigation is
 // shareable.
-function MonthRail({ groups, activeKey, onClick }) {
+// Format a release date for the rail row — short, side-by-side with
+// the version tag. Year is included because the rail spans multiple
+// years; without it "Sep 2" reads ambiguously between releases. Using
+// the apostrophe-year format ("Sep 2 '24") keeps the row compact.
+function formatShortDate(dateStr) {
+  if (!dateStr) return ''
+  const d = new Date(dateStr)
+  const md = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  const yr = String(d.getUTCFullYear()).slice(-2)
+  return `${md} '${yr}`
+}
+
+// Right rail — flat list of every release. Each row is one exact
+// version with its release date as secondary metadata. Clicking jumps
+// straight to that release card; the page-side handler auto-extends
+// pagination if needed.
+function ReleaseRail({ items, activeKey, onClick }) {
   return (
-    <nav aria-label="Releases by month" className="text-sm">
+    <nav aria-label="All releases" className="text-sm">
       <p className="font-display text-xs font-medium uppercase tracking-wider text-slate-500">
-        Browse by month
+        Browse by version
       </p>
-      <ol className="mt-4 space-y-2 border-l border-slate-800">
-        {groups.map((g) => {
-          const isActive = g.key === activeKey
+      <ol className="mt-4 space-y-1 border-l border-slate-800">
+        {items.map((r) => {
+          const isActive = r.tag === activeKey
           return (
-            <li key={g.key}>
+            <li key={r.tag}>
               <Link
-                href={`#month-${g.key}`}
-                onClick={(e) => onClick?.(e, g.key)}
+                href={`#${r.tag}`}
+                onClick={(e) => onClick?.(e, r.tag)}
                 className={`-ml-px flex items-center justify-between gap-3 border-l py-1.5 pl-4 pr-2 text-xs transition-colors ${
                   isActive
                     ? 'border-sky-500 font-semibold text-sky-400'
                     : 'border-transparent text-slate-500 hover:border-slate-600 hover:text-slate-300'
                 }`}
               >
-                <span>{g.label}</span>
-                <span className="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">
-                  {g.releases.length}
+                <span className="font-mono">{r.tag}</span>
+                <span className="text-[10px] text-slate-500">
+                  {formatShortDate(r.date)}
                 </span>
               </Link>
             </li>
@@ -388,39 +431,41 @@ function alignToPage(target, total) {
 export default function ChangelogPage() {
   const [shown, setShown] = useState(Math.min(PAGE_SIZE, releases.length))
 
-  // Two grouping passes: `allGroups` powers the rail (so every month
-  // remains clickable regardless of pagination state), `groups`
-  // powers the rendered list (only the months in the visible window).
-  // Clicking an older month auto-extends `shown` to include it, then
-  // scrolls — so the rail is a fast-jump to any month, ever.
-  const allGroups = groupByMonth(releases)
+  // Body groups by minor-version line (v1.56.x, v1.55.x, …) — the
+  // axis the rail navigates by. Month is per-release metadata only.
+  // The rail uses the full release set so every version line is one
+  // click away regardless of pagination.
   const visibleReleases = releases.slice(0, shown)
-  const groups = groupByMonth(visibleReleases)
-  const [activeKey, setActiveKey] = useState(allGroups[0]?.key)
+  const groups = groupByVersion(visibleReleases)
+  // Rail tracks the currently-visible release tag (set by scrollspy).
+  // Initialised to the latest release so the rail highlights the
+  // section the user lands on.
+  const [activeKey, setActiveKey] = useState(releases[0]?.tag)
 
-  // Track which month is currently in view so the rail highlights it.
-  // Standard scrollspy: pick the last month-anchor whose top is above
-  // a threshold (here: 120px from viewport top, matching scroll-mt-24).
+  // Track which release card is currently in view so the rail
+  // highlights it. We watch the per-release anchors (id={release.tag})
+  // — each card has scroll-mt-24, so a 120px threshold lines up with
+  // the card's effective top edge after sticky-header offset.
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const headers = groups
-      .map((g) => document.getElementById(`month-${g.key}`))
+    const cards = visibleReleases
+      .map((r) => document.getElementById(r.tag))
       .filter(Boolean)
 
     function onScroll() {
       const offset = 120
-      let current = headers[0]
-      for (const h of headers) {
-        if (h.getBoundingClientRect().top - offset <= 0) current = h
+      let current = cards[0]
+      for (const c of cards) {
+        if (c.getBoundingClientRect().top - offset <= 0) current = c
         else break
       }
-      if (current) setActiveKey(current.id.replace(/^month-/, ''))
+      if (current) setActiveKey(current.id)
     }
 
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [groups])
+  }, [visibleReleases])
 
   // Make hash deep-links work even when the target release sits past
   // the initial pagination window. We expand `shown` to include the
@@ -468,18 +513,18 @@ export default function ChangelogPage() {
             </Link>
           </div>
           <p className="mt-3 text-lg text-slate-400">
-            Release notes and version history for GoFr. Pick a month from the right rail or deep-link to a specific tag (e.g. <code className="rounded bg-slate-800 px-1 text-xs text-slate-300">/changelog#{releases[0]?.tag || 'v1.0.0'}</code>).
+            Release notes and version history for GoFr. Pick a version from the right rail or deep-link to a specific tag (e.g. <code className="rounded bg-slate-800 px-1 text-xs text-slate-300">/changelog#{releases[0]?.tag || 'v1.0.0'}</code>).
           </p>
 
-          {/* Month-grouped release list. Each month gets a sticky-ish */}
-          {/* header anchor (id="month-YYYY-MM") so the right rail can */}
-          {/* link directly to it. */}
+          {/* Version-grouped release list. Each minor-version line */}
+          {/* gets a section header (id="version-vMAJ.MIN") so the */}
+          {/* right rail can link directly to it. */}
           <div className="mt-12">
             {groups.map((group, gIdx) => (
               <section key={group.key} className="mb-2">
                 <h2
-                  id={`month-${group.key}`}
-                  className="scroll-mt-24 -ml-px border-l-2 border-slate-800 bg-slate-900/80 pl-8 pb-4 pt-2 font-display text-sm font-semibold uppercase tracking-wider text-slate-400 backdrop-blur"
+                  id={`version-${group.key}`}
+                  className="scroll-mt-24 -ml-px border-l-2 border-slate-800 bg-slate-900/80 pl-8 pb-4 pt-2 font-display text-sm font-mono font-semibold tracking-wider text-slate-400 backdrop-blur"
                 >
                   {group.label}
                   <span className="ml-2 text-xs font-normal text-slate-600">
@@ -531,26 +576,24 @@ export default function ChangelogPage() {
         {/* the page so distant months stay reachable. */}
         <aside className="hidden w-56 flex-none xl:block">
           <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2">
-            <MonthRail
-              groups={allGroups}
+            <ReleaseRail
+              items={releases}
               activeKey={activeKey}
-              onClick={(e, key) => {
-                // Find the first release in the clicked month. If
-                // it sits past the current pagination window, extend
-                // `shown` to include it before letting the anchor
-                // jump take effect.
-                const idx = releases.findIndex((r) => monthKey(r.date) === key)
+              onClick={(e, tag) => {
+                // If the target release sits past the current
+                // pagination window, extend `shown` to include it
+                // before letting the anchor jump take effect.
+                const idx = releases.findIndex((r) => r.tag === tag)
                 if (idx === -1) return
+
                 if (idx >= shown) {
                   e.preventDefault()
                   setShown(alignToPage(idx + 1, releases.length))
-                  // Defer the scroll until after the next render so
-                  // the freshly-revealed anchor is in the DOM.
                   setTimeout(() => {
-                    const target = document.getElementById(`month-${key}`)
+                    const target = document.getElementById(tag)
                     if (target) {
                       target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                      history.replaceState(null, '', `#month-${key}`)
+                      history.replaceState(null, '', `#${tag}`)
                     }
                   }, 0)
                 }

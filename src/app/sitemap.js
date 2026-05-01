@@ -10,6 +10,11 @@ const SITE_URL = 'https://gofr.dev'
 const STATIC_ROUTES = [
   { url: '/', priority: 1.0, changeFrequency: 'weekly' },
   { url: '/docs', priority: 0.9, changeFrequency: 'weekly' },
+  // AI / LLM discoverability surfaces. Listed in the sitemap so search
+  // engines and AI crawlers see them as first-class indexable URLs
+  // even though they're plain-text/markdown rather than HTML.
+  { url: '/llms.txt', priority: 0.9, changeFrequency: 'weekly' },
+  { url: '/AGENTS.md', priority: 0.9, changeFrequency: 'weekly' },
 ]
 
 const EXCLUDED_PATTERNS = [
