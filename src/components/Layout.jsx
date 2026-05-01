@@ -130,28 +130,18 @@ function Header() {
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
 
-    // Once-per-session refresh. Skipped if a previous tab already did
-    // it. Failures are silent — we still have the build-time number.
-    try {
-      const SESSION_KEY = 'githubStarsSyncedAt'
-      const already = sessionStorage.getItem(SESSION_KEY)
-      if (!already) {
-        sessionStorage.setItem(SESSION_KEY, String(Date.now()))
-        fetch('https://api.github.com/repos/gofr-dev/gofr')
-          .then((r) => (r.ok ? r.json() : null))
-          .then((data) => {
-            if (data?.watchers) {
-              setGithubStars(data.watchers)
-              try {
-                localStorage.setItem('githubStars', String(data.watchers))
-              } catch {}
-            }
-          })
-          .catch(() => {})
-      }
-    } catch {
-      // sessionStorage may throw in privacy mode — non-fatal.
-    }
+    // Live refresh on every page load. The build-time snapshot in
+    // src/data/github-stars.json gives an instantly-correct first paint;
+    // this fetch then replaces it with the truly current number so the
+    // header stays real-time. Failures are silent — we keep the
+    // pre-paint number.
+    fetch('https://api.github.com/repos/gofr-dev/gofr')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const live = data?.stargazers_count ?? data?.watchers
+        if (typeof live === 'number') setGithubStars(live)
+      })
+      .catch(() => {})
 
     return () => {
       window.removeEventListener('scroll', onScroll)

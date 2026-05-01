@@ -5,7 +5,7 @@
 > API, OpenAI Assistants File Search, ChatGPT custom GPT knowledge, etc.)
 > rather than crawling page-by-page.
 
-> Generated: 2026-05-01T15:50:13.348Z
+> Generated: 2026-05-01T21:03:27.600Z
 > Site: https://gofr.dev  ·  Repo: https://github.com/gofr-dev/gofr
 
 > For a smaller curated link index instead: https://gofr.dev/llms.txt
