@@ -64,13 +64,13 @@ function IssueCard({ item }) {
             {item.labels.slice(0, 5).map((l) => (
               <span
                 key={l}
-                className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${labelTone(l)}`}
+                className={`rounded-full px-2 py-0.5 text-[11px] sm:text-[10px] font-medium ${labelTone(l)}`}
               >
                 {l}
               </span>
             ))}
           </div>
-          <div className="mt-2 flex items-center gap-3 text-[11px] text-slate-500">
+          <div className="mt-2 flex items-center gap-3 text-xs sm:text-[11px] text-slate-500">
             <span>updated {timeAgo(item.updated_at)}</span>
             {item.comments > 0 && (
               <span>· {item.comments} comment{item.comments === 1 ? '' : 's'}</span>
@@ -206,7 +206,7 @@ export default function RoadmapPage() {
                         style={{ width: `${m.progress}%` }}
                       />
                     </div>
-                    <p className="mt-1.5 text-[11px] text-slate-500">
+                    <p className="mt-1.5 text-xs sm:text-[11px] text-slate-500">
                       {m.closed_issues} of {m.open_issues + m.closed_issues}{' '}
                       done · {m.progress}%
                     </p>

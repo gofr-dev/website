@@ -113,7 +113,7 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
   return (
     <div className="overflow-hidden bg-slate-900 dark:-mb-32 dark:mt-[-4.75rem] dark:pb-32 dark:pt-[4.75rem]">
       <div className="sm:px-2 lg:relative lg:px-0 lg:py-20">
-        <div className="x:px-12 mr-auto grid grid-cols-1 items-center gap-x-8 gap-y-16 px-4 lg:max-w-[100%] lg:grid-cols-2 lg:px-8 xl:gap-x-16">
+        <div className="xs:px-12 mr-auto grid grid-cols-1 items-center gap-x-8 gap-y-16 px-4 lg:max-w-[100%] lg:grid-cols-2 lg:px-8 xl:gap-x-16">
           <div className="flex flex-col items-center gap-x-8 xl:flex-row xl:gap-x-16">
             <Image
               src={completeGofrLogo}
@@ -246,7 +246,7 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                     ))}
                   </div>
                   <div
-                    className={`mt-6 flex max-h-[315px] items-start px-1 px-4 text-sm ${
+                    className={`mt-6 flex max-h-[315px] items-start px-1 px-4 text-xs sm:text-[13px] ${
                       activeTab === 'main_test.go' ? 'overflow-auto' : ''
                     }`}
                   >

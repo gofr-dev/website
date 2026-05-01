@@ -69,7 +69,7 @@ export function Fence({ children, language }) {
         theme={{ plain: {}, styles: [] }}
       >
         {({ className, style, tokens, getTokenProps }) => (
-          <pre className={`${className} overflow-x-auto p-4 text-[13px] leading-relaxed`} style={style}>
+          <pre className={`${className} overflow-x-auto p-4 text-xs sm:text-[13px] leading-relaxed`} style={style}>
             <code>
               {tokens.map((line, lineIndex) => (
                 <Fragment key={lineIndex}>

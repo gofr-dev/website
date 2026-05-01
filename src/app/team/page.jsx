@@ -86,7 +86,7 @@ function TeamCard({ member }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${member.name} on GitHub`}
-            className="text-slate-500 transition-colors hover:text-slate-300"
+            className="inline-flex min-h-[36px] min-w-[36px] items-center justify-center p-2 -m-2 text-slate-500 transition-colors hover:text-slate-300"
           >
             <GithubIcon className="h-4 w-4" />
           </Link>
@@ -97,7 +97,7 @@ function TeamCard({ member }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${member.name} on LinkedIn`}
-            className="text-slate-500 transition-colors hover:text-blue-400"
+            className="inline-flex min-h-[36px] min-w-[36px] items-center justify-center p-2 -m-2 text-slate-500 transition-colors hover:text-blue-400"
           >
             <LinkedinIcon className="h-4 w-4" />
           </Link>
