@@ -1,6 +1,6 @@
 {
   "repo": "gofr-dev/gofr",
-  "fetchedAt": "2026-05-01T08:30:22.606Z",
+  "fetchedAt": "2026-05-01T08:44:00.308Z",
   "team": [
     {
       "github": "aryanmehrotra",
@@ -73,21 +73,45 @@
         "followers": 30,
         "public_repos": 30
       }
+    },
+    {
+      "github": "srijan-27",
+      "linkedin": "https://www.linkedin.com/in/srijan27/",
+      "role": "Maintainer",
+      "name": "Srijan Rastogi",
+      "github_data": {
+        "login": "srijan-27",
+        "avatar_url": "https://avatars.githubusercontent.com/u/44723623?v=4",
+        "profile_url": "https://github.com/srijan-27",
+        "profile_name": "Srijan Rastogi",
+        "bio": "GoLang apprentice by day, sensei by night. Learning and building cool stuff, one commit at a time.",
+        "blog": "https://srijan-27.github.io/portfolio",
+        "company": null,
+        "location": "Bengaluru",
+        "followers": 9,
+        "public_repos": 17
+      }
+    },
+    {
+      "github": "vipul-rawat",
+      "linkedin": "https://www.linkedin.com/in/vipul-rawat-b724b217a/",
+      "role": "Maintainer",
+      "name": "Vipul Rawat",
+      "github_data": {
+        "login": "vipul-rawat",
+        "avatar_url": "https://avatars.githubusercontent.com/u/44166352?v=4",
+        "profile_url": "https://github.com/vipul-rawat",
+        "profile_name": "Vipul Rawat",
+        "bio": null,
+        "blog": null,
+        "company": "suki.ai",
+        "location": null,
+        "followers": 11,
+        "public_repos": 23
+      }
     }
   ],
   "contributors": [
-    {
-      "login": "vipul-rawat",
-      "avatar_url": "https://avatars.githubusercontent.com/u/44166352?v=4",
-      "profile_url": "https://github.com/vipul-rawat",
-      "contributions": 165
-    },
-    {
-      "login": "srijan-27",
-      "avatar_url": "https://avatars.githubusercontent.com/u/44723623?v=4",
-      "profile_url": "https://github.com/srijan-27",
-      "contributions": 160
-    },
     {
       "login": "mfreeman451",
       "avatar_url": "https://avatars.githubusercontent.com/u/1821930?v=4",
