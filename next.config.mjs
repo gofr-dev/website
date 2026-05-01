@@ -29,21 +29,25 @@ const nextConfig = {
 const __pageMeta = frontmatter.nextjs?.metadata || {};
 const __pageTitle = typeof __pageMeta.title === 'string' ? __pageMeta.title : undefined;
 const __pageDesc = typeof __pageMeta.description === 'string' ? __pageMeta.description : undefined;
+const __og = {
+  ...(__pageTitle ? { title: __pageTitle } : {}),
+  ...(__pageDesc ? { description: __pageDesc } : {}),
+  ...(__pageMeta.openGraph || {}),
+};
+const __tw = {
+  ...(__pageTitle ? { title: __pageTitle } : {}),
+  ...(__pageDesc ? { description: __pageDesc } : {}),
+  ...(__pageMeta.twitter || {}),
+};
+// Only emit openGraph / twitter when the page actually carries
+// per-page values. If we always emitted an object, Next's metadata
+// merge would replace the parent layout's openGraph wholesale and
+// strip its title/description for pages with no frontmatter.
 export const metadata = {
   metadataBase: new URL("https://gofr.dev"),
   ...__pageMeta,
-  openGraph: {
-    type: 'article',
-    ...(__pageTitle ? { title: __pageTitle } : {}),
-    ...(__pageDesc ? { description: __pageDesc } : {}),
-    ...(__pageMeta.openGraph || {}),
-  },
-  twitter: {
-    card: 'summary_large_image',
-    ...(__pageTitle ? { title: __pageTitle } : {}),
-    ...(__pageDesc ? { description: __pageDesc } : {}),
-    ...(__pageMeta.twitter || {}),
-  },
+  ...(Object.keys(__og).length ? { openGraph: { type: 'article', ...__og } } : {}),
+  ...(Object.keys(__tw).length ? { twitter: { card: 'summary_large_image', ...__tw } } : {}),
 };
 `
           )
