@@ -1,9 +1,6 @@
 'use client'
 
-import React from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import clsx from 'clsx'
 import { RedditIcon } from './icons/RedditIcon'
 import { GithubIcon } from './icons/GithubIcon'
 import { DiscordIcon } from './icons/DiscordIcon'
@@ -72,29 +69,7 @@ const socialMediaLinks = [
   { Icon: EmailIcon, href: 'mailto:connect@gofr.dev', label: 'Email' },
 ]
 
-const languages = [
-  { code: 'en', label: 'English', href: '/' },
-  { code: 'es', label: 'Español', href: '/es' },
-  { code: 'zh', label: '简体中文', href: '/zh' },
-]
-
-function markManualLanguage() {
-  // Tells LocaleAutoRedirect to stop overriding subsequent visits.
-  try {
-    localStorage.setItem('gofr-lang-pref', 'manual')
-  } catch {
-    // localStorage unavailable; ignore.
-  }
-}
-
 function FooterUi() {
-  const pathname = usePathname() || '/'
-  const currentCode = pathname.startsWith('/es')
-    ? 'es'
-    : pathname.startsWith('/zh')
-    ? 'zh'
-    : 'en'
-
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800 dark:bg-slate-900">
       {/* Top section: column grid, centered. */}
@@ -135,36 +110,11 @@ function FooterUi() {
       {/* the entire page like the top edge does. */}
       <div className="border-t border-slate-200 dark:border-slate-800" />
 
-      {/* Bottom section: language + social, centered. Copyright + */}
-      {/* license line removed — visitors who want license info can */}
-      {/* find it in the linked GitHub repos. */}
+      {/* Bottom section: social icons only, centered. Language switcher */}
+      {/* and copyright/license line removed — visitors who want license */}
+      {/* info can find it in the linked GitHub repos. */}
       <div className="mx-auto max-w-5xl px-6 pb-12 pt-6 lg:px-8">
         <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
-            <nav
-              aria-label="Language"
-              className="flex items-center gap-2 text-xs"
-            >
-              {languages.map((lang, i) => (
-                <React.Fragment key={lang.code}>
-                  {i > 0 && <span className="text-slate-700">·</span>}
-                  <Link
-                    href={lang.href}
-                    onClick={markManualLanguage}
-                    className={clsx(
-                      'transition-colors',
-                      currentCode === lang.code
-                        ? 'text-sky-400'
-                        : 'text-slate-500 hover:text-slate-300',
-                    )}
-                  >
-                    {lang.label}
-                  </Link>
-                </React.Fragment>
-              ))}
-            </nav>
-
-            <span className="hidden text-slate-700 sm:inline">·</span>
-
           <div className="flex items-center gap-4">
             {socialMediaLinks.map(({ Icon, href, label }) => (
               <Link
