@@ -1,21 +1,25 @@
-import fg from 'fast-glob'
+import { execSync } from 'node:child_process'
+import fs from 'node:fs'
 import path from 'node:path'
+import fg from 'fast-glob'
 
 // Dynamic sitemap. With Next.js `output: 'export'`, this runs at build
 // time and emits `out/sitemap.xml`. Routes are discovered by globbing
 // the app router so new pages appear automatically.
+//
+// Per the 2025-26 SEO research:
+//   - Google actively uses <lastmod> when it's accurate; we derive
+//     each route's lastmod from `git log` (or fs mtime as fallback).
+//   - <changefreq> and <priority> are explicitly ignored by Google
+//     and largely ignored by Bing, so we don't emit them. (Next's
+//     sitemap helper expects them as optional fields.)
 
 const SITE_URL = 'https://gofr.dev'
 
-const STATIC_ROUTES = [
-  { url: '/', priority: 1.0, changeFrequency: 'weekly' },
-  { url: '/docs', priority: 0.9, changeFrequency: 'weekly' },
-  // AI / LLM discoverability surfaces. Listed in the sitemap so search
-  // engines and AI crawlers see them as first-class indexable URLs
-  // even though they're plain-text/markdown rather than HTML.
-  { url: '/llms.txt', priority: 0.9, changeFrequency: 'weekly' },
-  { url: '/AGENTS.md', priority: 0.9, changeFrequency: 'weekly' },
-]
+// Files to include even though they're not Next.js routes — published
+// at the public root with their own meaning. Without listing them
+// here, the sitemap silently omits them.
+const STATIC_FILES = ['/llms.txt', '/AGENTS.md', '/robots.txt']
 
 const EXCLUDED_PATTERNS = [
   /\/api\//,
@@ -33,56 +37,60 @@ function pageFileToRoute(absFile) {
   return route
 }
 
+// Last commit date for a file (ISO). Falls back to fs mtime when git
+// is unavailable (CI sandboxes, untracked files, etc.). Honest
+// "last actually edited" beats "last built" — Google trains on the
+// signal and discounts sitemaps that bump every URL on every build.
+function lastModForFile(absFile) {
+  try {
+    const out = execSync(`git log -1 --format=%cI -- "${absFile}"`, {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim()
+    if (out) return new Date(out)
+  } catch {
+    // git unavailable or file untracked — fall through.
+  }
+  try {
+    return fs.statSync(absFile).mtime
+  } catch {
+    return new Date()
+  }
+}
+
 export default async function sitemap() {
+  const repoRoot = path.resolve(process.cwd())
   const files = await fg(
     ['src/app/**/page.md', 'src/app/**/page.jsx', 'src/app/**/page.tsx'],
-    { cwd: process.cwd(), absolute: true, ignore: ['**/node_modules/**'] },
+    { cwd: repoRoot, absolute: true, ignore: ['**/node_modules/**'] },
   )
-
-  const discovered = files
-    .map(pageFileToRoute)
-    .filter((r) => !EXCLUDED_PATTERNS.some((re) => re.test(r)))
-    .filter((r) => !r.includes('['))
 
   const seen = new Set()
   const entries = []
 
-  for (const route of [...STATIC_ROUTES.map((s) => s.url), ...discovered]) {
+  for (const absFile of files) {
+    const route = pageFileToRoute(absFile)
+    if (EXCLUDED_PATTERNS.some((re) => re.test(route))) continue
+    if (route.includes('[')) continue
     if (seen.has(route)) continue
     seen.add(route)
-    const override = STATIC_ROUTES.find((s) => s.url === route)
+
     entries.push({
       url: SITE_URL + route,
-      lastModified: new Date(),
-      changeFrequency: override?.changeFrequency ?? guessChangeFrequency(route),
-      priority: override?.priority ?? guessPriority(route),
+      lastModified: lastModForFile(absFile),
+    })
+  }
+
+  for (const file of STATIC_FILES) {
+    const absFile = path.join(repoRoot, 'public', file.replace(/^\//, ''))
+    if (!fs.existsSync(absFile)) continue
+    if (seen.has(file)) continue
+    seen.add(file)
+    entries.push({
+      url: SITE_URL + file,
+      lastModified: lastModForFile(absFile),
     })
   }
 
   return entries
-}
-
-function guessPriority(route) {
-  if (route === '/') return 1.0
-  if (route === '/docs' || route.startsWith('/docs/quick-start')) return 0.9
-  if (
-    route === '/why-gofr' ||
-    route.startsWith('/comparison') ||
-    route.startsWith('/migrate') ||
-    route === '/learn' ||
-    route === '/faq' ||
-    route === '/roadmap' ||
-    route === '/team'
-  )
-    return 0.85
-  if (route.startsWith('/docs')) return 0.8
-  if (route === '/showcase' || route === '/examples' || route === '/community')
-    return 0.7
-  return 0.6
-}
-
-function guessChangeFrequency(route) {
-  if (route === '/changelog') return 'weekly'
-  if (route.startsWith('/docs')) return 'weekly'
-  return 'monthly'
 }

@@ -168,20 +168,22 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                     <span>{t.viewOnGithub}</span>
                   </Link>
                 </div>
-                {/* Single tertiary line below the CTAs — surfaces */}
-                {/* /AGENTS.md for visitors building with Claude / Cursor / */}
-                {/* Codex / Aider. The previous "block our calendar" */}
-                {/* line was removed; one tertiary CTA reads cleaner */}
-                {/* than two and avoids the hero feeling top-heavy. */}
+                {/* Single tertiary line below the CTAs. Points at */}
+                {/* /llms.txt rather than /AGENTS.md because llms.txt */}
+                {/* is the routing index — its first non-frontmatter */}
+                {/* line tells AI coding assistants to fetch */}
+                {/* /AGENTS.md, while AI search crawlers consume the */}
+                {/* full sectioned link map below it. One URL covers */}
+                {/* both audiences. */}
                 <div className="mt-4 flex flex-wrap justify-center gap-x-1.5 text-xs text-slate-500 xl:justify-start">
                   <span>Building with an AI coding assistant?</span>
                   <a
-                    href="/AGENTS.md"
+                    href="/llms.txt"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sky-400 transition-colors hover:text-sky-300"
                   >
-                    Hand them gofr.dev/AGENTS.md →
+                    Hand them gofr.dev/llms.txt →
                   </a>
                 </div>
               </div>

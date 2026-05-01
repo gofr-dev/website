@@ -37,6 +37,17 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <head>
+        {/* Allow AI Overviews / answer engines to quote the full body */}
+        {/* without truncation, and let large image previews appear in */}
+        {/* SERP cards. `index,follow` makes the intent explicit even */}
+        {/* though it's the default; when multiple meta-robots tags are */}
+        {/* parsed, the most restrictive wins, so leaving these defaults */}
+        {/* explicit prevents a per-page tag from accidentally narrowing */}
+        {/* visibility site-wide. */}
+        <meta
+          name="robots"
+          content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1"
+        />
         <meta name="google-site-verification" content="MVkGpVWwO1qPJIoXAKXQs5b6oKwxLAMLWtDDMeD23hE" />
         <meta
           name="google-site-verification"
