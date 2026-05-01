@@ -4,6 +4,13 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import releases from './releases.json'
 
+// Pagination — client-side only since the page is `'use client'` and
+// we want every release to remain in the DOM so deep-link anchors
+// (e.g. /changelog#v1.30.0) keep working even when the target sits
+// past the initial slice. The button advances the window in PAGE_SIZE
+// chunks; on hash change we auto-extend to include the target.
+const PAGE_SIZE = 20
+
 function formatDate(dateStr) {
   if (!dateStr) return ''
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -229,12 +236,18 @@ const sectionStyles = {
 }
 
 function ReleaseCard({ release, isLatest }) {
-  // Open by default if it's the latest release OR if the URL hash
-  // matches this release tag (deep-linking from /changelog#v1.56.0).
-  const hashMatch =
-    typeof window !== 'undefined' &&
-    decodeURIComponent(window.location.hash || '').slice(1) === release.tag
-  let [expanded, setExpanded] = useState(isLatest || hashMatch)
+  // Initialise from `isLatest` only — reading `window.location.hash`
+  // at render time would diverge between server and client and trip
+  // a hydration mismatch. The deep-link auto-expand happens in the
+  // effect below, on mount, after hydration is complete.
+  let [expanded, setExpanded] = useState(isLatest)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const tag = decodeURIComponent(window.location.hash || '').slice(1)
+    if (tag === release.tag) setExpanded(true)
+  }, [release.tag])
+
   let sections = parseRelease(release.body)
   let sectionTypes = sections.map(s => s.type)
 
@@ -364,9 +377,26 @@ function MonthRail({ groups, activeKey, onClick }) {
   )
 }
 
+// Round up `target` to the nearest PAGE_SIZE multiple, capped at the
+// total. Keeps the visible window aligned with the chunk boundary
+// after a deep-link auto-extend.
+function alignToPage(target, total) {
+  const aligned = Math.ceil(target / PAGE_SIZE) * PAGE_SIZE
+  return Math.min(aligned, total)
+}
+
 export default function ChangelogPage() {
-  const groups = groupByMonth(releases)
-  const [activeKey, setActiveKey] = useState(groups[0]?.key)
+  const [shown, setShown] = useState(Math.min(PAGE_SIZE, releases.length))
+
+  // Two grouping passes: `allGroups` powers the rail (so every month
+  // remains clickable regardless of pagination state), `groups`
+  // powers the rendered list (only the months in the visible window).
+  // Clicking an older month auto-extends `shown` to include it, then
+  // scrolls — so the rail is a fast-jump to any month, ever.
+  const allGroups = groupByMonth(releases)
+  const visibleReleases = releases.slice(0, shown)
+  const groups = groupByMonth(visibleReleases)
+  const [activeKey, setActiveKey] = useState(allGroups[0]?.key)
 
   // Track which month is currently in view so the rail highlights it.
   // Standard scrollspy: pick the last month-anchor whose top is above
@@ -392,19 +422,31 @@ export default function ChangelogPage() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [groups])
 
-  // Make hash deep-links work even when the page mounts after the
-  // browser has already tried to scroll (the release-card is rendered
-  // by React, so the anchor isn't in the DOM at initial load).
+  // Make hash deep-links work even when the target release sits past
+  // the initial pagination window. We expand `shown` to include the
+  // target before scrolling, so /changelog#v1.30.0 still works for an
+  // older release that wouldn't otherwise be in the DOM yet.
   useEffect(() => {
     if (typeof window === 'undefined') return
     const hash = decodeURIComponent(window.location.hash || '')
     if (!hash) return
-    const target = document.getElementById(hash.slice(1))
+    const tag = hash.slice(1)
+    const idx = releases.findIndex((r) => r.tag === tag)
+    if (idx === -1) return
+
+    if (idx >= shown) {
+      // Auto-extend to include the target. Re-run of this effect
+      // (after `shown` updates) handles the actual scroll.
+      setShown(alignToPage(idx + 1, releases.length))
+      return
+    }
+
+    const target = document.getElementById(tag)
     if (target) {
       // Defer one tick so layout has settled.
       setTimeout(() => target.scrollIntoView({ behavior: 'instant', block: 'start' }), 0)
     }
-  }, [])
+  }, [shown])
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -455,7 +497,24 @@ export default function ChangelogPage() {
             ))}
           </div>
 
-          <div className="mt-8 border-t border-slate-800 pt-6 text-center">
+          {/* Pagination footer. "Show more" advances by PAGE_SIZE; */}
+          {/* once everything is shown the button hides. The "X of Y" */}
+          {/* counter doubles as a status line so deep-link auto- */}
+          {/* extends are visible to the user. */}
+          <div className="mt-8 flex flex-col items-center gap-3 border-t border-slate-800 pt-6">
+            <p className="text-xs text-slate-500">
+              Showing {Math.min(shown, releases.length)} of {releases.length} releases
+            </p>
+            {shown < releases.length && (
+              <button
+                onClick={() =>
+                  setShown((s) => Math.min(s + PAGE_SIZE, releases.length))
+                }
+                className="rounded-full border border-slate-800 bg-slate-900/60 px-4 py-2 text-sm font-medium text-slate-300 transition-colors hover:border-sky-500/40 hover:text-sky-300"
+              >
+                Show {Math.min(PAGE_SIZE, releases.length - shown)} older
+              </button>
+            )}
             <Link
               href="https://github.com/gofr-dev/gofr/releases"
               target="_blank"
@@ -472,7 +531,31 @@ export default function ChangelogPage() {
         {/* the page so distant months stay reachable. */}
         <aside className="hidden w-56 flex-none xl:block">
           <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2">
-            <MonthRail groups={groups} activeKey={activeKey} />
+            <MonthRail
+              groups={allGroups}
+              activeKey={activeKey}
+              onClick={(e, key) => {
+                // Find the first release in the clicked month. If
+                // it sits past the current pagination window, extend
+                // `shown` to include it before letting the anchor
+                // jump take effect.
+                const idx = releases.findIndex((r) => monthKey(r.date) === key)
+                if (idx === -1) return
+                if (idx >= shown) {
+                  e.preventDefault()
+                  setShown(alignToPage(idx + 1, releases.length))
+                  // Defer the scroll until after the next render so
+                  // the freshly-revealed anchor is in the DOM.
+                  setTimeout(() => {
+                    const target = document.getElementById(`month-${key}`)
+                    if (target) {
+                      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                      history.replaceState(null, '', `#month-${key}`)
+                    }
+                  }, 0)
+                }
+              }}
+            />
           </div>
         </aside>
       </div>

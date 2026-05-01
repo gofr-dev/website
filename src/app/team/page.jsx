@@ -40,57 +40,46 @@ function LinkedinIcon(props) {
   )
 }
 
-function GlobeIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <circle cx="12" cy="12" r="10" />
-      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
-  )
-}
-
 function TeamCard({ member }) {
   const gh = member.github_data
   // Photo precedence: explicit `photo` in team.json (e.g. for members
   // without a GitHub handle) → GitHub avatar → initials fallback.
   const avatar = member.photo || gh?.avatar_url
-  const bio = gh?.bio
-  const blog = gh?.blog && /^https?:\/\//.test(gh.blog) ? gh.blog : null
 
   return (
-    <div className="group relative flex flex-col items-center rounded-2xl border border-slate-800 p-6 text-center transition-colors hover:border-sky-500/40">
-      {avatar ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={avatar}
-          alt={`${member.name} avatar`}
-          width={96}
-          height={96}
-          className="h-24 w-24 rounded-full bg-slate-800 object-cover"
-          loading="lazy"
-        />
-      ) : (
-        <InitialsAvatar name={member.name} className="h-24 w-24" />
-      )}
+    <div className="group relative flex flex-col rounded-2xl border border-slate-800 bg-slate-900/40 p-6 transition-colors hover:border-sky-500/40 hover:bg-slate-900/70">
+      {/* Header row: avatar + identity. Left-aligned reads better */}
+      {/* than centred when there's location prose below. */}
+      <div className="flex items-center gap-4">
+        {avatar ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={avatar}
+            alt={`${member.name} avatar`}
+            width={72}
+            height={72}
+            className="h-[72px] w-[72px] flex-none rounded-full bg-slate-800 object-cover ring-1 ring-slate-700 transition-all group-hover:ring-2 group-hover:ring-sky-400"
+            loading="lazy"
+          />
+        ) : (
+          <InitialsAvatar name={member.name} className="h-[72px] w-[72px] flex-none" />
+        )}
+        <div className="min-w-0">
+          <p className="font-display text-base font-semibold text-white">
+            {member.name}
+          </p>
+          <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-sky-400">
+            {member.role}
+          </p>
+          {gh?.location && (
+            <p className="mt-1 truncate text-xs text-slate-500">
+              {gh.location}
+            </p>
+          )}
+        </div>
+      </div>
 
-      <p className="mt-4 font-display text-base font-semibold text-white">
-        {member.name}
-      </p>
-      <p className="mt-0.5 text-xs uppercase tracking-wider text-sky-400">
-        {member.role}
-      </p>
-
-      {bio && (
-        <p className="mt-3 line-clamp-3 text-xs text-slate-400">{bio}</p>
-      )}
-
-      {(gh?.location || gh?.company) && (
-        <p className="mt-2 text-[11px] text-slate-500">
-          {[gh.company, gh.location].filter(Boolean).join(' · ')}
-        </p>
-      )}
-
-      <div className="mt-4 flex items-center gap-3">
+      <div className="mt-5 flex items-center gap-3 border-t border-slate-800/80 pt-4">
         {gh?.profile_url && (
           <Link
             href={gh.profile_url}
@@ -113,24 +102,29 @@ function TeamCard({ member }) {
             <LinkedinIcon className="h-4 w-4" />
           </Link>
         )}
-        {blog && (
-          <Link
-            href={blog}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${member.name} personal site`}
-            className="text-slate-500 transition-colors hover:text-sky-400"
-          >
-            <GlobeIcon className="h-4 w-4" />
-          </Link>
-        )}
       </div>
     </div>
   )
 }
 
+// Order the core team for display: Creator pinned first, then
+// Maintainers sorted by their commit count to gofr-dev/gofr (highest
+// first). Anyone without a contribution number sinks to the bottom of
+// the maintainer block. Source-of-truth ordering in team.json is left
+// alone so this is purely a render-time sort.
+function sortTeam(team) {
+  const isCreator = (m) => /creator/i.test(m.role || '')
+  const commits = (m) => m.github_data?.gofr_contributions ?? -1
+
+  return [...team].sort((a, b) => {
+    if (isCreator(a) && !isCreator(b)) return -1
+    if (!isCreator(a) && isCreator(b)) return 1
+    return commits(b) - commits(a)
+  })
+}
+
 export default function TeamPage() {
-  const team = data?.team ?? []
+  const team = sortTeam(data?.team ?? [])
   const contributors = data?.contributors ?? []
 
   return (
@@ -165,9 +159,62 @@ export default function TeamPage() {
           </div>
         </div>
 
-        {/* Contributors grid */}
+        {/* Top contributors — visual hierarchy step between the */}
+        {/* maintainer cards above (large, with bio + socials) and */}
+        {/* the full contributor flow below (40px avatar wall). The */}
+        {/* fetch script already strips core team from contributors, */}
+        {/* so the top 5 here are guaranteed to be community devs. */}
         {contributors.length > 0 && (
           <div className="mt-20">
+            <h2 className="text-center font-display text-2xl font-bold text-white">
+              Top contributors
+            </h2>
+            <p className="mt-2 text-center text-sm text-slate-400">
+              Most active community contributors to{' '}
+              <Link
+                href="https://github.com/gofr-dev/gofr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sky-400 hover:text-sky-300"
+              >
+                gofr-dev/gofr
+              </Link>
+              {' '}by commit count.
+            </p>
+
+            <div className="mx-auto mt-8 grid max-w-4xl gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+              {contributors.slice(0, 5).map((c) => (
+                <Link
+                  key={c.login}
+                  href={c.profile_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex flex-col items-center rounded-xl border border-slate-800 bg-slate-900/40 p-4 text-center transition-colors hover:border-sky-500/40"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={c.avatar_url}
+                    alt={`${c.login} avatar`}
+                    width={64}
+                    height={64}
+                    className="h-16 w-16 rounded-full bg-slate-800 ring-1 ring-slate-700 transition-all group-hover:ring-2 group-hover:ring-sky-400"
+                    loading="lazy"
+                  />
+                  <p className="mt-3 truncate font-display text-sm font-semibold text-white">
+                    {c.login}
+                  </p>
+                  <p className="mt-1 text-[11px] uppercase tracking-wider text-sky-400">
+                    {c.contributions} commits
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Contributors grid */}
+        {contributors.length > 0 && (
+          <div className="mt-16">
             <h2 className="text-center font-display text-2xl font-bold text-white">
               {contributors.length}+ contributors
             </h2>

@@ -161,6 +161,22 @@ async function main() {
   const contributorsResult = await fetchAllContributors()
   const coreLogins = new Set(coreTeam.map((m) => m.github).filter(Boolean))
 
+  // Cross-reference: stash each core member's commit count to
+  // gofr-dev/gofr under github_data.gofr_contributions so the team
+  // card can render "N commits" as a meaningful proof point. The
+  // GitHub contributor login is case-insensitive against the team.json
+  // handle (e.g. "Umang01-hash" vs "umang01-hash") so we lowercase
+  // before lookup.
+  const contributionsByLogin = new Map()
+  for (const c of contributorsResult.items || []) {
+    if (c?.login) contributionsByLogin.set(c.login.toLowerCase(), c.contributions)
+  }
+  for (const m of coreTeam) {
+    if (!m.github || !m.github_data) continue
+    const count = contributionsByLogin.get(m.github.toLowerCase())
+    if (typeof count === 'number') m.github_data.gofr_contributions = count
+  }
+
   let contributors = (contributorsResult.items || [])
     .filter((c) => c.type === 'User' && !c.login.includes('[bot]'))
     .filter((c) => !coreLogins.has(c.login)) // de-dupe core team from grid

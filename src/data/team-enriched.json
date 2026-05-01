@@ -1,6 +1,6 @@
 {
   "repo": "gofr-dev/gofr",
-  "fetchedAt": "2026-05-01T08:44:00.308Z",
+  "fetchedAt": "2026-05-01T09:16:29.496Z",
   "team": [
     {
       "github": "aryanmehrotra",
@@ -17,7 +17,8 @@
         "company": "@gofr-dev @zopdev",
         "location": "Bengaluru",
         "followers": 44,
-        "public_repos": 55
+        "public_repos": 55,
+        "gofr_contributions": 372
       }
     },
     {
@@ -35,7 +36,8 @@
         "company": "@gofr-dev @zopdev @zopsmart",
         "location": "Bangalore, India",
         "followers": 43,
-        "public_repos": 28
+        "public_repos": 28,
+        "gofr_contributions": 186
       }
     },
     {
@@ -53,7 +55,8 @@
         "company": "gofr.dev",
         "location": "Bengaluru",
         "followers": 61,
-        "public_repos": 31
+        "public_repos": 31,
+        "gofr_contributions": 1829
       }
     },
     {
@@ -71,7 +74,8 @@
         "company": "Software Engineer @zopdev, Maintainer @gofr-dev",
         "location": "Bangalore, India",
         "followers": 30,
-        "public_repos": 30
+        "public_repos": 30,
+        "gofr_contributions": 412
       }
     },
     {
@@ -89,7 +93,8 @@
         "company": null,
         "location": "Bengaluru",
         "followers": 9,
-        "public_repos": 17
+        "public_repos": 17,
+        "gofr_contributions": 160
       }
     },
     {
@@ -107,7 +112,8 @@
         "company": "suki.ai",
         "location": null,
         "followers": 11,
-        "public_repos": 23
+        "public_repos": 23,
+        "gofr_contributions": 165
       }
     }
   ],
