@@ -93,7 +93,6 @@ For AI coding assistants (Claude Code, Cursor, Codex, Aider, Continue), a curate
 - [Learn (tracks for switchers, Go devs new to GoFr, and production builders)](https://gofr.dev/learn)
 - [Roadmap](https://gofr.dev/roadmap)
 - [Team](https://gofr.dev/team)
-- [Community](https://gofr.dev/community)
 - [Events](https://gofr.dev/events)
 
 ## For AI assistants and agent runtimes

@@ -23,11 +23,6 @@ const helpfulLinks = [
     description: 'Working projects you can clone and run.',
     href: '/examples',
   },
-  {
-    title: 'Community',
-    description: 'Discord, GitHub, Reddit, and more.',
-    href: '/community',
-  },
 ]
 
 export default function NotFound() {

@@ -175,6 +175,15 @@ export function Layout({ children }) {
   return (
     <ErrorBoundary FallbackComponent={ErrorView}>
       <div className="flex w-full flex-col">
+        {/* Skip-to-main link — first focusable element so keyboard */}
+        {/* and screen-reader users can bypass the global nav per */}
+        {/* WCAG 2.4.1. Visually hidden until focused. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-sky-300 focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-900 focus:shadow-lg"
+        >
+          Skip to main content
+        </a>
         {pathname !== '/hackathon' && (
           <>
             <div className="sticky left-0 right-0 top-0 z-40 sm:top-0">
@@ -182,7 +191,7 @@ export function Layout({ children }) {
             </div>
           </>
         )}
-        {children}
+        <main id="main">{children}</main>
         <FooterUi />
       </div>
     </ErrorBoundary>

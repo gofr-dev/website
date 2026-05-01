@@ -59,24 +59,43 @@ function walk(dir, acc = []) {
   return acc
 }
 
-const docsDir = path.join(repoRoot, 'src/app/docs')
-if (!fs.existsSync(docsDir)) {
-  console.warn('[doc-mtimes] no src/app/docs; skipping.')
-  process.exit(0)
-}
+// Walk every directory whose .md content is overlaid from the
+// framework repo at deploy time. /docs was the only path covered
+// originally — extending to /why-gofr, /comparison, /migrate, /learn,
+// /faq means each of those routes also gets a "Last updated" byline
+// and a dateModified in JSON-LD instead of going dark.
+const OVERLAY_PATHS = [
+  'src/app/docs',
+  'src/app/why-gofr',
+  'src/app/comparison',
+  'src/app/migrate',
+  'src/app/learn',
+  'src/app/faq',
+]
 
 const map = {}
 let ok = 0
 let fallbacks = 0
-for (const file of walk(docsDir)) {
-  const route = pageFileToRoute(file)
-  const ts = gitMtime(file)
-  if (ts) {
-    map[route] = ts
-    ok++
-  } else {
-    fallbacks++
+let scanned = 0
+for (const rel of OVERLAY_PATHS) {
+  const dir = path.join(repoRoot, rel)
+  if (!fs.existsSync(dir)) continue
+  scanned++
+  for (const file of walk(dir)) {
+    const route = pageFileToRoute(file)
+    const ts = gitMtime(file)
+    if (ts) {
+      map[route] = ts
+      ok++
+    } else {
+      fallbacks++
+    }
   }
+}
+
+if (scanned === 0) {
+  console.warn('[doc-mtimes] no overlay paths present; skipping.')
+  process.exit(0)
 }
 
 fs.mkdirSync(path.dirname(outFile), { recursive: true })

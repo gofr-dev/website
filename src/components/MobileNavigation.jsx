@@ -53,7 +53,6 @@ const siteLinks = [
   { title: 'Docs', href: '/docs' },
   { title: 'Changelog', href: '/changelog' },
   { title: 'Examples', href: '/examples' },
-  { title: 'Community', href: '/community' },
   { title: 'Showcase', href: '/showcase' },
   { title: 'Blog', href: 'https://medium.com/gofr', external: true },
 ]

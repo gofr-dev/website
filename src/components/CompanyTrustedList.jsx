@@ -12,33 +12,15 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 const imageLink = [
-  {
-    image: company2,
-  },
-  {
-    image: company3,
-  },
-  {
-    image: company10,
-  },
-  {
-    image: company8,
-  },
-  {
-    image: company11,
-  },
-  {
-    image: company1,
-  },
-  {
-    image: company4,
-  },
-  {
-    image: company5,
-  },
-  {
-    image: company6,
-  },
+  { image: company2,  name: 'American Express' },
+  { image: company3,  name: 'IBM' },
+  { image: company10, name: 'McAfee' },
+  { image: company8,  name: 'Blinkit' },
+  { image: company11, name: 'Walmart' },
+  { image: company1,  name: 'Doceree' },
+  { image: company4,  name: 'Mydbops' },
+  { image: company5,  name: 'Guidewire' },
+  { image: company6,  name: 'Weave' },
 ]
 
 export default function CompanyList() {
@@ -60,7 +42,7 @@ export default function CompanyList() {
               className="flex max-h-12 w-1/4 justify-center sm:w-1/6 lg:w-1/5"
             >
               <Image
-                alt="Transistor"
+                alt={item.name}
                 src={item.image}
                 width={158}
                 height={48}

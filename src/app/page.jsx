@@ -7,12 +7,6 @@ export const metadata = {
   metadataBase: new URL('https://gofr.dev'),
   alternates: {
     canonical: '/',
-    languages: {
-      en: '/',
-      es: '/es',
-      'zh-CN': '/zh',
-      'x-default': '/',
-    },
   },
   keywords: [
     'gofr',

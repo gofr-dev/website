@@ -25,6 +25,16 @@ const EXCLUDED_PATTERNS = [
   /\/api\//,
   /\/certificate\//,
   /\/hackathon\b/,
+  // /pkg/** are JS-redirect stubs to the real /docs/** pages, kept
+  // for the gofr.dev/pkg/... Go-module import path convention. They
+  // have no SEO content (PkgRedirect just sets window.location), and
+  // listing them as crawl targets dilutes the real docs in SERPs.
+  /^\/pkg\//,
+  // /cli/gofr is similar — a metadata-only landing for `go install`
+  // discoverability, not a navigable page.
+  /^\/cli\//,
+  // /releases is a redirect to /changelog, no unique content.
+  /^\/releases$/,
 ]
 
 function pageFileToRoute(absFile) {

@@ -100,3 +100,19 @@ pre[class*='language-'] {
   animation-iteration-count: infinite;
   animation-play-state: running; /* Ensure the animation runs by default */
 }
+
+/* WCAG 2.3.3 — respect users who've requested reduced motion at the */
+/* OS level (macOS Reduce Motion, Windows Show animations off, etc). */
+/* The marquee is decorative; pausing it doesn't change information. */
+@media (prefers-reduced-motion: reduce) {
+  .item {
+    animation: none !important;
+    /* Without animation the items would overlap at the same absolute */
+    /* left. Lay them out horizontally so the row still reads. */
+    position: static;
+    left: auto;
+  }
+  .wrapper {
+    overflow-x: auto;
+  }
+}

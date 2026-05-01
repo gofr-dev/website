@@ -1,6 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import mtimes from '@/data/doc-mtimes.json'
 
 // Emits per-doc JSON-LD that AI Overviews and Google Search use to
 // decide whether a page is citable for a given query. Two schemas:
@@ -57,6 +58,11 @@ function buildBreadcrumbs(pathname, title) {
 export function DocStructuredData({ title, description, lastUpdated }) {
   const pathname = usePathname() || '/'
   const url = SITE_URL + pathname
+  // Auto-populate dateModified from the per-route mtime map when the
+  // caller didn't pass an explicit lastUpdated. This is the freshness
+  // signal Google's December 2025 core update started rewarding —
+  // missing dateModified meant every doc looked equally stale.
+  const dateModified = lastUpdated || mtimes[pathname] || null
 
   const article = {
     '@context': 'https://schema.org',
@@ -83,7 +89,7 @@ export function DocStructuredData({ title, description, lastUpdated }) {
       name: 'GoFr',
       url: SITE_URL,
     },
-    ...(lastUpdated && { dateModified: lastUpdated }),
+    ...(dateModified && { dateModified }),
   }
 
   const breadcrumb = buildBreadcrumbs(pathname, title)
