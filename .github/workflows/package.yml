@@ -1,22 +1,27 @@
 name: Node.js CI
 
 # Triggers:
-#   - push tag v*               → release_package publishes :latest + :vX.Y.Z
-#   - PR to main / development  → build job only (no publish)
+#   - push to main          → publish_stage publishes :stage (internal)
+#   - push tag v*           → release_package publishes :latest + :vX.Y.Z
+#   - PR to main/development → build job only (no publish)
+#   - workflow_dispatch     → manual button to refresh :stage on demand
 #
-# Stage and prod no longer pull a published :stage image — the framework
-# repo's website-stage.yml and website-prod.yml each check out this
-# website source, run refresh-data, and build their own source-bundle
-# in-runner. The published :latest tag here is kept purely as a public
-# artifact for anyone outside the deploy chain who wants to pull it.
+# Stage deploys (gofr-dev/gofr's website-stage.yml) pull :stage, so
+# every merge to website main automatically refreshes what stage shows.
+# Prod deploys (website-prod.yml) build inline from this source rather
+# than pulling :latest, so prod is always fresh on every framework
+# release tag regardless of when the website was last tagged.
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
   pull_request:
     branches:
       - main
       - development
+  workflow_dispatch:
 
 jobs:
   build:
@@ -33,10 +38,62 @@ jobs:
           yarn install
           yarn build
 
-  # On tag v* push → publish :latest (+ versioned tag) as a public
-  # artifact. Prod deploys do NOT pull this — they build inline from
-  # source — but it's kept available for external consumers and as a
-  # rollback target.
+  # Internal :stage artifact. Published on every push to main + via
+  # workflow_dispatch. Each run refreshes data so :stage bakes in
+  # current GoFr release / roadmap / contributor state. Stage deploys
+  # in gofr-dev/gofr pull this image — pulling is cheaper than
+  # rebuilding the website from source on every push to gofr's
+  # development branch.
+  publish_stage:
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Refresh data from GitHub (snapshot fallback on failure)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn refresh-data
+        continue-on-error: true
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image (:stage)
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: .
+          file: Dockerfile
+          tags: ghcr.io/gofr-dev/website:stage
+
+  # Public :latest artifact. Published on tag v* push as a versioned
+  # release + the rolling :latest pointer. Prod deploys do NOT pull
+  # this — they build inline — but it's kept as an external artifact
+  # and a rollback target.
   release_package:
     if: ${{ startsWith(github.ref, 'refs/tags/v')}}
     needs: build
