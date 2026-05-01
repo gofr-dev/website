@@ -81,6 +81,7 @@ export default function RootLayout({ children }) {
         {/* The hreflang on rel="alternate" is intentionally omitted */}
         {/* because these resources are language-neutral indexes. */}
         <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM index (llmstxt.org)" />
+        <link rel="alternate" type="text/plain" href="/llms-full.txt" title="LLM full content dump" />
         <link rel="alternate" type="text/markdown" href="/AGENTS.md" title="AI assistant context" />
         <link rel="llm" type="text/plain" href="/llms.txt" />
         <link rel="ai-context" type="text/markdown" href="/AGENTS.md" />

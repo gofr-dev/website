@@ -19,7 +19,7 @@ const SITE_URL = 'https://gofr.dev'
 // Files to include even though they're not Next.js routes — published
 // at the public root with their own meaning. Without listing them
 // here, the sitemap silently omits them.
-const STATIC_FILES = ['/llms.txt', '/AGENTS.md', '/robots.txt']
+const STATIC_FILES = ['/llms.txt', '/llms-full.txt', '/AGENTS.md', '/robots.txt']
 
 const EXCLUDED_PATTERNS = [
   /\/api\//,

@@ -69,5 +69,7 @@ Allow: /
 #   https://gofr.dev/AGENTS.md
 # LLM index (Markdown-shaped, per https://llmstxt.org/):
 #   https://gofr.dev/llms.txt
+# LLM full content dump (concatenated docs):
+#   https://gofr.dev/llms-full.txt
 
 Sitemap: https://gofr.dev/sitemap.xml
