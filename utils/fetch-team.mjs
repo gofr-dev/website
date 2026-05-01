@@ -80,6 +80,67 @@ async function fetchGithubProfile(login) {
   }
 }
 
+// Composite-score signals beyond commit count. Each query returns a
+// `total_count` we read directly without paginating — we just need
+// the number, never the items. The Search API has a tighter rate
+// limit (30/min authenticated) than the core REST API, so we throttle
+// across users via Promise.all per-user but serialize across users.
+//
+// `is:pr+is:merged+author:U+repo:R`   → PRs the user merged into the repo
+// `is:pr+reviewed-by:U+repo:R`        → PRs the user formally reviewed
+// `commenter:U+repo:R`                → unique threads (issues+PRs) the
+//                                       user has commented on
+//
+// The "reviewed-by:" qualifier counts only formal reviews submitted
+// via the PR review UI (Approve / Request changes / Comment-via-review).
+// Plain conversation comments fall under "commenter:" instead.
+async function fetchSearchTotal(query) {
+  const url = `https://api.github.com/search/issues?q=${encodeURIComponent(query)}&per_page=1`
+  try {
+    const data = await fetchJson(url)
+    return typeof data?.total_count === 'number' ? data.total_count : null
+  } catch {
+    return null
+  }
+}
+
+async function scoreContributor(login) {
+  const [prsMerged, reviewsAuthored, commentsAuthored] = await Promise.all([
+    fetchSearchTotal(`is:pr is:merged author:${login} repo:${REPO}`),
+    fetchSearchTotal(`is:pr reviewed-by:${login} repo:${REPO}`),
+    fetchSearchTotal(`commenter:${login} repo:${REPO}`),
+  ])
+  return { prsMerged, reviewsAuthored, commentsAuthored }
+}
+
+// Composite weights — chosen so a *gated, finished contribution*
+// (merged PR) outranks a single commit, formal reviews count next,
+// and bare conversation comments contribute a soft tail. Tuneable.
+//
+// score = 1·commits + 5·prs_merged + 2·reviews + 0.5·comments
+function compositeScore({ commits = 0, prsMerged = 0, reviewsAuthored = 0, commentsAuthored = 0 }) {
+  return (
+    1 * (commits || 0) +
+    5 * (prsMerged || 0) +
+    2 * (reviewsAuthored || 0) +
+    0.5 * (commentsAuthored || 0)
+  )
+}
+
+// We score the top N candidates by raw commit count rather than every
+// contributor — the GitHub Search API limit is 30 req/min authenticated
+// and each user costs 3 search calls. 15 candidates with a 7-sec delay
+// between users keeps us safely under the limit (about 26 req/min) and
+// finishes in ~100 sec wall time. The top 15 by commits comfortably
+// contains anyone realistically in the running for "top 5 by composite",
+// so this is a tight no-waste budget.
+const SCORE_TOP_N = 15
+const SCORE_DELAY_MS = 7000
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms))
+}
+
 async function fetchAllContributors() {
   // Paginate until empty so the count is exact, not capped at 100.
   const all = []
@@ -187,6 +248,53 @@ async function main() {
       contributions: c.contributions,
     }))
 
+  // Score the top SCORE_TOP_N candidates with the composite signal.
+  // Snapshot fallback: if a search call fails for a user, the previous
+  // value from the snapshot (if any) is preserved so a transient rate-
+  // limit doesn't drop their reviews/PRs counts to zero.
+  const snapshotByLogin = new Map(
+    (snapshot?.contributors || []).map((c) => [c.login, c]),
+  )
+  const candidates = contributors.slice(0, SCORE_TOP_N)
+  let scoredCount = 0
+
+  for (let i = 0; i < candidates.length; i++) {
+    const c = candidates[i]
+    const fresh = await scoreContributor(c.login)
+    const fallback = snapshotByLogin.get(c.login) || {}
+    c.prs_merged = fresh.prsMerged ?? fallback.prs_merged ?? 0
+    c.reviews_authored = fresh.reviewsAuthored ?? fallback.reviews_authored ?? 0
+    c.comments_authored = fresh.commentsAuthored ?? fallback.comments_authored ?? 0
+    c.score = compositeScore({
+      commits: c.contributions,
+      prsMerged: c.prs_merged,
+      reviewsAuthored: c.reviews_authored,
+      commentsAuthored: c.comments_authored,
+    })
+    if (
+      fresh.prsMerged !== null ||
+      fresh.reviewsAuthored !== null ||
+      fresh.commentsAuthored !== null
+    ) {
+      scoredCount++
+    }
+    // Throttle between users to stay under the Search API's 30/min
+    // limit. Skip the wait after the last candidate.
+    if (i < candidates.length - 1) await sleep(SCORE_DELAY_MS)
+  }
+
+  // Un-scored contributors get a baseline score from commit count alone
+  // so the array remains comparable. They sort below any scored
+  // contributor with comparable commits because reviews/comments
+  // signals add to the scored ones.
+  for (const c of contributors.slice(SCORE_TOP_N)) {
+    c.score = compositeScore({ commits: c.contributions })
+  }
+
+  // Re-rank by composite score (descending). Stable sort: ties fall
+  // back to commit count since both sides have it.
+  contributors.sort((a, b) => (b.score || 0) - (a.score || 0))
+
   // Total contributors INCLUDING the core team — so the page can show
   // a true "X+ contributors" stat without having to add anything.
   let totalContributors = (contributorsResult.items || []).filter(
@@ -220,6 +328,10 @@ async function main() {
   console.log(
     `[team] wrote ${coreTeam.length} core member(s), ${contributors.length} contributor(s) (total ${totalContributors}) to ${path.relative(repoRoot, outFile)}.${
       profileFailures ? ` ${profileFailures} profile fetch(es) used snapshot fallback.` : ''
+    }${
+      typeof scoredCount !== 'undefined'
+        ? ` Composite scored ${scoredCount}/${SCORE_TOP_N} top candidates.`
+        : ''
     }`,
   )
 }

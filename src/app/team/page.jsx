@@ -161,16 +161,22 @@ export default function TeamPage() {
 
         {/* Top contributors — visual hierarchy step between the */}
         {/* maintainer cards above (large, with bio + socials) and */}
-        {/* the full contributor flow below (40px avatar wall). The */}
-        {/* fetch script already strips core team from contributors, */}
-        {/* so the top 5 here are guaranteed to be community devs. */}
+        {/* the full contributor flow below (40px avatar wall). */}
+        {/* */}
+        {/* Ranking is a composite score computed at fetch time: */}
+        {/*   1·commits + 5·PRs merged + 2·reviews + 0.5·comments */}
+        {/* The fetch script (utils/fetch-team.mjs) scores the top 15 */}
+        {/* by raw commit count and re-sorts by composite, so a heavy */}
+        {/* reviewer with modest commits surfaces above a one-time */}
+        {/* bulk-commit author. The footnote under the heading sets */}
+        {/* expectations about what's measured. */}
         {contributors.length > 0 && (
           <div className="mt-20">
             <h2 className="text-center font-display text-2xl font-bold text-white">
               Top contributors
             </h2>
             <p className="mt-2 text-center text-sm text-slate-400">
-              Most active community contributors to{' '}
+              Ranked by GitHub-visible contributions to{' '}
               <Link
                 href="https://github.com/gofr-dev/gofr"
                 target="_blank"
@@ -179,35 +185,49 @@ export default function TeamPage() {
               >
                 gofr-dev/gofr
               </Link>
-              {' '}by commit count.
+              {' '}— commits, merged PRs, reviews, and comments combined.
             </p>
 
             <div className="mx-auto mt-8 grid max-w-4xl gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-              {contributors.slice(0, 5).map((c) => (
-                <Link
-                  key={c.login}
-                  href={c.profile_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex flex-col items-center rounded-xl border border-slate-800 bg-slate-900/40 p-4 text-center transition-colors hover:border-sky-500/40"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={c.avatar_url}
-                    alt={`${c.login} avatar`}
-                    width={64}
-                    height={64}
-                    className="h-16 w-16 rounded-full bg-slate-800 ring-1 ring-slate-700 transition-all group-hover:ring-2 group-hover:ring-sky-400"
-                    loading="lazy"
-                  />
-                  <p className="mt-3 truncate font-display text-sm font-semibold text-white">
-                    {c.login}
-                  </p>
-                  <p className="mt-1 text-[11px] uppercase tracking-wider text-sky-400">
-                    {c.contributions} commits
-                  </p>
-                </Link>
-              ))}
+              {contributors.slice(0, 5).map((c) => {
+                // Build a tiny secondary line that surfaces whichever
+                // signal is non-zero beyond commits — keeps the card
+                // honest without crowding the layout.
+                const extras = []
+                if (c.prs_merged) extras.push(`${c.prs_merged} PR${c.prs_merged === 1 ? '' : 's'}`)
+                if (c.reviews_authored) extras.push(`${c.reviews_authored} review${c.reviews_authored === 1 ? '' : 's'}`)
+                return (
+                  <Link
+                    key={c.login}
+                    href={c.profile_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex flex-col items-center rounded-xl border border-slate-800 bg-slate-900/40 p-4 text-center transition-colors hover:border-sky-500/40"
+                    title={`${c.contributions} commits · ${c.prs_merged || 0} PRs · ${c.reviews_authored || 0} reviews · ${c.comments_authored || 0} comments`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={c.avatar_url}
+                      alt={`${c.login} avatar`}
+                      width={64}
+                      height={64}
+                      className="h-16 w-16 rounded-full bg-slate-800 ring-1 ring-slate-700 transition-all group-hover:ring-2 group-hover:ring-sky-400"
+                      loading="lazy"
+                    />
+                    <p className="mt-3 truncate font-display text-sm font-semibold text-white">
+                      {c.login}
+                    </p>
+                    <p className="mt-1 text-[11px] uppercase tracking-wider text-sky-400">
+                      {c.contributions} commits
+                    </p>
+                    {extras.length > 0 && (
+                      <p className="mt-0.5 text-[10px] text-slate-500">
+                        {extras.join(' · ')}
+                      </p>
+                    )}
+                  </Link>
+                )
+              })}
             </div>
           </div>
         )}
