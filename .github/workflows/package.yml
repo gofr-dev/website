@@ -36,6 +36,39 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        # Full history is needed by utils/generate-doc-mtimes.mjs which
+        # reads `git log` per source file to compute the visible
+        # "Last updated" byline. A shallow clone would give every doc
+        # the same boot timestamp.
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # Pull fresh data from GitHub at deploy time — releases, roadmap
+      # milestones, team profiles + contributor list, and per-doc git
+      # mtimes. The fetch scripts each have a snapshot fallback: on a
+      # rate-limited or transient failure they keep the previously-
+      # committed JSON rather than emitting an empty file.
+      #
+      # `continue-on-error: true` makes this step non-blocking — even
+      # in the worst case (every API call failed) the build proceeds
+      # with the committed snapshots, never an empty website.
+      #
+      # Auth uses the workflow's built-in GITHUB_TOKEN (1000 req/hr),
+      # which is enough for our ~150-request refresh and avoids the
+      # 60/hr unauthenticated cliff.
+      - name: Refresh data from GitHub (snapshot fallback on failure)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn refresh-data
+        continue-on-error: true
 
       - name: Log in to the Container registry
         uses: docker/login-action@v1
