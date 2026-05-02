@@ -61,6 +61,14 @@ Allow: /
 User-agent: Amazonbot
 Allow: /
 
+# Common Crawl — feeds many open LLM training corpora
+User-agent: CCBot
+Allow: /
+
+# ByteDance / Doubao
+User-agent: Bytespider
+Allow: /
+
 # Default
 User-agent: *
 Allow: /

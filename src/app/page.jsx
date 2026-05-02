@@ -3,7 +3,7 @@ import { HomePage } from '@/components/HomePage'
 export const metadata = {
   title: 'GoFr — An Opinionated Go Framework',
   description:
-    'An Opinionated Go Framework. For accelerated microservice development.',
+    'An Opinionated Go Framework for accelerated microservice development. Built-in observability, 15+ datasources, gRPC, GraphQL, WebSockets, and pub/sub.',
   metadataBase: new URL('https://gofr.dev'),
   alternates: {
     canonical: '/',
@@ -32,7 +32,7 @@ export const metadata = {
     siteName: 'GoFr',
     title: 'GoFr — An Opinionated Go Framework',
     description:
-      'An Opinionated Go Framework. For accelerated microservice development.',
+      'An Opinionated Go Framework for accelerated microservice development. Built-in observability, 15+ datasources, gRPC, GraphQL, WebSockets, and pub/sub.',
     images: [
       {
         url: '/opengraph-image.png',
@@ -48,7 +48,7 @@ export const metadata = {
     creator: '@gofr_dev',
     title: 'GoFr — An Opinionated Go Framework',
     description:
-      'An Opinionated Go Framework. For accelerated microservice development.',
+      'An Opinionated Go Framework for accelerated microservice development. Built-in observability, 15+ datasources, gRPC, GraphQL, WebSockets, and pub/sub.',
     images: ['/twitter-image.png'],
   },
   other: {

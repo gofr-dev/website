@@ -8,7 +8,6 @@ import { HeroBackground } from '@/components/HeroBackground'
 import blurCyanImage from '@/images/blur-cyan.png'
 import blurIndigoImage from '@/images/blur-indigo.png'
 import Link from 'next/link'
-import { LatestReleaseBadge } from '@/components/LatestReleaseBadge'
 
 const codeLanguage = 'javascript'
 const mainGoCode = `package main
@@ -121,6 +120,7 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
               height={150}
               unoptimized
               priority
+              className="motion-safe:animate-gentle-drift"
             />
             <div className="relative z-10">
               <Image
@@ -140,14 +140,7 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                 <h2 className="mt-3 text-2xl tracking-tight text-slate-300">
                   {t.h2}
                 </h2>
-                {/* Subtle "Latest release: vX · N days ago" line above */}
-                {/* the CTAs. Reads from changelog/releases.json at */}
-                {/* build time; clicks deep-link to that release on the */}
-                {/* changelog. */}
-                <div className="mt-6 flex justify-center xl:justify-start">
-                  <LatestReleaseBadge />
-                </div>
-                <div className="mt-3 flex justify-center gap-4 xl:justify-start">
+                <div className="mt-8 flex justify-center gap-4 xl:justify-start">
                   <Link
                     className="rounded-full bg-sky-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
                     href={getStartedHref}
@@ -169,22 +162,21 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                     <span>{t.viewOnGithub}</span>
                   </Link>
                 </div>
-                {/* Single tertiary line below the CTAs. Points at */}
-                {/* /llms.txt rather than /AGENTS.md because llms.txt */}
-                {/* is the routing index — its first non-frontmatter */}
-                {/* line tells AI coding assistants to fetch */}
-                {/* /AGENTS.md, while AI search crawlers consume the */}
-                {/* full sectioned link map below it. One URL covers */}
-                {/* both audiences. */}
+                {/* Tertiary CTA — matches prod: evaluation prospects */}
+                {/* hit the calendar booking link rather than the AI- */}
+                {/* assistant /llms.txt link. AI assistants find */}
+                {/* gofr.dev/llms.txt via the rel="alternate" link in */}
+                {/* the root layout's <head>; they don't need a */}
+                {/* hero CTA. Live calendar/eval traffic does. */}
                 <div className="mt-4 flex flex-wrap justify-center gap-x-1.5 text-xs text-slate-400 xl:justify-start">
-                  <span>Building with an AI coding assistant?</span>
+                  <span>Want to evaluate and adopt GoFr at your org?</span>
                   <a
-                    href="/llms.txt"
+                    href="https://calendly.com/aryan-mehrotra-gofr/30min"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sky-400 transition-colors hover:text-sky-300"
                   >
-                    Hand them gofr.dev/llms.txt →
+                    block our calendar.
                   </a>
                 </div>
               </div>
@@ -246,7 +238,7 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                     ))}
                   </div>
                   <div
-                    className={`mt-6 flex max-h-[315px] items-start px-1 px-4 text-xs sm:text-[13px] ${
+                    className={`mt-6 flex max-h-[315px] items-start px-1 px-4 text-xs sm:text-sm ${
                       activeTab === 'main_test.go' ? 'overflow-auto' : ''
                     }`}
                   >
@@ -263,6 +255,11 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                         </Fragment>
                       ))}
                     </div>
+                    {/* Line-by-line stagger reveal (motion-safe). Each */}
+                    {/* `<div>` line below gets `animation-delay: i*60ms` */}
+                    {/* via inline style so the code "types in" on first */}
+                    {/* paint. Pure CSS — no React state, runs every */}
+                    {/* mount. Pauses under prefers-reduced-motion. */}
                     <Highlight
                       code={code}
                       language={codeLanguage}
@@ -283,16 +280,34 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                           style={style}
                         >
                           <code className="px-4">
-                            {tokens.map((line, lineIndex) => (
-                              <div key={lineIndex} {...getLineProps({ line })}>
-                                {line.map((token, tokenIndex) => (
-                                  <span
-                                    key={tokenIndex}
-                                    {...getTokenProps({ token })}
-                                  />
-                                ))}
-                              </div>
-                            ))}
+                            {tokens.map((line, lineIndex) => {
+                              const lp = getLineProps({ line })
+                              return (
+                                <div
+                                  key={lineIndex}
+                                  {...lp}
+                                  className={clsx(
+                                    lp.className,
+                                    // motion-safe: start opacity-0,
+                                    // animation reveals to 1.
+                                    // motion-reduce: skip both — line is
+                                    // visible at default opacity.
+                                    'motion-safe:animate-line-in motion-safe:opacity-0',
+                                  )}
+                                  style={{
+                                    ...(lp.style || {}),
+                                    animationDelay: `${lineIndex * 60}ms`,
+                                  }}
+                                >
+                                  {line.map((token, tokenIndex) => (
+                                    <span
+                                      key={tokenIndex}
+                                      {...getTokenProps({ token })}
+                                    />
+                                  ))}
+                                </div>
+                              )
+                            })}
                           </code>
                         </pre>
                       )}

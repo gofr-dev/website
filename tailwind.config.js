@@ -28,6 +28,27 @@ module.exports = {
       maxWidth: {
         '8xl': '88rem',
       },
+      keyframes: {
+        // Decorative homepage motion. All paused under
+        // prefers-reduced-motion via the rule in src/styles/prism.css.
+        'gentle-drift': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-6px)' },
+        },
+        'orb-pulse': {
+          '0%, 100%': { opacity: '0.25' },
+          '50%': { opacity: '0.45' },
+        },
+        'line-in': {
+          '0%': { opacity: '0', transform: 'translateX(-4px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+      },
+      animation: {
+        'gentle-drift': 'gentle-drift 4s ease-in-out infinite',
+        'orb-pulse': 'orb-pulse 8s ease-in-out infinite',
+        'line-in': 'line-in 300ms ease-out forwards',
+      },
     },
     screens: {
       xs: '10px',

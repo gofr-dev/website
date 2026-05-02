@@ -1,6 +1,15 @@
 import React from 'react'
 import Link from 'next/link'
 
+export const metadata = {
+  title: 'GoFr CLI — Project Scaffolding for the Go Framework',
+  description:
+    'GoFr CLI is the command-line tool for initializing GoFr projects, generating boilerplate, and running framework-aware tasks for Go microservices.',
+  alternates: {
+    canonical: '/cli/gofr',
+  },
+}
+
 const Page = () => {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">

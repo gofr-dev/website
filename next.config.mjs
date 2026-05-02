@@ -30,6 +30,25 @@ const nextConfig = {
           // social share preview shows the home page's card. The author of
           // a doc can still override by setting `nextjs.metadata.openGraph`
           // or `nextjs.metadata.twitter` explicitly in frontmatter.
+          //
+          // Derive the route from the resource path (e.g.
+          // `<repo>/src/app/docs/guides/deploying-to-kubernetes/page.md` →
+          // `/docs/guides/deploying-to-kubernetes`). We inject this as
+          // `alternates.canonical` so every Markdoc page emits a unique
+          // <link rel="canonical">. Next's metadata API does NOT
+          // auto-derive canonical from metadataBase + pathname; it must
+          // be set explicitly. The page can override by providing
+          // `nextjs.metadata.alternates.canonical` in frontmatter.
+          const resourcePath = (this.resourcePath || '').replace(/\\/g, '/')
+          const appIdx = resourcePath.indexOf('/src/app/')
+          let __canonical = '/'
+          if (appIdx !== -1) {
+            const rel = resourcePath.slice(appIdx + '/src/app/'.length)
+            // Strip trailing /page.md
+            const stripped = rel.replace(/\/page\.md$/, '')
+            __canonical = '/' + stripped
+            if (__canonical === '/') __canonical = '/'
+          }
           return (
             source +
             `
@@ -46,6 +65,11 @@ const __tw = {
   ...(__pageDesc ? { description: __pageDesc } : {}),
   ...(__pageMeta.twitter || {}),
 };
+const __derivedCanonical = ${JSON.stringify(__canonical)};
+const __alternates = {
+  canonical: __derivedCanonical,
+  ...(__pageMeta.alternates || {}),
+};
 // Only emit openGraph / twitter when the page actually carries
 // per-page values. If we always emitted an object, Next's metadata
 // merge would replace the parent layout's openGraph wholesale and
@@ -53,6 +77,7 @@ const __tw = {
 export const metadata = {
   metadataBase: new URL("https://gofr.dev"),
   ...__pageMeta,
+  alternates: __alternates,
   ...(Object.keys(__og).length ? { openGraph: { type: 'article', ...__og } } : {}),
   ...(Object.keys(__tw).length ? { twitter: { card: 'summary_large_image', ...__tw } } : {}),
 };

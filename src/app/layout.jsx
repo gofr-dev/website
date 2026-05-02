@@ -40,7 +40,7 @@ export const metadata = {
     template: '%s | GoFr',
   },
   description:
-    'An Opinionated Go Framework. For accelerated microservice development.',
+    'An Opinionated Go Framework for accelerated microservice development. Built-in observability, 15+ datasources, gRPC, GraphQL, WebSockets, and pub/sub.',
   // Canonical intentionally omitted from the root layout — setting it
   // to '/' would brand every subpage as a duplicate of the home page.
   // Per-page metadata sets its own canonical via `alternates.canonical`
@@ -61,7 +61,7 @@ export const metadata = {
     siteName: 'GoFr',
     title: 'GoFr — An Opinionated Go Framework',
     description:
-      'An Opinionated Go Framework. For accelerated microservice development.',
+      'An Opinionated Go Framework for accelerated microservice development. Built-in observability, 15+ datasources, gRPC, GraphQL, WebSockets, and pub/sub.',
     url: 'https://gofr.dev/',
     images: [
       {
@@ -78,7 +78,7 @@ export const metadata = {
     creator: '@gofr_dev',
     title: 'GoFr — An Opinionated Go Framework',
     description:
-      'An Opinionated Go Framework. For accelerated microservice development.',
+      'An Opinionated Go Framework for accelerated microservice development. Built-in observability, 15+ datasources, gRPC, GraphQL, WebSockets, and pub/sub.',
     images: ['/twitter-image.png'],
   },
   verification: {

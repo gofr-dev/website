@@ -72,7 +72,7 @@ export function EcosystemRecognition() {
               href={it.href}
               target="_blank"
               rel="noopener noreferrer"
-              className={`group flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/40 p-6 transition-colors hover:bg-slate-900/70 ${it.accent.border}`}
+              className={`group flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/40 p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-900/70 ${it.accent.border}`}
             >
               <div className="flex items-center justify-between">
                 <span

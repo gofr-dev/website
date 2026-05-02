@@ -1,4 +1,4 @@
-import { formatGitHubStars } from '../../utils'
+import { CountUp } from '@/components/CountUp'
 import company1 from '@/images/doceree.svg'
 import company2 from '@/images/americanExpress.svg'
 import company3 from '@/images/ibm.svg'
@@ -9,7 +9,6 @@ import company8 from '@/images/blinkit.svg'
 import company11 from '@/images/walmart.svg'
 import company10 from '@/images/mcafee.svg'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
 
 const imageLink = [
   { image: company2,  name: 'American Express' },
@@ -24,16 +23,17 @@ const imageLink = [
 ]
 
 export default function CompanyList() {
-  const [githubStars, setGithubStars] = useState('3500+')
-
-  useEffect(() => {
-    setGithubStars(formatGitHubStars('githubStars'))
-  }, [])
   return (
-    <div className="bg-gray-900 py-16 sm:py-10">
+    <div className="py-16 sm:py-10">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <h2 className="text-center text-lg/8 font-semibold text-white">
-          Trusted by {githubStars} Developers at Companies Like:
+          Trusted by{' '}
+          <CountUp
+            value={21500}
+            durationMs={1500}
+            format={(n) => `${n.toLocaleString()}+`}
+          />{' '}
+          Developers at Companies Like:
         </h2>
         <div className="mt-10 flex flex-wrap justify-center gap-x-0 gap-y-10 sm:max-w-none lg:mx-0">
           {imageLink.map((item, index) => (

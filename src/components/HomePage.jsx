@@ -4,6 +4,8 @@ import DBlistComponent from './DBlistComponent'
 import { Hero } from './Hero'
 import { QuickLink } from '@/components/QuickLinks'
 import { EcosystemRecognition } from '@/components/EcosystemRecognition'
+import { FadeInOnScroll } from '@/components/FadeInOnScroll'
+import { StaggerChildren } from '@/components/StaggerChildren'
 import blurCyanImage from "@/images/blur-cyan.png";
 import Image from "next/image";
 import React from "react";
@@ -18,8 +20,14 @@ import Testimonials from "@/components/Reviews";
 export function HomePage() {
   return (
     <div className="m-auto w-auto max-w-screen-2xl">
+      {/* Density-matched section padding. Uniform `py-24` everywhere
+          made the page feel padded-for-padding's-sake when section
+          content was thin (a 100 px marquee strip, a 1-row logo wall).
+          The pattern Vercel / Stripe / Tailwind use is to scale
+          padding to content height: substantial sections breathe more,
+          thin sections sit closer together. */}
       <Hero />
-      <div className="not-prose my-12 grid grid-cols-1 gap-6 px-4 md:grid-cols-3 lg:px-8 xl:px-12">
+      <StaggerChildren className="not-prose grid grid-cols-1 gap-6 px-4 py-20 md:grid-cols-3 lg:px-8 xl:px-12">
         <QuickLink
           title="Battle-Tested at Enterprise Scale"
           description="Built over years running production workloads at great scale in a variety of industries."
@@ -67,7 +75,7 @@ export function HomePage() {
           {/* 404s in production and renders as a broken-image icon. */}
           <Image
               aria-hidden="true"
-              className="absolute mt-80 opacity-25 pointer-events-none select-none hidden sm:block"
+              className="pointer-events-none absolute mt-80 hidden select-none opacity-25 sm:block"
               src={blurCyanImage}
               alt=""
               width={530}
@@ -76,12 +84,17 @@ export function HomePage() {
               unoptimized
           />
 
-      </div>
+      </StaggerChildren>
 
-      <DBlistComponent />
-      <CompanyList />
-      <EcosystemRecognition />
-      <Testimonials />
+      {/* Thin marquee strip — minimal external padding (component */}
+      {/* already has its own internal padding). */}
+      <FadeInOnScroll className="py-8"><DBlistComponent /></FadeInOnScroll>
+      {/* Logo wall — medium. */}
+      <FadeInOnScroll className="py-12"><CompanyList /></FadeInOnScroll>
+      {/* 3 ecosystem cards — substantial. */}
+      <FadeInOnScroll className="py-20"><EcosystemRecognition /></FadeInOnScroll>
+      {/* Testimonials masonry — substantial. */}
+      <FadeInOnScroll className="py-20"><Testimonials /></FadeInOnScroll>
     </div>
   )
 }

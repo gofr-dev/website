@@ -31,7 +31,7 @@ const getAnimationDelay = (index) => `calc(30s / 11 * (11 - ${index + 1}) * -1)`
 
 const DBlistComponent = () => {
   return (
-    <div className="bg-gray-900 py-10">
+    <div className="py-10">
       <div className="mx-auto max-w-screen-2xl lg:px-8 xl:px-12">
         <div className="mx-auto max-w-2xl lg:max-w-none">
           <h2 className="text-center text-lg font-semibold leading-8 text-white">

@@ -105,14 +105,18 @@ pre[class*='language-'] {
 /* OS level (macOS Reduce Motion, Windows Show animations off, etc). */
 /* The marquee is decorative; pausing it doesn't change information. */
 @media (prefers-reduced-motion: reduce) {
+  /* Pause the marquee in place — don't disable the animation entirely. */
+  /* Each .item is `position: absolute` with a per-item animation-delay, */
+  /* so killing the animation collapses every item to the same absolute */
+  /* left and the whole row goes invisible. Pausing keeps the staggered */
+  /* positions and just freezes the scroll. */
   .item {
-    animation: none !important;
-    /* Without animation the items would overlap at the same absolute */
-    /* left. Lay them out horizontally so the row still reads. */
-    position: static;
-    left: auto;
+    animation-play-state: paused !important;
   }
-  .wrapper {
-    overflow-x: auto;
+  /* Same principle for the homepage decorative animations: pause, */
+  /* don't disable. */
+  .animate-gentle-drift,
+  .animate-orb-pulse {
+    animation-play-state: paused !important;
   }
 }

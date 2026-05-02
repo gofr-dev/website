@@ -15,8 +15,8 @@ const columns = [
   {
     title: 'Framework',
     links: [
-      { title: 'Documentation', href: '/docs' },
       { title: 'Quick Start', href: '/docs/quick-start/introduction' },
+      { title: 'Production Guides', href: '/docs/guides/deploying-to-kubernetes' },
       { title: 'Examples', href: '/examples' },
       { title: 'Changelog', href: '/changelog' },
       { title: 'Roadmap', href: '/roadmap' },

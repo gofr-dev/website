@@ -77,9 +77,17 @@ For AI coding assistants (Claude Code, Cursor, Codex, Aider, Continue), a curate
 - [GoFr vs Chi](https://gofr.dev/comparison/gofr-vs-chi)
 - [Migrating from Gin](https://gofr.dev/migrate/from-gin)
 - [Migrating from Fiber](https://gofr.dev/migrate/from-fiber)
+- [Migrating from Echo](https://gofr.dev/migrate/from-echo)
+- [Migrating from chi](https://gofr.dev/migrate/from-chi)
 - [Migrating from Express (Node.js)](https://gofr.dev/migrate/from-express)
+- [Migrating from NestJS (TypeScript)](https://gofr.dev/migrate/from-nestjs)
 - [Migrating from Flask (Python)](https://gofr.dev/migrate/from-flask)
+- [Migrating from FastAPI (Python)](https://gofr.dev/migrate/from-fastapi)
+- [Migrating from Django REST (Python)](https://gofr.dev/migrate/from-django-rest)
 - [Migrating from Spring Boot (Java)](https://gofr.dev/migrate/from-spring-boot)
+- [Migrating from ASP.NET Core (C#)](https://gofr.dev/migrate/from-aspnet-core)
+- [Migrating from Laravel (PHP)](https://gofr.dev/migrate/from-laravel)
+- [Migrating from Rails (Ruby)](https://gofr.dev/migrate/from-rails)
 
 ## Examples and showcase
 
