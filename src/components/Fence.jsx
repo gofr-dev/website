@@ -35,8 +35,14 @@ function CheckIcon(props) {
 }
 
 export function Fence({ children, language }) {
+  // Defensive: a markdown author writing a code fence without a
+  // language tag (e.g. ``` instead of ```go) made prism-react-renderer
+  // crash the entire page prerender on `language.toLowerCase()`. Fall
+  // back to 'text' so a missing tag is a soft degrade (plain code
+  // block, no syntax highlight) instead of a hard build failure.
+  const lang = language || 'text'
   const [copied, setCopied] = useState(false)
-  const label = languageNames[language] || language
+  const label = languageNames[lang] || lang
 
   const handleCopy = () => {
     copy(children.trimEnd())
@@ -47,7 +53,7 @@ export function Fence({ children, language }) {
   return (
     <div className="not-prose group relative my-5 rounded-lg bg-slate-900 dark:bg-slate-800/60 dark:ring-1 dark:ring-slate-300/10">
       {/* Header with language label and copy */}
-      {language !== 'doc' && (
+      {lang !== 'doc' && (
         <div className="flex items-center justify-between rounded-t-lg border-b border-slate-800 px-4 py-2 dark:border-slate-700/50">
           <span className="font-mono text-xs text-slate-400">{label}</span>
           <button
@@ -65,7 +71,7 @@ export function Fence({ children, language }) {
 
       <Highlight
         code={children.trimEnd()}
-        language={language}
+        language={lang}
         theme={{ plain: {}, styles: [] }}
       >
         {({ className, style, tokens, getTokenProps }) => (
