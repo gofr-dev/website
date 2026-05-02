@@ -61,6 +61,10 @@ export function HomePage() {
           {/* Dropped `unoptimized`: orb PNGs are 200+ KB each, letting */}
           {/* Next.js serve WebP/AVIF cuts ~60-70% off the wire. Below */}
           {/* the fold, so swap `priority` for native lazy loading. */}
+          {/* `unoptimized` is required: this site builds with */}
+          {/* output: 'export', which disables /_next/image. Without */}
+          {/* unoptimized, Next emits a /_next/image?url=... src that */}
+          {/* 404s in production and renders as a broken-image icon. */}
           <Image
               aria-hidden="true"
               className="absolute mt-80 opacity-25 pointer-events-none select-none hidden sm:block"
@@ -69,6 +73,7 @@ export function HomePage() {
               width={530}
               height={530}
               loading="lazy"
+              unoptimized
           />
 
       </div>

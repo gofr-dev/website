@@ -6,6 +6,13 @@ import withSearch from './src/markdoc/search.mjs'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
+  // `output: 'export'` disables Next's image optimisation API
+  // (/_next/image). Without `images.unoptimized = true`, every
+  // <Image> tag emits a /_next/image?url=... src that 404s in
+  // production and renders as a browser broken-image icon. Setting
+  // it once here means we don't need to remember `unoptimized` on
+  // every <Image> usage. PNG/JPG sizes are managed at the source.
+  images: { unoptimized: true },
   pageExtensions: ['js', 'jsx', 'md', 'ts', 'tsx'],
   webpack(config) {
     config.module.rules.unshift({
