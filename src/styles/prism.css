@@ -46,18 +46,27 @@ pre[class*='language-'] {
   color: theme('colors.slate.400');
 }
 
-code {
+/*
+ * Inline-code styling. Scoped to `:not(pre) > code` so it ONLY hits
+ * inline `<code>` (in paragraphs, list items, headings, etc.) and not
+ * the `<code>` element that lives inside a `<pre>` for fenced code
+ * blocks. Without this scope, the inline background + border-radius +
+ * margin-right paints across each rendered line box of a multiline
+ * `<pre><code>`, producing per-line "pill" stripes — which is what was
+ * happening site-wide on every fenced code block.
+ */
+:not(pre) > code {
   background-color: var(--tw-prose-background);
   padding: 1px 2px;
   border-radius: 3px;
   margin-right: 2px;
 }
 
-code::before {
+:not(pre) > code::before {
   content: none !important;
 }
 
-code::after {
+:not(pre) > code::after {
   content: none !important;
 }
 
@@ -90,4 +99,24 @@ code::after {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-play-state: running; /* Ensure the animation runs by default */
+}
+
+/* WCAG 2.3.3 — respect users who've requested reduced motion at the */
+/* OS level (macOS Reduce Motion, Windows Show animations off, etc). */
+/* The marquee is decorative; pausing it doesn't change information. */
+@media (prefers-reduced-motion: reduce) {
+  /* Pause the marquee in place — don't disable the animation entirely. */
+  /* Each .item is `position: absolute` with a per-item animation-delay, */
+  /* so killing the animation collapses every item to the same absolute */
+  /* left and the whole row goes invisible. Pausing keeps the staggered */
+  /* positions and just freezes the scroll. */
+  .item {
+    animation-play-state: paused !important;
+  }
+  /* Same principle for the homepage decorative animations: pause, */
+  /* don't disable. */
+  .animate-gentle-drift,
+  .animate-orb-pulse {
+    animation-play-state: paused !important;
+  }
 }

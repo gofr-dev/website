@@ -41,8 +41,14 @@ const AccordionCard = ({ data }) => {
   }, [titleRef.current])
 
   return (
-    <div
-      className={`group relative flex cursor-pointer flex-col gap-1 overflow-hidden rounded-md border border-slate-200 p-2 transition-all duration-500 dark:border-slate-800`}
+    // Native <button> instead of <div onClick>: keyboard-activatable
+    // by default (Enter / Space), reachable in tab order, exposes
+    // role=button to assistive tech. aria-expanded mirrors the open
+    // state so screen readers announce open/closed correctly.
+    <button
+      type="button"
+      aria-expanded={isOpen}
+      className={`group relative flex w-full cursor-pointer flex-col gap-1 overflow-hidden rounded-md border border-slate-200 p-2 text-left transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 dark:border-slate-800`}
       style={{
         height: titleHeight + height,
       }}
@@ -69,18 +75,20 @@ const AccordionCard = ({ data }) => {
             <span ref={titleRef} className={`text-sm font-semibold md:text-xl`}>
               {data.title}
             </span>
-            <button>
-              <Image
-                src={ArrowRight}
-                alt={'arrow-right'}
-                width={20}
-                height={20}
-                className={`transition-all duration-500 ${
-                  isOpen ? 'rotate-90' : ''
-                }`}
-                unoptimized
-              />
-            </button>
+            {/* Decorative chevron — the parent <button> already */}
+            {/* handles activation. aria-hidden + alt="" prevents the */}
+            {/* image from being announced as a separate element. */}
+            <Image
+              src={ArrowRight}
+              alt=""
+              aria-hidden="true"
+              width={20}
+              height={20}
+              className={`transition-all duration-500 ${
+                isOpen ? 'rotate-90' : ''
+              }`}
+              unoptimized
+            />
           </div>
           <AnimateHeight
             onChange={(w) => {
@@ -96,6 +104,6 @@ const AccordionCard = ({ data }) => {
           </AnimateHeight>
         </div>
       </div>
-    </div>
+    </button>
   )
 }

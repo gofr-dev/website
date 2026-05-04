@@ -1,16 +1,11 @@
-import React from 'react';
+import { PkgRedirect } from '@/components/PkgRedirect'
 
 
-const Page = () => {
-    return (
-        <div className={`flex justify-center items-center min-h-[70vh]`}>
-            <div className={`text-4xl font-semibold flex gap-3 flex-wrap justify-center`}>
-                <span>
-                </span>
-                <span className={`text-sky-400`}></span>
-            </div>
-        </div>
-    );
-};
+export const metadata = {
+  title: 'gofr/datasource/opentsdb — GoFr Go Package',
+  description: 'Go module path for gofr/datasource/opentsdb. This redirect-only page sends visitors to the GoFr documentation for setup, configuration, and usage examples.',
+}
 
-export default Page;
+export default function Page() {
+  return <PkgRedirect name="gofr/datasource/opentsdb" docsPath="/docs/datasources/opentsdb" />
+}

@@ -1,0 +1,83 @@
+# GoFr — gofr.dev
+# AI / answer-engine policy: explicitly allow the canonical training
+# AND retrieval bots so this site is eligible for citation in
+# Perplexity, ChatGPT, Claude, Gemini, Bing Copilot, etc. Generic
+# `User-agent: *` already permits everything; the per-bot stanzas
+# below exist so the policy is unambiguous to crawler operators.
+
+# OpenAI — ChatGPT
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic — Claude
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+
+# Google — Search + Gemini
+User-agent: Googlebot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+# Microsoft / Bing
+User-agent: Bingbot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+
+# Apple — Siri / Apple Intelligence
+User-agent: Applebot
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+
+# Meta — Llama / Meta AI
+User-agent: Meta-ExternalAgent
+Allow: /
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+# Other answer engines
+User-agent: cohere-ai
+Allow: /
+User-agent: YouBot
+Allow: /
+User-agent: DuckAssistBot
+Allow: /
+User-agent: Amazonbot
+Allow: /
+
+# Common Crawl — feeds many open LLM training corpora
+User-agent: CCBot
+Allow: /
+
+# ByteDance / Doubao
+User-agent: Bytespider
+Allow: /
+
+# Default
+User-agent: *
+Allow: /
+
+# AI assistant context (for Claude Code, Cursor, Codex, Aider, Continue):
+#   https://gofr.dev/AGENTS.md
+# LLM index (Markdown-shaped, per https://llmstxt.org/):
+#   https://gofr.dev/llms.txt
+# LLM full content dump (concatenated docs):
+#   https://gofr.dev/llms-full.txt
+
+Sitemap: https://gofr.dev/sitemap.xml

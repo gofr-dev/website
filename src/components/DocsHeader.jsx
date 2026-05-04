@@ -15,13 +15,17 @@ export function DocsHeader({ title }) {
     return null
   }
 
+  // NOTE: do NOT render <title> or <meta description> from this
+  // component. Next.js's metadata API (per-page `metadata` exports
+  // and the Markdoc frontmatter → metadata bridge in next.config.mjs)
+  // already injects a single canonical pair into <head>. Rendering
+  // them here too produced duplicate <title>/<meta description>
+  // tags in the served HTML — Google was free to pick the wrong one,
+  // and the page-specific tag was being out-ranked by the site
+  // default. Keep this component purely for the visible header chrome
+  // (section eyebrow + h1).
   return (
     <header className="mb-9 space-y-1">
-      <title>{section.title + ' | ' + link?.title || ''}</title>
-      <meta
-        name="description"
-        content={link?.desc || section?.desc || 'Quick Start Guide with Gofr'}
-      ></meta>
       {section && (
         <p className="font-display text-sm font-medium text-sky-500">
           {section.title}

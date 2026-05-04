@@ -1,8 +1,4 @@
-import React from 'react'
 import Link from 'next/link'
-import cloudNativeLandscapeSvg from '@/images/cloud-native-landscape.svg'
-import awesomeGo from '@/images/awesome-go.svg'
-import Image from 'next/image'
 import { RedditIcon } from './icons/RedditIcon'
 import { GithubIcon } from './icons/GithubIcon'
 import { DiscordIcon } from './icons/DiscordIcon'
@@ -10,76 +6,127 @@ import { LinkedinIcon } from './icons/LinkedinIcon'
 import { TwitterIcon } from './icons/TwitterIcon'
 import EmailIcon from './icons/EmailIcon'
 
-
-const socialMediaLinks = [
+// Grouped, center-aligned footer columns. Each column has 5 entries so
+// the visual height is balanced; uneven columns made "Resources" tower
+// over the others. "Framework" replaces "Product" — GoFr is open
+// source, not a commercial product, so the OSS-appropriate noun is
+// the framework itself.
+const columns = [
   {
-    Icon: GithubIcon,
-    Link: 'https://github.com/gofr-dev/',
+    title: 'Framework',
+    links: [
+      { title: 'Quick Start', href: '/docs/quick-start/introduction' },
+      { title: 'Production Guides', href: '/docs/guides/deploying-to-kubernetes' },
+      { title: 'Examples', href: '/examples' },
+      { title: 'Changelog', href: '/changelog' },
+      { title: 'Roadmap', href: '/roadmap' },
+    ],
   },
   {
-    Icon: DiscordIcon,
-    Link: 'https://discord.gg/5ACeSKGt37',
+    title: 'Resources',
+    links: [
+      { title: 'Why GoFr', href: '/why-gofr' },
+      { title: 'Compare', href: '/comparison' },
+      { title: 'Migrate', href: '/migrate' },
+      { title: 'Learn', href: '/learn' },
+      { title: 'FAQ', href: '/faq' },
+    ],
   },
   {
-    Icon: RedditIcon,
-    Link: 'https://www.reddit.com/r/gofr/',
+    title: 'Community',
+    links: [
+      { title: 'GitHub', href: 'https://github.com/gofr-dev/', external: true },
+      { title: 'Discord', href: 'https://discord.gg/5ACeSKGt37', external: true },
+      { title: 'Reddit', href: 'https://www.reddit.com/r/gofr/', external: true },
+      { title: 'X (Twitter)', href: 'https://twitter.com/gofr_dev', external: true },
+      { title: 'LinkedIn', href: 'https://in.linkedin.com/company/gofr-dev', external: true },
+    ],
   },
   {
-    Icon: LinkedinIcon,
-    Link: 'https://in.linkedin.com/company/gofr-dev',
-  },
-  {
-    Icon: TwitterIcon,
-    Link: 'https://twitter.com/gofr_dev',
-  },
-    {
-    Icon: EmailIcon,
-    Link: 'mailto:connect@gofr.dev',
+    title: 'Project',
+    links: [
+      { title: 'Team', href: '/team' },
+      { title: 'Showcase', href: '/showcase' },
+      { title: 'Events', href: '/events' },
+      // /llms.txt rather than AGENTS.md here: the hero already hands
+      // AGENTS.md to developers wiring Claude/Cursor. The footer is
+      // where AI search-engine crawlers and curious humans look for
+      // the broader curated link index, so we point them there.
+      { title: 'LLM index', href: '/llms.txt', external: true },
+      { title: 'Blog', href: 'https://medium.com/gofr', external: true },
+    ],
   },
 ]
 
-const footerLinks = [
-  // { title: 'Releases', link: '/releases' },
-  { title: 'Documentation', link: '/docs' },
-  { title: 'Blogs', link: 'https://medium.com/gofr', target_blank: true },
-  { title: 'Events', link: '/events' },
+const socialMediaLinks = [
+  { Icon: GithubIcon, href: 'https://github.com/gofr-dev/', label: 'GitHub' },
+  { Icon: DiscordIcon, href: 'https://discord.gg/5ACeSKGt37', label: 'Discord' },
+  { Icon: RedditIcon, href: 'https://www.reddit.com/r/gofr/', label: 'Reddit' },
+  { Icon: LinkedinIcon, href: 'https://in.linkedin.com/company/gofr-dev', label: 'LinkedIn' },
+  { Icon: TwitterIcon, href: 'https://twitter.com/gofr_dev', label: 'Twitter' },
+  { Icon: EmailIcon, href: 'mailto:connect@gofr.dev', label: 'Email' },
 ]
 
 function FooterUi() {
   return (
-    <footer className="border-t border-slate-800 px-4 py-2 dark:bg-slate-900">
-      <div className="mx-auto max-w-screen-2xl px-2 py-2 ">
-        <nav
-          aria-label="Footer"
-          className="relative z-10 flex justify-center gap-5 sm:space-x-12"
-        >
-          {footerLinks.map((item) => (
-            <div key={item.title} className="pb-2">
-              <Link
-                href={item.link}
-                target={item?.target_blank ? '_blank' : '_self'}
-                className="text-sm leading-6 text-slate-400 hover:text-slate-300"
-              >
-                {item.title}
-              </Link>
+    <footer className="border-t border-slate-200 dark:border-slate-800 dark:bg-slate-900">
+      {/* Top section: column grid, centered. */}
+      <div className="mx-auto max-w-5xl px-6 pb-10 pt-12 lg:px-8">
+        <div className="grid grid-cols-2 gap-8 text-center sm:grid-cols-4 sm:text-left">
+          {columns.map((col) => (
+            <div key={col.title}>
+              <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                {col.title}
+              </h3>
+              <ul className="mt-4 space-y-2.5">
+                {col.links.map((link) => {
+                  // External links (and static files like /AGENTS.md)
+                  // need a plain <a>; next/link tries to client-side
+                  // route to in-app paths, which silently fails for
+                  // public/ static files.
+                  const Wrapper = link.external ? 'a' : Link
+                  return (
+                    <li key={link.title}>
+                      <Wrapper
+                        href={link.href}
+                        target={link.external ? '_blank' : undefined}
+                        rel={link.external ? 'noopener noreferrer' : undefined}
+                        className="text-sm text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+                      >
+                        {link.title}
+                      </Wrapper>
+                    </li>
+                  )
+                })}
+              </ul>
             </div>
           ))}
-        </nav>
-        <div className="mt-4 flex justify-center space-x-6">
-          {socialMediaLinks.map((item, idx) => {
-            const { Icon, Link: link } = item
-            return (
+        </div>
+      </div>
+
+      {/* Full-width divider — outside any max-w container so it spans */}
+      {/* the entire page like the top edge does. */}
+      <div className="border-t border-slate-200 dark:border-slate-800" />
+
+      {/* Bottom section: social icons only, centered. Language switcher */}
+      {/* and copyright/license line removed — visitors who want license */}
+      {/* info can find it in the linked GitHub repos. */}
+      <div className="mx-auto max-w-5xl px-6 pb-12 pt-6 lg:px-8">
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
+          <div className="flex items-center gap-4">
+            {socialMediaLinks.map(({ Icon, href, label }) => (
               <Link
-                key={link}
-                href={link}
-                className="text-gray-400 hover:text-gray-500"
+                key={label}
+                href={href}
                 target="_blank"
-                aria-label="social media link"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="text-slate-500 transition-colors hover:text-slate-700 dark:hover:text-slate-300"
               >
-                <Icon className="h-5 w-5 fill-slate-400 hover:fill-slate-300 dark:hover:fill-slate-300"></Icon>
+                <Icon className="h-4 w-4 fill-current" />
               </Link>
-            )
-          })}
+            ))}
+          </div>
         </div>
       </div>
     </footer>

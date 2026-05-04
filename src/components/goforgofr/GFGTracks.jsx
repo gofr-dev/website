@@ -52,7 +52,7 @@ const GfgTracks = () => {
               height={40}
               className={`w-[20px]`}
             />
-            ZopSmart , Bengaluru
+            Bengaluru
           </span>
           <Link
             href={`https://maps.app.goo.gl/N8GdxnioYtzBqVkc7`}

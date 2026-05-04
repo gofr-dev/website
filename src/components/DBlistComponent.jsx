@@ -14,57 +14,24 @@ import eventhub from '@/images/event_hub.svg'
 import Image from 'next/image'
 
 const imageLink = [
-  {
-    image: ftp,
-    link: '/docs/advanced-guide/handling-file',
-  },
-  {
-    image: clickHouse,
-    link: '/docs/advanced-guide/injecting-databases-drivers#clickhouse',
-  },
-  {
-    image: redis,
-    link: '/docs/quick-start/connecting-redis',
-  },
-  {
-    image: eventhub,
-    link: '/docs/advanced-guide/using-publisher-subscriber#publisher-subscriber'
-  },
-  {
-    image: mongoDb,
-    link: '/docs/advanced-guide/injecting-databases-drivers#mongo-db',
-  },
-  {
-    image: pubSub,
-    link: '/docs/advanced-guide/using-publisher-subscriber#google',
-  },
-  {
-    image: kafka,
-    link: '/docs/advanced-guide/using-publisher-subscriber#kafka',
-  },
-  {
-    image: sql,
-    link: '/docs/advanced-guide/dealing-with-sql',
-  },
-  {
-    image: cassandra,
-    link: '/docs/advanced-guide/injecting-databases-drivers#cassandra',
-  },
-  {
-    image: mqtt,
-    link: '/docs/advanced-guide/using-publisher-subscriber#mqtt',
-  },
-  {
-    image: Badger,
-    link: '/docs/advanced-guide/key-value-store#badger-db',
-  },
+  { image: ftp,        name: 'FTP',         link: '/docs/advanced-guide/handling-file' },
+  { image: clickHouse, name: 'ClickHouse',  link: '/docs/advanced-guide/injecting-databases-drivers#clickhouse' },
+  { image: redis,      name: 'Redis',       link: '/docs/quick-start/connecting-redis' },
+  { image: eventhub,   name: 'Azure Event Hub', link: '/docs/advanced-guide/using-publisher-subscriber#publisher-subscriber' },
+  { image: mongoDb,    name: 'MongoDB',     link: '/docs/advanced-guide/injecting-databases-drivers#mongo-db' },
+  { image: pubSub,     name: 'Google Pub/Sub', link: '/docs/advanced-guide/using-publisher-subscriber#google' },
+  { image: kafka,      name: 'Kafka',       link: '/docs/advanced-guide/using-publisher-subscriber#kafka' },
+  { image: sql,        name: 'SQL',         link: '/docs/advanced-guide/dealing-with-sql' },
+  { image: cassandra,  name: 'Cassandra',   link: '/docs/advanced-guide/injecting-databases-drivers#cassandra' },
+  { image: mqtt,       name: 'MQTT',        link: '/docs/advanced-guide/using-publisher-subscriber#mqtt' },
+  { image: Badger,     name: 'Badger',      link: '/docs/advanced-guide/key-value-store#badger-db' },
 ]
 
 const getAnimationDelay = (index) => `calc(30s / 11 * (11 - ${index + 1}) * -1)`
 
 const DBlistComponent = () => {
   return (
-    <div className="bg-gray-900 py-10">
+    <div className="py-10">
       <div className="mx-auto max-w-screen-2xl lg:px-8 xl:px-12">
         <div className="mx-auto max-w-2xl lg:max-w-none">
           <h2 className="text-center text-lg font-semibold leading-8 text-white">
@@ -78,9 +45,9 @@ const DBlistComponent = () => {
                 cursor: 'pointer',
               }
               return (
-                <Link href={item.link} key={idx}>
+                <Link href={item.link} key={idx} aria-label={item.name}>
                   <Image
-                    alt="Transistor"
+                    alt={item.name}
                     src={item.image}
                     width={158}
                     height={48}

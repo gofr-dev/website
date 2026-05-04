@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node utils/fetch-github-stars.mjs && node utils/generate-changelog-rss.mjs && node utils/generate-llms-full.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "refresh-data": "node utils/fetch-releases.mjs && node utils/fetch-roadmap.mjs && node utils/fetch-team.mjs && node utils/fetch-github-stars.mjs && node utils/generate-doc-mtimes.mjs && node utils/generate-changelog-rss.mjs && node utils/generate-llms-full.mjs"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {

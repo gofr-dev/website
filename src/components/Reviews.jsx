@@ -5,11 +5,11 @@ import testimonials from 'utils/testimonials.json'
 
 export default function Testimonials() {
     return (
-        <div className="mx-10 bg-[#101827]">
+        <div className="mx-4 sm:mx-10">
             {/*<h2 className="text-center text-lg font-semibold leading-8 text-white mb-10">*/}
             {/*    User Testimonials*/}
             {/*</h2>*/}
-            <div className="md:columns-3">
+            <div className="sm:columns-2 md:columns-3">
                 {testimonials.map((testimonial, index) => (
                     <div key={index} className="group inline-block relative my-3 rounded-xl border cursor-default border-slate-200 dark:border-slate-800 p-1">
                         <div className="absolute -inset-px rounded-xl border-2 border-transparent opacity-0 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sky.50)),var(--quick-links-hover-bg,theme(colors.sky.50)))_padding-box,linear-gradient(to_top,theme(colors.indigo.400),theme(colors.cyan.400),theme(colors.sky.500))_border-box] group-hover:opacity-100 dark:[--quick-links-hover-bg:theme(colors.slate.800)]" />
@@ -40,11 +40,11 @@ export default function Testimonials() {
                                     )}
 
                                     {/*<div className="h-10 w-10 rounded-full bg-gray-300"></div>*/}
-                                    <div>
-                                        <p className="font-medium text-slate-900 dark:text-white">
+                                    <div className="min-w-0">
+                                        <p className="font-medium text-slate-900 dark:text-white truncate">
                                             {testimonial?.author}
                                         </p>
-                                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                                        <p className="text-sm text-slate-700 dark:text-slate-400 truncate">
                                             {testimonial?.role}
                                         </p>
                                     </div>

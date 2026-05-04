@@ -1,4 +1,3 @@
-'use client'
 import { DocsPage } from '@/components/DocsPage'
 
 const Layout = ({ children }) => {

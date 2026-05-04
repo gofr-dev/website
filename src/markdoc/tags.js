@@ -1,6 +1,11 @@
 import { Callout } from '@/components/Callout'
 import { NewTabLink } from '@/components/NewTabLinks'
 import { QuickLink, QuickLinks } from '@/components/QuickLinks'
+import { Tabs, Tab } from '@/components/Tabs'
+import { SectionCards } from '@/components/SectionCards'
+import { Answer } from '@/components/Answer'
+import { FaqList, FaqItem } from '@/components/Faq'
+import { HowTo } from '@/components/HowTo'
 
 const tags = {
   callout: {
@@ -51,6 +56,50 @@ const tags = {
       href: { type: String },
       title: { type: String },
       newtab: { type: Boolean },
+    },
+  },
+  tabs: {
+    render: Tabs,
+    attributes: {
+      labels: { type: Array },
+    },
+  },
+  tab: {
+    render: Tab,
+    attributes: {
+      label: { type: String },
+    },
+  },
+  'section-cards': {
+    selfClosing: true,
+    render: SectionCards,
+  },
+  // {% answer %}...{% /answer %} — direct-answer callout for AEO/LLM extraction.
+  answer: {
+    render: Answer,
+  },
+  // {% faq %}{% faq-item question="..." %}...{% /faq-item %}{% /faq %}
+  // FaqList emits FAQPage JSON-LD when frontmatter `items` is provided.
+  faq: {
+    render: FaqList,
+    attributes: {
+      items: { type: Array },
+    },
+  },
+  'faq-item': {
+    render: FaqItem,
+    attributes: {
+      question: { type: String },
+      answer: { type: String },
+    },
+  },
+  // {% howto name="..." description="..." %} ordered list {% /howto %}
+  howto: {
+    render: HowTo,
+    attributes: {
+      name: { type: String },
+      description: { type: String },
+      steps: { type: Array },
     },
   },
 }

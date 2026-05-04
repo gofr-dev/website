@@ -1,0 +1,2500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GoFr Releases</title>
+    <link>https://gofr.dev/changelog</link>
+    <atom:link href="https://gofr.dev/changelog.xml" rel="self" type="application/rss+xml"/>
+    <description>Release notes for GoFr — an opinionated Go framework for production microservices.</description>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 01 May 2026 15:50:13 GMT</lastBuildDate>
+    <item>
+      <title>GoFr v1.56.4</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.56.4</link>
+      <guid isPermaLink="false">v1.56.4</guid>
+      <pubDate>Wed, 29 Apr 2026 16:16:02 GMT</pubDate>
+      <description><![CDATA[# Release v1.56.4
+
+## 🛠️ Fixes
+
+- **Kafka Stale Admin Connection** — Kafka subscribers got permanently stuck on `"kafka client not connected"` after the broker closed an idle TCP connection (default `connections.max.idle.ms = 10m`). The admin `multiConn` was dialed only once during `initialize()` and `retryConnect()` only covered initial startup, so every `Subscribe` / `Query` call failed for the rest of the process lifetime. Added `ensureConnected(ctx)` which detects a stale admin conn at the entry of `Subscribe` / `Query`, re-dials the broker list, and swaps in a fresh `multiConn` while leaving the writer and per-topic readers untouched so in-flight work isn't disrupted. No public API change.
+
+- **SwaggerUI Panic on Files Without Extension** — `SwaggerUIHandler` panicked with an index out of bounds error when serving filenames that had no extension, due to `strings.Split` + direct index access on the result. Replaced with `filepath.Ext` for safe extraction, and the handler now returns a defined `errMissingFileExtension` instead of panicking.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.56.3</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.56.3</link>
+      <guid isPermaLink="false">v1.56.3</guid>
+      <pubDate>Tue, 21 Apr 2026 12:29:25 GMT</pubDate>
+      <description><![CDATA[# Release v1.56.3
+
+
+## 🛠️Fixes
+                                                                                                                                                                                     
+  - **Docs Build Prerender Crash** — Fixed an unclosed dotenv code block in the Pub/Sub advanced guide (`/docs/advanced-guide/using-publisher-subscriber`) that causediNext.jsftort throw `TypeError: Cannot read properties of undefined (reading 'toLowerCase')` during prerendering, breaking the `Dockerize` step of the v1.56.2 release workflow. ]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.56.2</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.56.2</link>
+      <guid isPermaLink="false">v1.56.2</guid>
+      <pubDate>Tue, 21 Apr 2026 11:35:07 GMT</pubDate>
+      <description><![CDATA[ # Release v1.56.2
+                                                                                                                                                                                     
+  ## 🛠️Fixes
+
+                                             
+  Consumer spans are now **real children of the producer's trace** across all Pub/Sub backends — Kafka, NATS, Google Pub/Sub, and SQS — while still preserving the existing OTel span link for fan-out semantics.                                                                                                                                                       
+                              
+  Previously, each consumer span started from a fresh root context, so an end-to-end publish/subscribe flow appeared as **multiple disconnected traces** in Jaeger, Tempo, and`tracer.gofr.dev`. Now the consumer span inherits the producer's trace ID and parent, giving you a single connected trace across all services with no extra configuration.         
+                                                                                                                                                                                                                                                          
+  - **Fan-out preserved** — span link is still attached for tools that surface fan-out semantics
+  - **Applies to**: Kafka, NATS, Google Pub/Sub, SQS            ]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.56.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.56.1</link>
+      <guid isPermaLink="false">v1.56.1</guid>
+      <pubDate>Thu, 09 Apr 2026 15:11:19 GMT</pubDate>
+      <description><![CDATA[## 🛠️ Fixes
+
+  - **Redis Streams PubSub CPU Busy-Spin** — When the message buffer was full, `subscribeToStream` looped at 100% CPU with no backoff because `consumeStreamMessages` returned immediately on zero capacity. Added a
+  `time.After` backoff using the existing `subscribeRetryInterval`, following the same pattern used in the Subscribe connection-wait loop.
+
+  - **Redis Streams Goroutine Leak on Shutdown** — The subscription context created in `ensureSubscription` was discarded (`_, cancel := ...`) and `runSubscriptionLoop` used a fresh `context.Background()`, making
+  goroutines impossible to cancel. The cancelable context is now propagated through the full call chain, and `Close()` no longer holds the write lock while waiting for goroutines (which previously caused a
+  guaranteed 5-second deadlock on every shutdown).
+
+  - **Redis Streams Reconnection Failure** — `resubscribeAll` was silently a no-op for streams — it canceled a context nobody held and never started a new goroutine. It now properly waits for old goroutines to exit
+   and starts new ones with fresh contexts, preserving the consumer name across resubscribes to maintain PEL ownership and prevent message loss.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.56.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.56.0</link>
+      <guid isPermaLink="false">v1.56.0</guid>
+      <pubDate>Tue, 07 Apr 2026 11:57:02 GMT</pubDate>
+      <description><![CDATA[# Release v1.56.0
+
+## 🚀 Features
+
+🔹 **CORS Multiple Origins Support**
+
+GoFr's CORS middleware now supports **multiple allowed origins**, enabling fine-grained access control for applications serving multiple frontends or admin panels.
+- **Comma-Separated Origins**: Configure multiple origins via the `ACCESS_CONTROL_ALLOW_ORIGIN` environment variable
+- **Dynamic Origin Matching**: On each request, the `Origin` header is matched against the allowed set and only the matched origin is returned in the response (per HTTP spec)
+- **Correct Caching**: Adds `Vary: Origin` header when a specific origin is matched, ensuring proxies and CDNs cache responses correctly
+- **Fully Backward-Compatible**: Single origin and wildcard (`*`) work exactly as before
+
+**Configuration Example**
+```env
+# Single origin (existing behavior)
+ACCESS_CONTROL_ALLOW_ORIGIN=https://app.example.com
+
+# Multiple origins (new)
+ACCESS_CONTROL_ALLOW_ORIGIN=https://app.example.com,https://admin.example.com
+```
+
+## 🔧 Enhancements
+
+🔹 **Selective Migration Record Tracking**
+
+Migrations now only insert `gofr_migrations` records into databases that were **actually used** by the `UP` function, instead of all connected databases. Previously, running a migration that only touched MySQL would still insert migration records into Redis, MongoDB, Cassandra, and every other connected database — leading to phantom records, wasted I/O, and a misleading audit trail. Each datasource is now wrapped with lightweight usage-tracking before `UP()` executes, and only touched databases receive the migration record.
+
+## 🛠️ Fixes
+
+- **WebSocket Nil Pointer Panic** — Fixed a nil pointer dereference in `WriteMessageToSocket` when no WebSocket connection exists in the context. It now returns `ErrConnectionNotFound` instead of panicking.
+
+- **File Logger Descriptor Leak** — `NewFileLogger()` opens a file via `os.OpenFile` but previously had no way to close it, causing file descriptor leaks. Added a `Close()` method to the logger, which is now called during `App.Shutdown()` (HTTP/gRPC) and after `cmd.Run()` (CLI apps). `Fatal`/`Fatalf` also now call `file.Sync()` before exiting to flush buffered log data.
+
+- **Cron Job Duration Log Format** — Fixed `%!s(float64=...)` in cron job completion logs by keeping `duration` as `time.Duration` instead of converting to `float64`. Logs now show human-readable durations (e.g., `25.071286ms` instead of `%!s(float64=0.025071286)`).
+
+- **UpdateOne Breaking Change Reverted** — Reverted the `Mongo` interface's `UpdateOne` return type from `(int64, error)` back to `error`, fixing a breaking change introduced in v1.55.0. The migration lock refresh now uses `UpdateMany` (which already returns the needed `ModifiedCount`) with a filter that guarantees at most one document matches.
+
+- **Dependency Updates** — Consolidated minor dependency updates and bumped `github.com/go-jose/go-jose/v4` for security improvements.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.55.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.55.0</link>
+      <guid isPermaLink="false">v1.55.0</guid>
+      <pubDate>Sat, 14 Mar 2026 20:39:44 GMT</pubDate>
+      <description><![CDATA[# Release v1.55.0
+
+## 🚀 Features
+
+### Native GraphQL Support
+GoFr now provides first-class **GraphQL** support using a schema-first approach. Define your API contract in `./configs/schema.graphqls`, register resolvers with `app.GraphQLQuery()` and `app.GraphQLMutation()`, and GoFr handles execution, validation, tracing, and metrics automatically.
+  - **Single Endpoint**: All operations served at `POST /graphql`
+  - **Interactive Playground**: Auto-hosted at `/.well-known/graphql/ui`
+  - **Full Observability**: Per-resolver OpenTelemetry tracing, operation-level metrics (`app_graphql_operations_total`, `app_graphql_error_total`, `app_graphql_request_duration`), and structured logs aligned with GoFr's existing format
+  - **Operation Name Extraction**: Automatically parses resolver names from the query AST for meaningful metric labels, even for anonymous operations
+  - **Grafana Dashboard**: GraphQL panels added to the standard GoFr dashboard with Response Time SLA, Request/Error Count, and Latency breakdowns by operation and type
+
+### gRPC Rate Limiter
+Built-in rate limiter interceptors for gRPC using a token bucket algorithm, supporting both unary and streaming RPCs.
+  - **Per-IP Rate Limiting**: Each client IP gets its own rate limit bucket
+  - **Shared or Separate Budgets**: Use a single store for combined limits or independent configs per call type
+  - **Prometheus Metrics**: Track violations via `app_grpc_rate_limit_exceeded_total` counter
+  - Returns `RESOURCE_EXHAUSTED` with `retry-after` metadata on limit exceeded
+
+### GCS Metadata Upload and Signed URL Generation
+Google Cloud Storage now supports cloud-specific operations beyond the standard filesystem interface.
+  - **`CreateWithOptions`**: Upload files with custom `Content-Type`, `Content-Disposition`, and arbitrary metadata
+  - **`GenerateSignedURL`**: Create time-limited, pre-authenticated download URLs
+  - **`file.AsCloud()`**: Safe type assertion helper to check cloud support
+
+## 🔧 Enhancements
+
+### NATS OpenTelemetry Span Links
+Added span link support for NATS JetStream PubSub operations, providing distributed tracing visibility into publish, subscribe, and commit operations.
+
+### gRPC Observability Improvements
+Client-side errors (e.g., `InvalidArgument`, `NotFound`, `ResourceExhausted`) are no longer logged at ERROR level — only server-side errors are. This reduces log noise in production.
+
+## 🛠️ Fixes
+
+- **Migration Race Condition** — Fixed a race condition where multiple pods starting simultaneously could execute the same migration concurrently. The migration state is now re-verified under the distributed lock before execution, preventing duplicate runs in multi-instance deployments.
+
+- **Zipkin Deprecation Warning** — `TRACE_EXPORTER=zipkin` now logs an actionable deprecation warning with migration instructions to OTLP (Zipkin supports OTLP natively since v2.24+).
+
+- **CI Workflow Updates** — Bumped Docker GitHub Actions (`setup-buildx-action`, `login-action`) from v3 to v4 in website deployment workflows.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.54.6</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.54.6</link>
+      <guid isPermaLink="false">v1.54.6</guid>
+      <pubDate>Wed, 11 Mar 2026 06:17:01 GMT</pubDate>
+      <description><![CDATA[# Release v1.54.6
+
+## 🛠️ Fixes
+
+- ### PubSub Migration Conflict Resolution 
+Resolved an issue where the PubSub Migrator, particularly with Redis Streams, incorrectly reported migration versions based on historical data on the message bus.
+  - **Decoupled Versioning**: Made PubSub non-authoritative for migration state by removing it from the version chain. Migration tracking is now strictly confined to primary data stores that support atomicity and locking.
+  - **PubSub Still Available**: The PubSub client remains fully accessible in the `migration.Datasource` object for use in migration `UP` functions (e.g., `d.PubSub.CreateTopic()`).]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.54.5</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.54.5</link>
+      <guid isPermaLink="false">v1.54.5</guid>
+      <pubDate>Fri, 27 Feb 2026 13:32:05 GMT</pubDate>
+      <description><![CDATA[# Release v1.54.5
+
+## 🚀 Enhancements
+
+### 🔹 Google Pub/Sub Span Links for Tracing
+GoFr now supports OpenTelemetry span links for Google Cloud Pub/Sub, extending the tracing capabilities introduced for Kafka in [v1.54.4](https://github.com/gofr-dev/gofr/releases/tag/v1.54.4).
+- **End-to-End Traceability**: Connects producer and consumer spans across asynchronous Google Pub/Sub messaging, enabling complete request lifecycle visualization.
+- **Context Propagation**: Automatically injects and extracts trace context through Pub/Sub message attributes using the standard OpenTelemetry propagator.
+- **Semantic Conventions**: Follows OpenTelemetry messaging semantic conventions for consistent, standards-compliant spans and links.
+
+### 🔹 SQS Span Links for Tracing
+Added OpenTelemetry span links for AWS SQS, completing pub/sub tracing support across all major message brokers.
+- **AWS Observability**: Connects producer and consumer spans for SQS messages, providing full distributed tracing for AWS-based event-driven architectures.
+- **Attribute Propagation**: Leverages SQS message attributes for trace context propagation, enabling seamless correlation across services.
+- **Consistent Tracing**: Aligns with the same span link patterns used for Kafka and Google Pub/Sub for a unified observability experience.
+
+### 🔹 Oracle Migration Locks Management
+Extended migration locks support to Oracle datasources, building on the SQL & Redis locking introduced in [v1.54.3](https://github.com/gofr-dev/gofr/releases/tag/v1.54.3).
+- **Safe Concurrent Deployments**: In multi-instance deployments (e.g., Kubernetes), only one instance executes Oracle migrations at a time, preventing race conditions.
+- **Automatic Lock Lifecycle**: Manages lock acquisition, expiry-based cleanup, periodic refresh, and safe release with full PL/SQL-based error handling.
+- **Data Integrity**: Prevents corrupted migration states during parallel deployments against Oracle databases.
+
+## 🛠️ Fixes
+
+- ### Static File Path Traversal Prevention
+Resolved a security issue in the static file handler where sibling directory names could bypass the restricted file check.
+ - **Security Hardening**: Appended a path separator in [isRestrictedFile](cci:1://file:///Users/zopdev/Downloads/GolandProjects%202/gofr-repo/gofr/pkg/gofr/http/router.go:134:0-139:1) to ensure that sibling directories sharing a common prefix with the static directory (e.g., `/app/publicother` vs `/app/public`) cannot be traversed to serve unauthorized files.
+- **What's Restricted**: Files outside the configured static directory are blocked from being served. Additionally, direct access to `openapi.json` via static routes remains restricted — it is only accessible through the `/.well-known/swagger` or `/.well-known/openapi.json` endpoints.
+
+### 🔹 Kafka Subscribe Data Race
+Fixed a data race condition in the Kafka `Subscribe` method that could surface under concurrent access.
+- **Concurrency Safety**: Ensures thread-safe subscription handling, preventing unpredictable behavior in high-concurrency environments.
+
+### 🔹 Config Parsing Silent Failures
+Resolved an issue where invalid or missing configuration values would fail silently, making it difficult to diagnose misconfiguration issues.
+- **Better Error Reporting**: Added proper nil-checks and logging for configuration parsing, ensuring misconfigurations are surfaced through structured log messages instead of being swallowed silently.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.54.4</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.54.4</link>
+      <guid isPermaLink="false">v1.54.4</guid>
+      <pubDate>Sat, 21 Feb 2026 12:45:31 GMT</pubDate>
+      <description><![CDATA[# Release v1.54.4
+
+## 🚀 Enhancements
+
+### 🔹 Kafka Span Links for Pub/Sub Tracing
+GoFr now supports OpenTelemetry span links for Kafka, significantly improving observability in event-driven systems.
+- **Improved Traceability**: Connects producer and consumer spans even in asynchronous messaging patterns, providing a complete picture of the request lifecycle.
+- **Enhanced Observability**: Users can now visualize the relationship between messages, making it easier to debug complex microservices interactions.
+- **Semantic Conventions**: Follows OpenTelemetry messaging semantic conventions for consistent spans and links.
+
+### 🔹 Metrics Export for Cron Jobs
+Introduced native support for exporting metrics for background tasks managed through Cron Jobs.
+- **Performance Monitoring**: Automatically tracks execution duration and success/failure counts for scheduled tasks.
+- **Better Visibility**: Allows developers to monitor the health and performance of background workers using the same telemetry stack as their HTTP services.
+- **Customizable**: Leverages GoFr's internal metrics provider for seamless integration with Prometheus or other exporters.
+
+## 🛠️ Fixes
+
+### 🔹 HTTP Server Auto-detection
+Resolved an issue where the HTTP server wouldn't start if only a static directory was auto-detected without any explicit route registration.
+- **Robust Static Hosting**: Ensures that applications serving only static content boot correctly and serve assets as expected.
+
+### 🔹 Reduced HTTP Shutdown Noise
+Optimized the server shutdown sequence to eliminate unnecessary log noise and warnings during graceful termination.
+- **Cleaner Logs**: Provides a more streamlined and less cluttered logging experience during application restarts and deployments.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.54.3</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.54.3</link>
+      <guid isPermaLink="false">v1.54.3</guid>
+      <pubDate>Fri, 06 Feb 2026 11:20:14 GMT</pubDate>
+      <description><![CDATA[# Release v1.54.3
+
+## 🚀 Enhancements
+
+### 🔹 Migration Locking for SQL & Redis
+GoFr now implements automatic migration locking for SQL and Redis datasources.
+- **Automatic Coordination**: In multi-instance deployments (such as Kubernetes), instances effectively coordinate to ensure only one instance executes migrations at a time.
+- **Data Integrity**: This mechanism effectively prevents race conditions and corrupted migration states during parallel deployments.
+
+## 🛠️ Fixes
+
+- **Circuit Breaker Concurrency** - Resolved an issue where the Circuit Breaker was erroneously enforcing sequential execution on parallel HTTP requests. This fix restores the expected concurrent behavior, significantly improving throughput for service calls.
+
+- **Datasource Resource Management** - Fixed goroutine leaks that occurred during the shutdown process for SQL and Redis datasources. This ensures proper resource cleanup and cleaner application termination.
+
+- **Migration Version Consistency** - Fixed a bug where the last migration version was not being correctly fetched across the entire chain of datasources. This ensures accurate migration state tracking, particularly in multi-datasource configurations.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.54.2</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.54.2</link>
+      <guid isPermaLink="false">v1.54.2</guid>
+      <pubDate>Sat, 31 Jan 2026 13:45:05 GMT</pubDate>
+      <description><![CDATA[# Release v1.54.2
+
+## 🚀 Enhancement
+
+### 🔹 Smart HTTP Server Activation
+GoFr now intelligently manages its internal server lifecycle, conditionally booting the HTTP stack only when relevant components are registered.
+- **Resource Efficiency**: Drastically reduces memory and CPU overhead for gRPC-only services or background workers by keeping dormant server components inactive.
+- **Automated Discovery**: Dynamically identifies the need for an HTTP server based on registered routes, static files, or custom handlers.
+- **Streamlined Footprint**: Prevents unnecessary port occupancy and improves application startup time for specialized services.
+
+## 🛠️ Fixes
+
+- **Panic Prevention in DB Metrics**: Added essential nil checks in the database operations logic to prevent potential panics during telemetry collection.
+
+- **Migration Version Chaining**: Fixed the chaining logic for fetching the last migration version to ensure consistency across complex deployments using multiple datasources.
+
+-  **Docker Compose Port Mappings**: Resolved incorrect port assignments for Redis and MySQL in the `http-server` example, streamlining the local development environment.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.54.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.54.1</link>
+      <guid isPermaLink="false">v1.54.1</guid>
+      <pubDate>Tue, 27 Jan 2026 05:43:56 GMT</pubDate>
+      <description><![CDATA[# Release v1.54.1
+
+## 🚀 Features
+
+### 🔹 gRPC Authentication Middleware
+Introduced comprehensive authentication support for gRPC services, bringing it on par with HTTP services.
+- **Supported Methods**: Basic Authentication, API Key Authentication, and OAuth.
+- **Seamless Integration**: Easily enable authentication for gRPC unary and streaming handlers.
+- **Unified Auth Interface**: Leverages the existing authentication logic for consistency across protocols. Refer : 
+
+### 🔹 Standard OTEL Tracing for gRPC
+Enabled standard OpenTelemetry tracing for gRPC services.
+- **Automatic Instrumentation**: Automatically captures spans for gRPC requests and responses.
+- **Better Observability**: Provides detailed insights into gRPC service performance and call chains.
+
+## 🛠️ Fixes
+
+### 🔹 EventHub Consumer Group Fix
+- Resolved an issue where consumer groups were not being correctly interpreted in the EventHub datasource, ensuring reliable message consumption.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.54.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.54.0</link>
+      <guid isPermaLink="false">v1.54.0</guid>
+      <pubDate>Sun, 18 Jan 2026 07:02:33 GMT</pubDate>
+      <description><![CDATA[# **v1.54.0**
+
+## :rocket: Features
+
+:small_blue_diamond: **Server-Side Rate Limiter Middleware**
+
+GoFr now includes a built-in **Rate Limiter Middleware** to protect your APIs from abuse and ensure fair resource distribution.
+- **Token Bucket Algorithm**: Implements smooth rate limiting with configurable burst capacity.
+- **Per-IP Rate Limiting**: Support for independent limits per client IP with trusted proxy support (`X-Forwarded-For`, `X-Real-IP`).
+- **Observability**: Automatically tracks rate limit violations with the `app_http_rate_limit_exceeded_total` metric.
+- **Exemptions**: Built-in health check endpoints (`/.well-known/alive`, `/.well-known/health`) are automatically exempt.
+
+**Usage Example**
+```go
+    app.UseMiddleware(middleware.RateLimiter(middleware.RateLimiterConfig{
+        RequestsPerSecond: 10,
+        Burst:             20,
+        PerIP:             true,
+    }, app.Metrics()))
+```
+
+## 🛠️ Fixes
+
+:small_blue_diamond: **Circuit Breaker & Health Check Refinement**
+
+Improved the reliability of the Circuit Breaker and Health Check mechanisms:
+- **Custom Health Endpoints**: Fixed an issue where custom health endpoints were not consistently used by the circuit breaker for recovery checks.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.53.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.53.0</link>
+      <guid isPermaLink="false">v1.53.0</guid>
+      <pubDate>Sat, 10 Jan 2026 10:03:16 GMT</pubDate>
+      <description><![CDATA[# **Release v1.53.0**
+
+## 🚀 Features
+
+🔹 **Amazon SQS PubSub Support**
+
+GoFr now supports **Amazon SQS** as a messaging backend, enabling seamless integration with AWS Simple Queue Service for building resilient, distributed microservices.
+
+- Supports both **Publishing** and **Subscribing** to SQS standard queues
+- **Configurable Behavior**:
+  - Support for custom message attributes
+  - Configurable visibility timeouts and wait times
+  - Support for standard queues
+
+#### **Usage Example**
+
+To use Amazon SQS, import the driver and add it to your application:
+
+```go
+import (
+    "gofr.dev/pkg/gofr"
+    "gofr.dev/pkg/gofr/datasource/pubsub/sqs"
+)
+
+func main() {
+    app := gofr.New()
+
+    app.AddPubSub(sqs.New(&sqs.Config{
+        Region:          "us-east-1",
+        AccessKeyID:     "your-access-key-id",     // optional if using IAM roles
+        SecretAccessKey: "your-secret-access-key", // optional if using IAM roles
+        // Endpoint:     "http://localhost:4566", // optional: for LocalStack
+    }))
+
+    app.Subscribe("my-queue", func(ctx *gofr.Context) error {
+        // Process message
+        return nil
+    })
+
+    app.Run()
+}
+```
+
+## 🚀 Enhancements
+
+🔹 **Metrics for HTTP Service Resilience**
+
+Enhanced observability for inter-service communication by adding dedicated metrics for resilience patterns.
+- New metric `app_http_retry_count`: Tracks the total number of retries performed for each downstream service
+- New metric `app_http_circuit_breaker_state`: A gauge tracking the current state (0 for Closed, 1 for Open) of the circuit breaker
+- **Updated Grafana Dashboards**: Included new panels to visualize retry events and circuit breaker transitions, providing immediate insights into service stability and failure patterns. You can refer : https://github.com/gofr-dev/gofr/tree/main/examples/http-server/docker/provisioning/dashboards/gofr-dashboard
+
+🔹 **Configurable Metrics Server**
+
+Added the ability to **disable the internal metrics server** by setting the `METRICS_PORT` environment variable to `0`. This provides greater flexibility for users who prefer to handle metrics collection through external agents or in environments where a separate metrics port is not required.
+
+## 🛠️ Fixes
+
+🔹 **Zip Slip Vulnerability Protection**
+
+Improved the security of the `file/zip` package by implementing protection against **Zip Slip** (path traversal) attacks.
+- Automatically validates file paths during extraction to ensure they remain within the target directory
+- Rejects zip entries containing absolute paths or parent directory traversal sequences (`..`)
+- Ensures safe handling of compressed files from untrusted sources
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.52.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.52.0</link>
+      <guid isPermaLink="false">v1.52.0</guid>
+      <pubDate>Fri, 02 Jan 2026 13:45:04 GMT</pubDate>
+      <description><![CDATA[# **Release v1.52.0**
+
+## 🚀 Features
+
+🔹 **Redis PubSub Support**
+
+GoFr now supports **Redis PubSub** as a messaging backend, providing seamless integration with Redis for publish-subscribe patterns in microservices.
+
+- Supports both **Redis Channels** (traditional PubSub) and **Redis Streams** modes
+- Configurable via `REDIS_PUBSUB_MODE` environment variable (defaults to `streams`)
+- **Redis Streams** features:
+  - Consumer groups for load balancing and message distribution
+  - Automatic consumer group creation with `MKSTREAM` support
+  - Configurable PEL (Pending Entry List) ratio for balancing pending vs new messages (default: 0.7, i.e., 70% PEL, 30% new messages)
+  - Stream length management with `MaxLen` configuration
+  - Automatic message acknowledgment handling
+- **Redis Channels** features:
+  - Traditional PubSub channel support for simple messaging patterns
+  - Automatic channel creation on first publish/subscribe
+- Separate database support via `REDIS_PUBSUB_DB` to prevent keyspace collisions (defaults to database 15)
+- Configurable buffer size, query timeout, and query limits
+- Automatic connection monitoring and resubscription on reconnection
+- Full observability with metrics, logging, and distributed tracing
+- Graceful error handling with permanent failure detection
+
+---
+
+## 🚀 Enhancements
+
+🔹 **HTTP Router Path Normalization**
+
+Router now **normalizes paths before routing** to handle edge cases with double slashes and malformed paths.
+
+- Automatically cleans and normalizes request paths using `path.Clean()`
+- Handles empty paths, double slashes, and trailing slashes consistently
+- Ensures proper routing behavior regardless of path formatting in requests
+- Improves compatibility with various HTTP clients and reverse proxies
+
+---
+
+## 🛠️ Fixes
+
+🔹 **JSON Encoding Error Handling for NaN Values**
+
+Fixed a bug where `math.NaN()` values in responses caused incorrect error handling. The responder now properly handles JSON encoding failures by:
+
+- Detecting encoding errors before writing response headers
+- Returning appropriate `500 Internal Server Error` status code for encoding failures
+
+🔹 **Grafana Dashboard Configuration**
+
+Fixed Grafana dashboard configuration to ensure proper metrics visualization and monitoring capabilities.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.51.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.51.0</link>
+      <guid isPermaLink="false">v1.51.0</guid>
+      <pubDate>Sat, 27 Dec 2025 10:02:47 GMT</pubDate>
+      <description><![CDATA[# Release v1.51.0
+
+## 🚀 Features
+
+### 🔐 Role-Based Access Control (RBAC)
+
+GoFr introduces a **config-driven RBAC middleware** for enforcing authorization across HTTP APIs without adding role or permission logic inside handlers.
+
+---
+
+### Key Highlights
+
+* Authorization defined entirely via **JSON/YAML configuration**
+* **Permission-based model**
+
+  * Roles define permissions
+  * Endpoints require permissions
+* **Header-based and JWT-based role extraction**
+
+  * JWT-based RBAC supported via GoFr OAuth
+  * JWT takes precedence when both are configured
+* **Role inheritance** support
+* **Exact permission matching** (no wildcards)
+* **Gorilla/mux-compatible route matching**
+
+  * Supports path variables and constraints
+* **Safe-by-default enforcement**
+
+  * Only routes defined in RBAC config are enforced
+
+---
+
+### Usage
+
+Enable RBAC using default config paths:
+
+```go
+app := gofr.New()
+app.EnableRBAC()
+```
+
+Or specify a custom RBAC config file:
+
+```go
+app.EnableRBAC("configs/rbac.json")
+```
+
+---
+
+### JWT Integration
+
+RBAC integrates with GoFr OAuth for JWT-based authorization:
+
+```go
+app.EnableOAuth("https://auth.example.com/.well-known/jwks.json", 10)
+app.EnableRBAC("configs/rbac.json")
+```
+
+Roles are extracted from JWT claims using configurable claim paths.
+
+---
+
+### Observability
+
+* Debug logs include route matching and authorization decision details.
+* **Roles are excluded** from traces  to avoid PII leakage.
+
+
+📚 **Documentation**
+Refer to the RBAC documentation for configuration details and advanced usage.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.50.2</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.50.2</link>
+      <guid isPermaLink="false">v1.50.2</guid>
+      <pubDate>Sun, 21 Dec 2025 17:05:13 GMT</pubDate>
+      <description><![CDATA[# **Release v1.50.2**
+
+## 🚀 Enhancements
+
+🔹 **HTTP Connection Pool Configuration**
+
+GoFr now supports **configurable HTTP connection pool settings** to optimize performance for high-frequency HTTP requests in microservices.
+
+New `ConnectionPoolConfig` option for `AddHTTPService()` method
+
+Configurable settings:
+
+-  `MaxIdleConns`: Maximum idle connections across all hosts (default: 100)
+-  `MaxIdleConnsPerHost`: Maximum idle connections per host (default: 2, recommended: 10-20)
+-  `IdleConnTimeout`: Connection keep-alive duration (default: 90 seconds)
+- Addresses the limitation where Go's default `MaxIdleConnsPerHost: 2` is insufficient for microservices
+-  **Important**: `ConnectionPoolConfig` must be applied first when using multiple options  
+
+
+🔹 **OpenTSDB Metrics Support**
+
+Added metrics instrumentation for OpenTSDB operations to provide better observability.
+
+New metrics:
+-  `app_opentsdb_operation_duration`: Duration of OpenTSDB operations in milliseconds
+-  `app_opentsdb_operation_total`: Total OpenTSDB operations
+- Enables monitoring and alerting on OpenTSDB data operations
+
+---
+  
+
+## 🛠️ Fixes
+
+🔹 **Panic Recovery for OnStart Hooks**
+Added panic recovery mechanism for `OnStart` hooks to prevent entire application crash. If a hook panics, the error is logged and the application continues with other hooks, improving application stability and resilience.
+
+🔹 **GCS Provider Name for Observability**
+Added provider name "GCS" to Google Cloud Storage file store for improved logging and metrics identification. Previously it used common logging semantics "COMMON" shared across file storage providers leading to improper visibilty of the underlying file storage being used,
+
+🔹 **Zipkin Trace Exporter Error Handling**
+Fixed error logging for successful trace exports (2xx status codes). Zipkin exporter now correctly ignores `201` status codes and other `2xx` responses, reducing noise in error logs for successful operations.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.50.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.50.1</link>
+      <guid isPermaLink="false">v1.50.1</guid>
+      <pubDate>Sun, 14 Dec 2025 13:55:15 GMT</pubDate>
+      <description><![CDATA[# **Release v1.50.1**
+
+## 🚀 Enhancements
+
+🔹  **TLS / SSL Support for Database Connections**
+
+GoFr now supports  **secure TLS/SSL connections**  for relational databases(MySQL / MariaDB/PostgreSQL), improving security and compliance for production deployments.
+
+-   New configuration  `DB_SSL_MODE`  with supported modes:
+    
+    -   `disable`,  `preferred`,  `require`,  `skip-verify`,  `verify-ca`,  `verify-full`
+        
+-   New environment variables for TLS configuration:
+    
+    -   `DB_TLS_CA_CERT`
+        
+    -   `DB_TLS_CLIENT_CERT`
+        
+    -   `DB_TLS_CLIENT_KEY`
+        
+-   `verify-ca`  and  `verify-full`  modes enforce  **CA certificate validation**
+    
+-   **Mutual TLS (mTLS)**  supported via client certificate & key
+- Refer [Documentation : Tracing In GoFr](https://gofr.dev/docs/quick-start/observability#tracing) for more info.
+----------
+
+🔹  **Custom Authentication Headers for Tracing Exporters**
+
+GoFr now allows configuring  **custom authentication headers**  for OpenTelemetry exporters, enabling better compatibility with hosted observability platforms.
+
+Key Highlights:
+
+-   New configuration:  `TRACER_HEADERS`
+    
+    -   Accepts  **comma-separated key=value pairs**
+        
+    -   Example:  `X-Api-Key=secret,Authorization=Bearer token`
+        
+-   `TRACER_HEADERS`  takes priority over the existing  `TRACER_AUTH_KEY`
+-  Refer [Documentation : Connecting MySQL](https://gofr.dev/docs/quick-start/connecting-mysql) for more info.
+
+## 🛠️ Fixes
+
+🔹  **Mock HTTP Services Deduplication in Tests**
+
+Fixed an issue where registering multiple mock HTTP services could result in  **deduplication**, causing missing mocks and lost expectations during tests.
+
+Fix Details:
+
+-   Each service registered via  `WithMockHTTPService(...)`  now receives a  **distinct mock instance**
+    
+-   Expectations must be set per service using: `mocks.HTTPServices["serviceName"]`
+        
+- Refer [Documentation : Testing in GoFr](https://gofr.dev/docs/references/testing) for more info.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.50.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.50.0</link>
+      <guid isPermaLink="false">v1.50.0</guid>
+      <pubDate>Sat, 06 Dec 2025 07:16:16 GMT</pubDate>
+      <description><![CDATA[# **Release v1.50.0**
+
+## 🚀Features
+
+🔹  **Azure File Storage Support — New File-Store Provider**
+
+GoFr now introduces  **native Azure File Storage integration**  through a new provider at  
+`gofr.dev/pkg/gofr/datasource/file/azure`.
+
+Key Highlights:
+
+-   Supports configuration via  **AccountName**,  **AccountKey**, and  **ShareName**  (optional:  **Endpoint**)
+-   Automatic  **connection retry loop**  with connection-status logging
+-   **Native directory support**  —  `Chdir`,  `ReadDir`, and  `Stat`  behave like a real filesystem
+-   **Automatic parent-directory creation**  for nested file paths
+-   Built-in  **content-type detection**  based on extension (`json`,  `txt`,  `csv`,  `xml`,  `html`,  `pdf`, etc.)
+-   One file share  **per file-store instance**  (explicitly documented)
+-   Complete documentation & examples added under  [Official File Handling in GoFr Documentation](https://gofr.dev/docs/advanced-guide/handling-file/page.md)
+
+### **Example**
+
+```go
+// Create Azure File Storage filesystem
+fs, err := azure.New(&azure.Config{
+    AccountName: "mystorageaccount",
+    AccountKey:  "myaccountkey",
+    ShareName:   "myshare",
+    // Endpoint is optional, defaults to https://{AccountName}.file.core.windows.net
+    // Endpoint: "https://custom-endpoint.file.core.windows.net",
+})
+
+if err != nil {
+    app.Logger().Fatalf("Failed to initialize Azure File Storage: %v", err)
+}
+
+app.AddFileStore(fs)
+
+app.Run()
+```
+
+🔹  **CLI Improvements**
+
+-   More helpful  `ErrCommandNotFound`  message showing the  **invalid command entered**
+-   Better help formatting with  **aligned command–description columns**
+-   Enhanced behavior for no-command scenarios: prints help + clearer messaging if added.
+    
+
+
+## Bug Fixes 
+
+- **Basic Auth Header Normalization**
+Authorization header now correctly uses  **"Basic "** instead of **"basic "** adhering to RFC standard for Basic Authorization Headers.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.49.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.49.0</link>
+      <guid isPermaLink="false">v1.49.0</guid>
+      <pubDate>Fri, 28 Nov 2025 16:14:37 GMT</pubDate>
+      <description><![CDATA[# **Release v1.49.0**
+
+## 🚀 New Features
+
+🔹 **DB Resolver for MySQL Read/Write Splitting**
+
+GoFr introduces a powerful, production-ready **DBResolver** module that enables automatic **read/write splitting** between a primary database and multiple replicas.
+
+**Key Highlights:**
+
+* Automatic routing based on **HTTP methods**:
+
+  * Writes (`POST`, `PUT`, `PATCH`, `DELETE`) → **Primary**
+  * Reads (`GET`, `HEAD`, `OPTIONS`) → **Replicas**
+* Route-based overrides using `PrimaryRoutes` for strongly consistent paths
+* Pluggable read-balancing strategies:
+
+  * **Round-robin**
+  * **Random**
+* Built-in **circuit breaker** for tracking replica failures & recovery
+* Full integration through `dbresolver.InitDBResolver()`
+* Unlocks **horizontal scaling** for read-heavy services
+* Significantly reduces read latency
+* Ensures high resilience with automatic failover to primary when replicas are down
+
+**Additional Details:**
+
+**Installation**
+
+```bash
+go get gofr.dev/pkg/gofr/datasource/dbresolver@latest
+```
+
+**Initializing DBResolver**
+
+```go
+import (
+    "gofr.dev/pkg/gofr"
+    "gofr.dev/pkg/gofr/datasource/dbresolver"
+)
+
+func main() {
+    a := gofr.New()
+
+    err := dbresolver.InitDBResolver(a, &dbresolver.Config{
+        Strategy:     dbresolver.StrategyRoundRobin,
+        ReadFallback: true,     // fallback to primary if all replicas fail
+        MaxFailures:  3,        // mark replica down after 3 failures
+        TimeoutSec:   30,       // cooldown before retrying
+        PrimaryRoutes: []string{
+            "/admin",
+            "/api/payments/*",
+        },
+        Replicas: []dbresolver.ReplicaCredential{
+            {Host: "localhost:3307", User: "replica_user1", Password: "pass1"},
+            {Host: "replica2.example.com:3308", User: "replica_user2", Password: "pass2"},
+            {Host: "replica3.example.com:3309", User: "replica_user3", Password: "pass3"},
+        },
+    })
+
+    if err != nil {
+        a.Logger().Errorf("failed to initialize db resolver: %v", err)
+    }
+
+    a.Run()
+}
+```
+
+**Read Endpoint (Auto → Replica)**
+
+```go
+a.GET("/customers", func(c *gofr.Context) (any, error) {
+    var out []Customer
+    c.SQL.Select(c, &out, "SELECT id, name FROM customers")
+    return out, nil
+})
+```
+
+**Write Endpoint (Auto → Primary)**
+
+```go
+a.POST("/customers", func(c *gofr.Context) (any, error) {
+    var cust Customer
+    c.Bind(&cust)
+
+    _, err := c.SQL.Exec("INSERT INTO customers (name) VALUES (?)", cust.Name)
+    return cust, err
+})
+```
+
+**Forced Primary Route**
+
+```go
+a.GET("/admin/customers", func(c *gofr.Context) (any, error) {
+    var out []Customer
+    c.SQL.Select(c, &out, "SELECT id, name FROM customers")
+    return out, nil
+})
+```
+
+
+🔹 **XML Responses (response.XML)**
+
+GoFr now supports **raw XML responses** without JSON encoding by using `response.XML`.
+
+**Key Highlights:**
+
+* Writes raw XML bytes directly to the client
+* Default `Content-Type = application/xml`
+* Perfect for legacy and enterprise XML-based systems
+
+**Example:**
+
+```go
+app.GET("/legacy/xml", func(ctx *gofr.Context) (any, error) {
+    content := []byte(`<Response status="ok"><Message>Hello</Message></Response>`)
+    return response.XML{Content: content}, nil
+})
+```
+
+**XML Output**
+
+```xml
+<Response status="ok"><Message>Hello</Message></Response>
+```
+
+## 📦 Improvements
+
+🔹 **Responder Improvements**
+
+* Special response types (`Raw`, `File`, `Template`, `XML`, `Redirect`) now follow a unified handling flow
+* Avoids incorrect `206 Partial Content` responses
+* Ensures default JSON `Content-Type`
+
+🔹 **DBResolver Pooling Controls**
+
+Replica pools now scale relative to primary pools. Defaults:
+
+* Primary: `DB_MAX_IDLE_CONNECTION=2` → Replicas default to `8`
+* Primary: `DB_MAX_OPEN_CONNECTION=20` → Replicas default to `40`
+
+Optional overrides:
+
+```env
+DB_REPLICA_MAX_IDLE_CAP=100
+DB_REPLICA_MIN_IDLE=5
+DB_REPLICA_DEFAULT_IDLE=15
+DB_REPLICA_MAX_OPEN_CAP=500
+DB_REPLICA_MIN_OPEN=20
+DB_REPLICA_DEFAULT_OPEN=150
+```
+
+## 🐛 Bug Fixes & Small Changes
+
+🔹 **Authentication Timing Attack Protection**
+
+* API Key and Basic Auth now use consistent time comparisons
+
+
+Refer : **GoFr Official Documentation**
+[https://gofr.dev/docs](https://gofr.dev/docs)]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.48.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.48.0</link>
+      <guid isPermaLink="false">v1.48.0</guid>
+      <pubDate>Fri, 21 Nov 2025 17:36:33 GMT</pubDate>
+      <description><![CDATA[# **Release v1.48.0**
+
+## 🚀 New Features
+
+🔹  **Unified Token-Bucket Rate Limiter for HTTP Clients**
+
+GoFr introduces a brand-new, pluggable  **rate limiter**  that works across all HTTP client calls.
+
+Key Highlights:
+-   Supports  **in-memory**  and  **Redis-backed**  stores
+-   Simple drop-in integration via  `RateLimiterConfig`  or  `AddOption`
+-   Integer-only token bucket with  **burst**  support
+-   Background cleanup for local buckets
+-   Customizable request grouping using  `KeyFunc`
+    
+
+Why this matters:
+-   Ensures  **consistent throttling**  across all downstream HTTP services
+-   Distributed apps can now safely rate-limit using  **Redis**
+    
+
+Additional Details :
+-   Default limit:  **60 req/min**, burst  **10**
+-   Returns  **RateLimitError (429)**  with  `RetryAfter`  for easy handling.
+    
+
+## 📦 Improvements
+
+🔹  **HTTP Client Enhancements with Rate Limiting**
+
+-   Rate limiter now acts as an  **HTTP wrapper**, intercepting all Get/Post/Put/Delete calls (including header variants)
+    
+-  Service key normalization improved via default keying (`scheme://host`)
+    
+-   Cleaner validation through  `RateLimiterConfig.Validate()`  with automatic sane defaults
+    
+
+🔹  **SQL Operation Normalization**
+
+-   SQL operation detection now always returns  **UPPERCASE**  keywords. Improves reliability for middleware and query inspection logic.
+    
+
+🔹  **OAuth Token URL Validation Cleanup**
+
+-   Switched to  **shared scheme constants**  (`http`  /  `https`). Reduces duplicated literals and improves code clarity
+
+
+## 🐛 Bug Fixes & Small Changes
+
+🔹  **Consistent SQL Operation Detection**
+
+-   `getOperationType()`  now normalizes to  **uppercase**, preventing case-sensitivity issues across modules
+    
+
+🔹  **Documentation Updates**
+
+-  **HTTP communication guide**  adds all details to add rate-limiter in your registered HTTP Services. Added examples for:
+    -   In-memory usage
+    -   Redis-backed multi-instance usage
+    -   Custom keying functions
+-  Added Documentation to setup gRPC Streaming Services/Clients using GoFr.
+
+Refer : [GoFr Official Documentation](https://gofr.dev/docs)]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.47.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.47.1</link>
+      <guid isPermaLink="false">v1.47.1</guid>
+      <pubDate>Tue, 18 Nov 2025 11:46:54 GMT</pubDate>
+      <description><![CDATA[# **Release v1.47.1**
+
+## 📊 Enhancements
+
+🔹  **Unified Datasource Histogram Buckets**
+
+GoFr now uses a shared  `getDefaultDatasourceBuckets()`  across  **SQL**,  **Redis**, and other datasources.
+Benefits:
+
+-   Standardized buckets from  **0.05ms → 30s**  
+-   Consistent observability across datasources
+-   Improved monitoring fidelity in Prometheus/Grafana
+-   Easier cross-datasource latency comparison
+    
+
+🔹  **ArangoDB v2.1.6 Compatibility & API Upgrade**
+
+Updated GoFr’s ArangoDB datasource to align with the latest  `github.com/arangodb/go-driver/v2 v2.1.6`  driver.  This upgrade ensures smooth integration with modern ArangoDB clusters and removes legacy API inconsistencies.
+
+Key Highlights:
+
+-   Migrated collection creation to **CreateCollectionV2**  /  **CreateCollectionWithOptionsV2**
+-   Ensures correct handling of  **edge**  and  **document**  collection types
+
+
+## 🛠️ Bug Fixes
+
+### **ArangoDB Database Creation – No More False Failures**
+
+Previously, calling  `CreateDatabase()`  on an existing DB caused unnecessary user-visible errors.
+Fix Summary:
+
+-   Added an existence check before creating databases
+-   Prevents duplicate-create errors
+-   Ensures smooth provisioning flows during app startup or migrations
+    
+###  **ArangoDB Collection Type Handling Corrected**
+
+Edge collections were previously misconfigured due to missing or incorrect Type assignment.
+Fix Summary - 
+-   Explicit  `Type`  handling added for  **edge vs document**  collections
+-   Ensures correct metadata and relationship behavior
+-   Updated tests to validate collection-type correctness]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.47.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.47.0</link>
+      <guid isPermaLink="false">v1.47.0</guid>
+      <pubDate>Fri, 07 Nov 2025 16:56:09 GMT</pubDate>
+      <description><![CDATA[# Release v1.47.0
+
+## ✨ Features  
+
+#### 🔹 GCS File System Integration  
+
+Introduced **Google Cloud Storage (GCS) File System** as a new implementation of the GoFr `FileSystem` interface.  This enables seamless integration with GCS while maintaining consistent behavior across existing backends like S3, FTP, and SFTP.
+
+**Supported Methods:**
+
+```go
+type FileSystem interface {
+    Create(name string) (File, error)
+    Mkdir(name string, perm os.FileMode) error
+    MkdirAll(path string, perm os.FileMode) error
+    Open(name string) (File, error)
+    OpenFile(name string, flag int, perm os.FileMode) (File, error)
+    Remove(name string) error
+    RemoveAll(path string) error
+    Rename(oldname string, newname string) error
+    ReadDir(dir string) ([]FileInfo, error)
+    Stat(name string) (FileInfo, error)
+    ChDir(dirname string) error
+    Getwd() (string, error)
+}
+```
+-   Consistent and unified interface for GCS, S3, FTP, and SFTP file operations.
+-   Plug-and-play compatibility with GoFr’s file abstraction layer.
+-   Production-ready with proper error wrapping, retries, and structured logging.
+-   Simplifies backend switching without changing application logic.
+    
+
+For detailed usage, visit 👉  [GoFr Docs — GCS File System](https://gofr.dev/docs/advanced-guide/handling-file)
+
+----------
+
+### 🛠️ Bug Fixes
+
+#### Remote Logger — Improper JSON Log Formatting
+Previously, ANSI color codes and non-ASCII characters appeared in JSON logs, breaking downstream log parsers.
+
+**Example of affected log output:**
+
+```json
+{"level":"DEBUG","time":"2025-09-17T17:54:30.625115633Z","message":"\u001b[38;5;8m5460fd91feac021fd633b5989abdeb26 \u001b[38;5;34m200   \u001b[0m     5855\u001b[38;5;8mµs\u001b[0m GET https://myurl","gofrVersion":"v1.45.0"}
+
+```
+
+**Fix Summary:**
+
+-   Removed ANSI color codes and non-ASCII characters from JSON logs.
+-   Preserved terminal log colors for local debugging.
+-   Ensured all remote JSON logs are now ASCII-safe and parseable by log processors (ELK, Loki, Cloud Logging, etc.).
+    
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.46.3</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.46.3</link>
+      <guid isPermaLink="false">v1.46.3</guid>
+      <pubDate>Fri, 17 Oct 2025 14:17:15 GMT</pubDate>
+      <description><![CDATA[# Release v1.46.3
+
+
+## Enhancements
+
+### **Custom Content-Type Support**: 
+GoFr now allows respective custom content types in HTTP responses and only sets it as JSON when not explicitly present. This enhancement provides developers with greater flexibility in controlling response formats, enabling support for various content types like XML, plain text, or custom formats while maintaining JSON as the sensible default.
+
+## Fixes
+
+-   **Fixed Remote Log Level Fatal Exit Issue**: Resolved a critical bug where changing to fatal level at remote log level was causing the application to exit unexpectedly. This fix ensures that remote logging operations no longer trigger unintended application termination, improving stability and reliability in production environments.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.46.2</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.46.2</link>
+      <guid isPermaLink="false">v1.46.2</guid>
+      <pubDate>Fri, 10 Oct 2025 14:25:33 GMT</pubDate>
+      <description><![CDATA[## Release v1.46.2
+
+**GoFr core package now has 81% test coverage!**  🎉  
+This milestone boosts stability, reliability, and makes contributions safer and easier.
+
+-  Faster CI and more maintainable code
+    
+-   🔜 Upcoming: CLI to make your life easier.
+    
+
+**GoFr — Opinionated, Performant, Observable**  https://gofr.dev
+
+ 
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.46.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.46.1</link>
+      <guid isPermaLink="false">v1.46.1</guid>
+      <pubDate>Tue, 07 Oct 2025 06:25:18 GMT</pubDate>
+      <description><![CDATA[## Release v1.46.1
+
+
+### 🚀 Enhanced Telemetry Service
+
+We’ve enhanced GoFr’s  **telemetry**  to provide better insights into framework usage and runtime behavior.  This improvement enables more accurate tracking of key runtime data to help us optimize performance and stability in future releases.
+
+Telemetry is  **enabled by default**  and can be disabled anytime by setting:
+
+```bash
+export GOFR_TELEMETRY=false
+```
+ 
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.46.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.46.0</link>
+      <guid isPermaLink="false">v1.46.0</guid>
+      <pubDate>Fri, 26 Sep 2025 17:10:55 GMT</pubDate>
+      <description><![CDATA[## Release v1.46.0
+
+### ✨ Features
+
+🔹  **OracleDB Migration Support**
+
+-   Added  **OracleDB migrations with transaction support**.
+-   Enables safe schema evolution with  **begin/commit/rollback**  semantics for Oracle-specific migrations.
+    
+
+###  🛠️ Bug Fixes
+
+- **Custom Metrics Naming with OpenTelemetry**
+Previously, all custom metrics were forced to include a  `_total`  suffix, causing incorrect or duplicate metric names due to internal upgradation of OTEL Package. Now, Metrics can be defined without the mandatory suffix and behave as originally intended.
+    
+
+- **EventHub Subscription Fix**
+Previously, EventHub subscribers were unable to consume events published in the system. Now, Subscribers can successfully receive and process published events.
+
+### ✨ Developer Experience
+
+- **Docker Setup for HTTP Server Example**
+Improved the  **Docker setup**  for the demo  `http-server`. You can now explore and run it easily at:  
+    👉  [`gofr/examples/http-server`](https://github.com/gofr-dev/gofr/tree/development/examples/http-server)
+ 
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.45.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.45.0</link>
+      <guid isPermaLink="false">v1.45.0</guid>
+      <pubDate>Fri, 12 Sep 2025 14:01:09 GMT</pubDate>
+      <description><![CDATA[## Release v1.45.0
+
+### ✨ Features
+
+🔹  **DynamoDB Key-Value Store Support**
+
+-   Added full  **DynamoDB support**  as a GoFr KVStore implementation.   
+-   Features include: health checks, connection lifecycle management, JSON helper utilities, structured logging, OpenTelemetry tracing, and mock support for testing.
+    
+   - Import the gofr's external driver for DynamoDB:
+		```shell=
+		go get gofr.dev/pkg/gofr/datasource/kv-store/dynamodb@latest
+		```
+		**How to use DynamoDB in GoFr**:
+
+		```go
+		db := dynamodb.New(dynamodb.Configs{
+		    Table:            "gofr-kv-store",
+		    Region:           "us-east-1",
+		    Endpoint:         "http://localhost:8000", // For local dev
+		    PartitionKeyName: "pk",
+		})
+		```
+
+		For full documentation, checkout 👉  [gofr.dev/docs](https://gofr.dev/docs)]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.44.2</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.44.2</link>
+      <guid isPermaLink="false">v1.44.2</guid>
+      <pubDate>Mon, 08 Sep 2025 14:14:25 GMT</pubDate>
+      <description><![CDATA[# Release v1.44.2
+
+## 🚀 Enhancements
+
+### 🔹 Go Version Update
+
+-   Upgraded  **Go to v1.25.0**  across all modules and workflows.
+    
+
+### 🔹 Remote Logger Optimization
+
+- Remote Logger produced excessive logs and wasn’t thread-safe. As an enhancement now all the successive remote logger calls will automatically shift to debug, reducing log noise.
+
+## 🛠️ Bug Fixes
+
+- ### Config Loading System
+
+Previously, File-based configs overwrote system environment variables. Now, System env vars always take precedence, with refactored loading logic and better error handling.
+    
+
+- ### WebSocket Implementation
+Previously, context retrieval was unreliable, methods weren’t fully thread-safe, and errors like  _broken pipe_  caused crashes. This has been fixed. Websocket has context-based connection handling, thread-safe methods (Read/Write/Deadline), improved error handling, concurrency-safe tests, and cleaner startup/shutdown.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.44.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.44.1</link>
+      <guid isPermaLink="false">v1.44.1</guid>
+      <pubDate>Mon, 01 Sep 2025 11:00:58 GMT</pubDate>
+      <description><![CDATA[# Release v1.441.
+
+## 🚀 Enhancement
+
+### 🔹 Client Cancellation Handling 
+
+-   GoFr now returns  **HTTP 499 “Client Closed Request”**  when a request is canceled (`context.Canceled`) and logs it at  **ERROR**  level.
+
+
+## 🛠️ Fixes
+
+- ### Request Timeout Handling 
+
+    Previously, `500` status codes were received for context errors. GoFr now correctly returns  **HTTP 504 “Gateway Timeout”**  when a request exceeds its deadline (`context.DeadlineExceeded`) and logs it at  **ERROR**  level.
+
+
+    
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.44.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.44.0</link>
+      <guid isPermaLink="false">v1.44.0</guid>
+      <pubDate>Thu, 21 Aug 2025 12:40:56 GMT</pubDate>
+      <description><![CDATA[# v1.44.0
+
+## 🚀 Features
+
+### 🔹 Correlation ID Access in GoFr Context
+
+GoFr now allows users to easily  **access the correlation ID**  via  `gofr.Context`.
+
+-   Retrieve correlation ID anywhere in your application using:
+    
+    ```go
+    ctx.GetCorrelationID()
+    ```
+----------
+
+### 🔹 Couchbase Support
+
+GoFr now supports injecting  **Couchbase**  as a datasource.  Any driver implementing the following interface can be added via  `app.AddCouchbase()`  and accessed across the application using  `gofr.Context`.
+
+#### 🧩 Supported Couchbase Interface:
+
+```go
+type Couchbase interface {
+    Get(ctx context.Context, key string, result any) error
+    Insert(ctx context.Context, key string, document, result any) error
+    Upsert(ctx context.Context, key string, document any, result any) error
+    Remove(ctx context.Context, key string) error
+    Query(ctx context.Context, statement string, params map[string]any, result any) error
+    AnalyticsQuery(ctx context.Context, statement string, params map[string]any, result any) error
+}
+
+```
+
+#### ✅ Example Usage:
+
+```go
+a := gofr.New()
+
+a.AddCouchbase(couchbase.New(&couchbase.Config{
+    Host:     "localhost",
+    User:     "Administrator",
+    Password: "password",
+    Bucket:   "test-bucket",
+}))
+
+```
+
+📚  **Documentation**:  [Couchbase Setup Guide](https://gofr.dev/docs)
+
+----------
+
+### 🔹 OracleDB Support
+
+GoFr now supports injecting  **OracleDB**  as a relational datasource via a clean and extensible interface.  
+
+#### 🧩 Supported Oracle Interface:
+
+```go
+type Oracle interface {
+    Exec(ctx context.Context, query string, args ...any) error
+    Select(ctx context.Context, dest any, query string, args ...any) error
+}
+```
+
+This approach makes it easy to inject any compatible Oracle driver while maintaining flexibility to use multiple databases within your GoFr application.
+    
+
+#### ✅ Example – Add OracleDB in GoFr
+
+```go
+app.AddOracle(oracle.New(oracle.Config{
+    Host:     "localhost",
+    Port:     1521,
+    Username: "system",
+    Password: "YourPasswordHere",
+    Service:  "FREEPDB1",
+}))
+```
+
+📚  **Documentation & Setup Guide**:  [Oracle](https://gofr.dev/docs)
+
+----------
+
+## 🛠️ Fixes
+
+-   Removed the  **unnecessary SQL initialization**  when no  `DB_*`  environment variables are defined. Prevents failure logs:  `connection to failed: host name is empty`
+- Fixed issue where metrics showed  **infinite DB calls**  for every query.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.43.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.43.0</link>
+      <guid isPermaLink="false">v1.43.0</guid>
+      <pubDate>Tue, 05 Aug 2025 16:05:43 GMT</pubDate>
+      <description><![CDATA[## v1.43.0
+
+### 🚀 Features
+
+1.  **Startup Hooks Support (`OnStart`)**
+   
+GoFr now allows registering  **synchronous startup jobs**  using the  `OnStart`  method.
+
+This enables actions like:
+
+-   Warming up Redis or in-memory caches
+    
+-   Seeding databases
+    
+-   Validating configuration before traffic is served
+    
+The method receives a fully initialized  `*gofr.Context`  with access to SQL, Redis, and Logger instances. If any hook fails, the app will  **gracefully shut down**  with clear logs.
+
+🛠️  **Example usage:**
+
+```go
+a.OnStart(func(ctx *gofr.Context) error {
+    return ctx.Redis.Set(ctx, "key", "value", 0).Err()
+})
+```
+
+This ensures critical setup steps are completed  **before your app starts accepting traffic**.
+
+
+### 🛠️ Fixes
+
+1.  **PubSub Migrator Chain Fix**
+    
+Previously incorrect migration state visibility was seen when PubSub was connected. This has been resolved. Now it retrieves correct version from PubSub and continues chain to next migrator. Handles query failures without skipping downstream migrators
+    
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.42.5</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.42.5</link>
+      <guid isPermaLink="false">v1.42.5</guid>
+      <pubDate>Fri, 01 Aug 2025 11:01:15 GMT</pubDate>
+      <description><![CDATA[# v1.42.5 
+
+## 🚀 Enhancements
+
+### 🔹 ScyllaDB Migrator Support
+
+GoFr now includes native support for **ScyllaDB** migrations.
+
+#### 🧩 Supported Migration Interface:
+```go
+type ScyllaDB interface {
+    Query(dest any, stmt string, values ...any) error
+    QueryWithCtx(ctx context.Context, dest any, stmt string, values ...any) error
+
+    Exec(stmt string, values ...any) error
+    ExecWithCtx(ctx context.Context, stmt string, values ...any) error
+
+    ExecCAS(dest any, stmt string, values ...any) (bool, error)
+
+    NewBatch(name string, batchType int) error
+    NewBatchWithCtx(ctx context.Context, name string, batchType int) error
+
+    BatchQuery(name, stmt string, values ...any) error
+    BatchQueryWithCtx(ctx context.Context, name, stmt string, values ...any) error
+
+    ExecuteBatchWithCtx(ctx context.Context, name string) error
+}
+```
+
+
+### 🔹 OpenTSDB Migrator Support
+
+Support for  **OpenTSDB**  migration operations, enable you to pre-seed metrics and manage annotations.
+
+#### ✅ Key Features:
+-   Versioned JSON-based migration files
+    
+-   Integrated directly into GoFr's migration interface
+    
+
+#### 🧩 Supported Migration Interface:
+
+```go
+type OpenTSDB interface {
+    // PutDataPoints can be used for seeding initial metrics during migration
+    PutDataPoints(ctx context.Context, data any, queryParam string, res any) error
+
+    // PostAnnotation creates or updates an annotation in OpenTSDB using the 'POST /api/annotation' endpoint.
+    PostAnnotation(ctx context.Context, annotation any, res any) error
+
+    // PutAnnotation creates or replaces an annotation in OpenTSDB using the 'PUT /api/annotation' endpoint.
+    PutAnnotation(ctx context.Context, annotation any, res any) error
+
+    // DeleteAnnotation removes an annotation from OpenTSDB using the 'DELETE /api/annotation' endpoint.
+    DeleteAnnotation(ctx context.Context, annotation any, res any) error
+}
+```
+
+----------
+
+📚  **Documentation**  
+See  [gofr.dev/migrations](https://gofr.dev/migrations)  for full examples, best practices, and schema layouts for ScyllaDB and OpenTSDB migrations.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.42.4</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.42.4</link>
+      <guid isPermaLink="false">v1.42.4</guid>
+      <pubDate>Fri, 25 Jul 2025 14:19:51 GMT</pubDate>
+      <description><![CDATA[## **v1.42.4**
+
+### **🛠️ Improvements**
+
+1. **Elasticsearch Migrator for Versioned Changes**
+
+   GoFr now includes a dedicated **Elasticsearch migrator** under `pkg/migration` for managing version-controlled changes like index creation, mapping updates, and analyzer definitions.
+   **Key Features:**
+
+   * Seamless integration with GoFr’s internal **migrator interface**.
+   * Uses Elasticsearch’s **REST API** for all operations.
+   * Maintains migration state for reliable deployments.
+
+   Refer to [gofr.dev/migrations](https://gofr.dev/docs/advanced-guide/handling-data-migrations) for more details and examples.
+
+### **🐞 Bug Fixes**
+
+1. **Fixed Panic in Context Logging in GoFr CMD Apps**
+
+   A bug that caused a panic when using `ctx.Warnf` instead of `ctx.Logger.Warnf` has been fixed.
+
+   **Behavior Before:**
+   
+   Calling `ctx.Warnf` in GoFr CMD Apps resulted in:
+
+   ```
+   panic: runtime error: invalid memory address or nil pointer dereference
+   ```
+
+   **Now:**
+   
+   `ctx.Warnf` functions correctly and logs without causing runtime crashes.]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.42.3</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.42.3</link>
+      <guid isPermaLink="false">v1.42.3</guid>
+      <pubDate>Wed, 09 Jul 2025 07:29:40 GMT</pubDate>
+      <description><![CDATA[# v1.42.3 
+
+----------------------
+
+## 🛡️ Security Fix
+- Resolved weak RSA key generation in `mock_oauth_server.go`.
+- Previously, a 1024-bit RSA key was being generated in the mock OAuth server (rsa.GenerateKey).
+- Increased the key size to 2048 bits, aligning with modern cryptographic standards and addressing [CodeQL alert #73](https://github.com/gofr-dev/gofr/security/code-scanning/73).
+
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.42.2</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.42.2</link>
+      <guid isPermaLink="false">v1.42.2</guid>
+      <pubDate>Fri, 04 Jul 2025 13:59:35 GMT</pubDate>
+      <description><![CDATA[## v1.42.2
+
+### 🛠️ Improvements
+
+#### 1.  **Versioned Migrations Support Extended to NATS and EventHub**
+
+Following up on versioned migration support for Kafka, MQTT, and Google PubSub in the previous release, GoFr now officially adds:
+
+- **NATS**
+- **Azure EventHub**
+
+Both now support  **versioned migrations**, allowing event streaming systems to be schema-evolvable and compatible with data migration needs.
+
+#### 2.  **Cleaner AuthConfig APIs for External Services**
+
+You can now configure external services like  `catfact.ninja`  using streamlined constructors:
+
+**Old Way:**
+
+```go
+app.AddHTTPService("cat-facts", "https://catfact.ninja",
+    &service.APIKeyConfig{APIKey: "some-random-key"},
+    &service.BasicAuthConfig{UserName: "gofr", Password: "gofr"})
+``` 
+
+**New Way:**
+
+```go
+app.AddHTTPService("cat-facts", "https://catfact.ninja",
+    service.NewAPIKeyConfig("some-random-key"),
+    service.NewBasicAuthConfig("username", "password"),
+    )
+``` 
+
+ `NewBasicAuthConfig(username, password)`:
+
+-   Trims values   
+-   Validates presence of both fields  
+-   Ensures  **password is base64 encoded**, preventing unsafe plaintext usage 
+-   Returns  **clear errors**  for invalid formats
+    
+
+ `NewAPIKeyConfig(apiKey)`:
+
+-   Simplified usage  
+-   Validated internally
+-   Adds cleaner abstraction with automatic header injection
+    
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.42.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.42.1</link>
+      <guid isPermaLink="false">v1.42.1</guid>
+      <pubDate>Fri, 27 Jun 2025 12:42:48 GMT</pubDate>
+      <description><![CDATA[# v1.42.1
+
+## 🛠️ Improvements
+
+### 1. **`NewOAuthConfig()` for Safer OAuth Setup**
+
+GoFr now includes a dedicated constructor to validate OAuth configurations for interservice HTTP calls, ensuring secure and consistent authentication setup. Refer to the [official documentation](https://gofr.dev/docs/advanced-guide/http-authentication#adding-o-auth-authentication-to-http-services) to know more :
+
+```go
+NewOAuthConfig(
+	clientID,  // string: OAuth2 client ID (required)
+	secret,    // string: OAuth2 client secret (required)
+	tokenURL,  // string: Token exchange endpoint (required & validated)
+	scopes,    // []string: Optional OAuth2 scopes
+	params,    // url.Values: Optional additional endpoint parameters
+	authStyle, // oauth2.AuthStyle: Credential passing style (header/body/auto)
+)
+```
+
+#### 🔍 Why this matters:
+
+* Prevents common misconfigurations like missing `tokenURL`, which previously caused vague errors such as:
+
+  ```
+  Post "": unsupported protocol scheme ""
+  ```
+* Performs validation on required fields and returns clear error messages.
+* Encourages safe and standardized OAuth client setup.
+
+#### ✅ Example Usage:
+
+```go
+config, err := NewOAuthConfig(
+	"my-client-id",                       // clientID
+	"my-client-secret",                   // secret
+	"https://provider.com/oauth/token",  // tokenURL
+	[]string{"read", "write"},           // scopes
+	nil,                                  // params
+	oauth2.AuthStyleAutoDetect,          // authStyle
+)
+
+if err != nil {
+	log.Fatal(err)
+}
+```
+
+Refer to the [official documentation](https://gofr.dev/docs/advanced-guide/http-authentication#adding-o-auth-authentication-to-http-services) to know more.
+
+
+
+### 2. **Configurable `AuthStyle` in OAuth**
+
+The `AuthStyle` field in OAuth2 configuration is now configurable by the user.
+
+#### 🔧 Behavior:
+
+* Previously hardcoded to `oauth2.AuthStyleInHeader`
+* Now allows values such as:
+
+  * `oauth2.AuthStyleAutoDetect` (default)
+  * `oauth2.AuthStyleInHeader`
+  * `oauth2.AuthStyleInParams`
+
+This makes GoFr's OAuth integration more flexible and compatible with diverse OAuth providers.
+
+---
+
+### 3. **Versioned Migrations in Kafka, MQTT, and Google PubSub**
+
+GoFr now supports **versioned migrations** for the following data sources:
+
+* ✅ **Kafka**
+* ✅ **MQTT**
+* ✅ **Google PubSub**
+
+#### 🧩 Additional Config (MQTT only):
+
+To support retained message fetching for versioned migrations in MQTT, enable:
+
+```
+MQTT_RETRIEVE_RETAINED=true
+```
+By default, this is set to `false` to maintain backward compatibility. When set to true, this actually retains the latest message for each topics in the connected MQTT host, hence aiding in versioned migrations.
+
+
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.42.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.42.0</link>
+      <guid isPermaLink="false">v1.42.0</guid>
+      <pubDate>Fri, 20 Jun 2025 04:50:59 GMT</pubDate>
+      <description><![CDATA[# v1.42.0
+
+## 🚀 Features
+
+### 1.  **CockroachDB Support**
+
+GoFr now supports  **CockroachDB**, a distributed cloud-native SQL database.
+Developers can now configure GoFr services to connect to CockroachDB using simple environment variables.
+
+#### 🔧 Configuration:
+```
+DB_DIALECT=cockroachdb
+DB_HOST=localhost
+DB_PORT=26257
+DB_USER=root
+DB_PASSWORD=your-password
+DB_NAME=defaultdb
+DB_SSL_MODE=require
+``` 
+For more details, refer to the  [SQL usage guide](/advanced-guide/dealing-with-sql/).
+
+## 🛠️ Improvements
+
+### 1.  **gRPC Reflection Toggle via Config**
+
+GoFr now supports enabling/disabling  **gRPC server reflection**  using a simple config flag:
+```
+GRPC_ENABLE_REFLECTION=true
+``` 
+
+#### 🔍 When to enable:
+
+-   **Development & Debugging**: Use with tools like grpcurl, Postman, or Evans.
+    
+-   **Internal Networks**: Safe in private, trusted environments.
+    
+-   **CI/CD Pipelines**: Ideal for service discovery in automated setups.
+    
+
+This allows dynamic inspection of gRPC services while maintaining control over exposure.
+
+
+## 🛠️ Fixes
+
+### 1.  **Supabase Healthcheck Issue Resolved**
+
+Resolved an issue where Supabase-backed services were not responding properly to health checks due to incorrect handling of internal pings.
+
+
+### 2.  **Fixed Data Race in Metrics Gauges**
+
+Addressed a  **concurrency bug** where the internal  `float64Gauge`  map was accessed without synchronization. Proper locking is now in place around map access to avoid data races during concurrent  `SetGauge`  and metric reads.
+
+### 3.  **App Name & Version Initialization Bug**
+
+Fixed a configuration issue where  `AppName`  and  `AppVersion`  were incorrectly defaulting to  `gofr-app`  and  `dev`, even when explicitly provided by the user. These values now correctly reflect user-specified configuration during startup.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.41.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.41.0</link>
+      <guid isPermaLink="false">v1.41.0</guid>
+      <pubDate>Thu, 12 Jun 2025 18:05:20 GMT</pubDate>
+      <description><![CDATA[# v1.41.0
+
+## 🔧 Improvements
+
+
+### 1.  **New HTTP Error Type:  `ErrorRecordNotFound`**
+
+A new standardized error type  `http.ErrorRecordNotFound`  has been introduced to gracefully handle scenarios where  **no records are found**  in the database.
+
+####  Example:
+
+```go
+return  nil, http.ErrorRecordNotFound{
+    Message: "User not found with the given ID",
+}
+```
+
+This improves semantic clarity and enables better client-side handling for empty-query results.
+
+### 2.  **Improved Cron Job Observability**
+
+All  **cron jobs**  in GoFr now come with  **built-in logger and tracing support**.
+
+-   Logs from scheduled tasks are now clearly visible.
+    
+-   Each recurring job run is automatically  **tagged with a unique trace ID**, making it easier to trace, debug, and monitor scheduled executions across your system.
+    
+
+This ensures better observability for background tasks without requiring additional instrumentation.
+
+## 🐛 Fixes
+
+### 1.  **Supabase Connection Issue Resolved**
+
+Previously,  **Supabase connections were not initializing correctly**  in GoFr due to a missing dialect registration. Supabase-backed services will now  **connect without issues**—no manual fixes required.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.40.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.40.1</link>
+      <guid isPermaLink="false">v1.40.1</guid>
+      <pubDate>Fri, 06 Jun 2025 06:26:14 GMT</pubDate>
+      <description><![CDATA[# v1.40.1
+
+
+## 🔧 Dependency Updates
+
+Upgraded all externalized datasource dependencies to their latest stable versions for improved performance, security, and compatibility across supported services.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.40.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.40.0</link>
+      <guid isPermaLink="false">v1.40.0</guid>
+      <pubDate>Fri, 23 May 2025 12:07:26 GMT</pubDate>
+      <description><![CDATA[
+# v1.40.0
+
+## 🚀 Features
+
+### **Support for Supabase Database**
+
+Users can now connect their GoFr services to a  **Supabase**  database using environment variables. This feature supports both  **direct**  and  **pooled**  connections, enabling secure and scalable Postgres usage via Supabase.
+
+#### 🔧 Environment Variable Setup:
+```bash
+DB_DIALECT=supabase
+DB_HOST=db.[PROJECT_REF].supabase.co  # Optional, derived from PROJECT_REF
+DB_USER=postgres                      # Or database user name
+DB_PASSWORD=password
+DB_NAME=postgres                      # Or your database name
+DB_PORT=5432                          # Optional, defaults based on connection type
+DB_SSL_MODE=require                   # Optional, forced to "require" for Supabase
+
+# Supabase-specific configs
+SUPABASE_PROJECT_REF=your_project_ref
+SUPABASE_CONNECTION_TYPE=direct       # Options: direct, session, transaction
+SUPABASE_REGION=us-east-1             # Required for pooled connections
+
+# Alternatively, can provide full connection string
+DATABASE_URL=postgresql://postgres:password@db.your_project_ref.supabase.co:5432/postgres
+``` 
+
+----
+
+### **Inter-Service WebSocket Communication**
+
+GoFr now supports  **Inter-Service WebSocket Communication**, enabling services to exchange real-time messages over WebSocket connections. Ideal for microservices needing live updates or event-driven communication.
+
+#### 🔑  Key Methods:
+
+-   `AddWSService`: Register a persistent WebSocket connection to another service with optional auto-reconnect.
+    
+-   `WriteMessageToService`: Send messages to any registered service.
+    
+
+#### ✅ Example Usage:
+
+```go
+func main(){
+
+	app := gofr.New()
+
+	err := app.AddWSService("notification-service", "ws://notifications.example.com/ws", nil, true, 5*time.Second) 
+	if err != nil {
+	    app.Logger.Errorf("Failed to add WebSocket service: %v", err) 
+	    return 
+	}
+
+	app.POST("/send-notification", func(ctx *gofr.Context) (any, error) {
+	    message := map[string]string{ 
+		    "title": "New Message", 
+		    "content": 	"You have a new notification!",
+	    }
+
+	    err := ctx.WriteMessageToService("notification-service", message)
+	    if err != nil { 
+		    return  nil, err
+	    } 
+	    
+		return  "Notification sent successfully!", nil 
+		})
+
+	app.Run()
+}
+``` 
+
+This enables resilient, real-time service communication with minimal configuration.
+
+
+## 🔧 Improvements
+
+### 1.  **New HTTP Error Type:  `ServiceUnavailable`**
+
+A new standardized error type  `ErrorServiceUnavailable`  has been introduced for representing service unavailability due to dependency issues like database failures or third-party service outages.
+
+#### ⚙️ Use Case Example:
+
+```go
+err := http.ErrorServiceUnavailable{
+    Dependency: "PostgreSQL",
+    ErrorMessage: "Connection timeout",
+}
+``` 
+This improvement enhances observability and clarity when dealing with critical external failures.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.39.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.39.1</link>
+      <guid isPermaLink="false">v1.39.1</guid>
+      <pubDate>Thu, 15 May 2025 12:56:14 GMT</pubDate>
+      <description><![CDATA[# v1.39.1
+
+## 🛠 Improvements
+
+1. **Disable Logs for Health & Alive Probes**
+
+	Logging for health check routes (`/.well-known/health` and `/.well-known/alive`) can now be disabled to reduce log clutter in environments with frequent probe calls (e.g., Kubernetes).
+
+	Set the following environment variable:
+
+	```bash
+	LOG_DISABLE_PROBES=true
+	```
+
+2. **TraceID Now Included in Context-Based Logging**
+
+	Logs emitted using `ctx.Logger()` now automatically include the request `traceID`. This enhances traceability across services and allows easier debugging in distributed systems.
+
+	Example log before:
+
+	```json
+	{"message": "User created", "level": "INFO"}
+	```
+
+	After:
+
+	```json
+	{"message": "User created", "trace_id": "3ac9f5e7c12e...", "level": "INFO"}
+	```
+
+	No additional configuration needed—this is now built-in.
+
+3. **Enhanced ArangoDB Query Options Support**
+
+	You can now pass advanced query and subquery options when executing AQL queries via GoFr’s ArangoDB client.
+
+	```go
+	options := map[string]any{
+	    "count":     true,
+	    "batchSize": 100,
+	    "options": map[string]any{
+	        "fullCount": true,
+	        "profile":   2,
+	    },
+	}
+	```
+
+	Supported keys include (but are not limited to):
+
+	- **QueryOptions:**
+
+		* `count`, `batchSize`, `ttl`, `cache`, `memoryLimit`
+
+	- **QuerySubOptions (under `options` key):**
+
+		* `fullCount`, `allowRetry`, `stream`, `optimizer`, `profile`, `maxRuntime`, `skipInaccessibleCollections`, and more
+
+	**Example usage:**
+
+	```go
+	err := ctx.ArangoDB.Query(ctx, "myDatabase", query, bindVars, &results, options)
+	```
+
+	This update gives you full control over AQL query execution for performance tuning, streaming, profiling, and more. 
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.39.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.39.0</link>
+      <guid isPermaLink="false">v1.39.0</guid>
+      <pubDate>Thu, 08 May 2025 16:19:25 GMT</pubDate>
+      <description><![CDATA[# v1.39.0
+
+## 🚀 Features
+
+### gRPC Streaming Support  
+GoFr now supports all gRPC streaming types, unlocking full duplex communication capabilities:
+- **Server-side streaming**  
+- **Client-side streaming**  c
+- **Bidirectional streaming**  
+Auto-generated handlers for streaming methods with built-in metrics and tracing support for all streaming calls
+
+> **Note:** Requires `gofr-cli v0.7.0` or higher.  
+> Refer to the [examples](https://github.com/gofr-dev/gofr/tree/main/examples/grpc-streaming) to explore usage patterns.
+
+
+
+### Redirect Support in HTTP Handlers  
+Handlers can now trigger client redirects by returning a `response.Redirect` object:
+
+```go
+import (
+    "gofr.dev/pkg/gofr"
+    "gofr.dev/pkg/gofr/http/response"
+)
+
+func main() {
+    app := gofr.New()
+
+    app.GET("/old-page", func(ctx *gofr.Context) (any, error) {
+        return response.Redirect{URL: "https://example.com/new-page"}, nil
+    })
+
+    app.Run()
+}
+```
+Use this for SEO-friendly permanent or temporary redirects from legacy URLs.
+
+##  🛠 Improvements
+
+### 1. TLS Support for Redis
+
+Redis connections in GoFr can now be secured using TLS. This enhancement enables secure communication in production and enterprise deployments. Configuration is done via environment variables:
+
+| Environment Variable     | Description                                                     |
+| ------------------------ | --------------------------------------------------------------- |
+| `REDIS_TLS_ENABLED`      | Set to `"true"` to enable TLS support                           |
+| `REDIS_TLS_CA_CERT_PATH` | File path to the CA certificate to verify Redis server identity |
+| `REDIS_TLS_CERT_PATH`    | File path to the client certificate (for mTLS connections)      |
+| `REDIS_TLS_KEY_PATH`     | File path to the client private key (for mTLS connections)      |
+
+
+
+
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.38.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.38.0</link>
+      <guid isPermaLink="false">v1.38.0</guid>
+      <pubDate>Thu, 24 Apr 2025 15:41:51 GMT</pubDate>
+      <description><![CDATA[# **Release - v1.38.0**
+
+## 🚀  **Features**
+
+### **Elasticsearch Integration Support**
+
+-   GoFr now supports  **Elasticsearch**  as a pluggable data source with a standard interface for document indexing, searching, and cluster management.
+    
+-   Developers can inject any compatible Elasticsearch client that implements the following interface:
+    
+    ```go
+    type Elasticsearch interface {
+        Connect()
+        CreateIndex(ctx context.Context, index string, settings map[string]any) error 
+        DeleteIndex(ctx context.Context, index string) error 
+        IndexDocument(ctx context.Context, index, id string, document any) error 
+        GetDocument(ctx context.Context, index, id string) (map[string]any, error)
+        UpdateDocument(ctx context.Context, index, id string, update map[string]any) error 
+        DeleteDocument(ctx context.Context, index, id string) error 
+        Search(ctx context.Context, indices []string, query map[string]any) (map[string]any, error)
+        Bulk(ctx context.Context, operations []map[string]any) (map[string]any, error)
+        HealthChecker
+    }
+    ``` 
+    
+-   Official GoFr-compatible driver is available via:
+    
+    ```
+    go get gofr.dev/pkg/gofr/datasource/elasticsearch@latest
+    ```
+    
+-   Example usage in your  `main.go`:
+    
+    ```go
+    func main (){
+		    app := gofr.New()
+		    
+			es := elasticsearch.New(elasticsearch.Config{
+		        Addresses: []string{"http://localhost:9200"},
+		        Username: "elastic",
+		        Password: "changeme",
+		    })
+    
+		    app.AddElasticsearch(es)
+		    
+			app.Run ()
+    }
+    ``` 
+- Checkout our [official documentation](https://gofr.dev/docs/datasources/getting-started) for more details.    
+
+ 
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.37.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.37.1</link>
+      <guid isPermaLink="false">v1.37.1</guid>
+      <pubDate>Wed, 16 Apr 2025 04:13:04 GMT</pubDate>
+      <description><![CDATA[# **Release - v1.37.1**
+
+## 🚀 **Improvements**
+
+### **Extended Error Responses (RFC 9457-style)**
+
+-   GoFr now supports extended error responses following the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html) specification.
+    
+-   Developers can implement the new `ResponseMarshaler` interface to enrich error responses with custom fields beyond the standard error message and status code.
+	```go
+	type ResponseMarshaler interface {
+	    Response() map[string]any
+	}
+	```
+- Example:
+
+	```go
+	type ValidationError struct {
+	    Field string 
+	    Message string 
+	    Code int 
+	} 
+
+	func  (e ValidationError) Error() string { 
+		return e.Message 
+	} 
+
+	func  (e ValidationError) StatusCode() int { 
+		return e.Code 
+	} 
+
+	func  (e ValidationError) Response() map[string]any { 
+		return  map[string]any{ 
+			"field":   e.Field, 
+			"type": "validation_error", 
+			"details": "Invalid input format",
+	    }
+	}
+	``` 
+
+	> ⚠️ **Note:**  The `message` field is automatically populated from the `Error()` method. Custom fields with the name "message" in the `Response()` map should not be used as they will be ignored in favor of the `Error()` value.
+
+	This feature allows more descriptive and structured error responses, ideal for client-side validation, API debugging, and frontend integration.
+
+## 🛠 **Fixes**
+
+
+### **1. WebSocket: Fixed Concurrent Write Panic**
+
+-   WebSocket writes are now thread-safe. Previously, concurrent calls to `WriteMessageToSocket()` caused race conditions and panics. Writes are now internally synchronized.
+    
+
+### **2. NATS: Synchronous Connection Setup**
+
+-   NATS connections are now established synchronously to prevent `errJetStreamNotConfigured` errors when calling `jetStream()` immediately after `Connect()`.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.37.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.37.0</link>
+      <guid isPermaLink="false">v1.37.0</guid>
+      <pubDate>Tue, 08 Apr 2025 14:29:59 GMT</pubDate>
+      <description><![CDATA[
+##  🚀 **Features**  
+
+
+### **1. Dgraph Migration Support**
+
+-   Added native migration capabilities for Dgraph through new methods, enabling precise schema evolution:
+	```go
+	// Apply or update the complete Dgraph schema 
+	ApplySchema(ctx context.Context, schema string) error
+	// Atomically create or update a field definition
+	AddOrUpdateField(ctx context.Context, fieldName, fieldType, directives string) error  
+	// Permanently remove a field/predicate and its associated data 
+	DropField(ctx context.Context, fieldName string) error	 
+	``` 
+-   Refer to  the [official documentation](https://gofr.dev/docs/datasources/dgraph) for full usage details.
+    
+## 🛠 **Improvements**  
+
+
+### **1. gRPC Server Configuration via  `AddGRPCServerOptions`**
+-   GoFr now allows configuring advanced gRPC  `ServerOptions`.
+-   Example: Enabling TLS and setting a connection timeout
+    
+    ```go
+    creds, _ := credentials.NewServerTLSFromFile("server-cert.pem", "server-key.pem")
+    
+    app.AddGRPCServerOptions(
+        grpc.Creds(creds),
+        grpc.ConnectionTimeout(10*time.Second),
+    )
+    ``` 
+- Refer to the [official documentation](https://gofr.dev/docs/advanced-guide/grpc) to know more.
+    
+### **2. Add Custom Unary Interceptors**
+    
+   ```go
+  app.AddGRPCUnaryInterceptors(authInterceptor)
+  ```
+- GoFr already logs, traces and sends default metrics for all gRPC calls. No external interceptor for such features is necessary. Custom server-side  `UnaryServerInterceptors` can now be registered easily for use cases like:
+    
+    -   Authentication
+    -   Request validation
+   
+ - For guidance on how to define Server UnaryInterceptors that can be added in your GoFr's gRPC server, check out the [official documentation](https://gofr.dev/docs/advanced-guide/grpc).
+
+### **3. Advanced gRPC Client DialOptions Support**
+
+-   Clients can now be customized extensively via  `grpc.DialOptions`.
+     This allows to add gRPC services with :
+          -   Secure TLS communication
+          -   Load-balanced connections
+          -   Retry logic
+          -   Context-aware metadata injection (useful for tracing and auth)
+        
+
+    ```go
+    const serviceConfig = `{
+      "loadBalancingPolicy": "round_robin",
+      "methodConfig": [{
+        "name": [{"service": "HelloService"}],
+        "retryPolicy": {
+          "maxAttempts": 4,
+          "initialBackoff": "0.1s",
+          "maxBackoff": "1s",
+          "backoffMultiplier": 2.0,
+          "retryableStatusCodes": ["UNAVAILABLE", "RESOURCE_EXHAUSTED"]
+        }
+      }]
+    }` 
+    
+	// Metadata interceptor to add client ID to each request
+    func  MetadataUnaryInterceptor(ctx context.Context, method string, req, reply any,
+        cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption,
+    ) error {
+        md := metadata.Pairs("client-id", "f1b1a372-02f5-4065-9ccf-113d34a3d5ed")
+        
+        ctx = metadata.NewOutgoingContext(ctx, md) 
+	
+	    return invoker(ctx, method, req, reply, cc, opts...)
+    } 
+	
+	func  main() {
+        app := gofr.New()
+    
+        creds, err := credentials.NewClientTLSFromFile("cert.pem", "") if err != nil {
+            app.Logger().Errorf("TLS error: %v", err) return }
+    
+        grpcClient, err := client.NewHelloServiceGoFrClient(
+            app.Config.Get("GRPC_SERVER_HOST"),
+            app.Metrics(),
+            grpc.WithTransportCredentials(creds),
+            grpc.WithDefaultServiceConfig(serviceConfig),
+            grpc.WithChainUnaryInterceptor(MetadataUnaryInterceptor),
+        ) 
+	
+		if err != nil {
+            app.Logger().Errorf("Failed to create client: %v", err) return 
+        }
+    
+        handler := NewGreetHandler(grpcClient)
+        
+        app.GET("/hello", handler.Hello)
+        
+        app.Run()
+    }
+    ```
+     - Refer to the [official documentation](https://gofr.dev/docs/advanced-guide/grpc) to know more.
+         
+## 🛠 **Fixes**  
+
+### **1. SurrealDB  `Update`  Method: Unexpected Behavior Fixed** 
+- Regardless of the input, the  `Update`  method previously inserted an unexpected hardcoded key-value pair. The method now correctly updates  **only  the intended fields** as passed by the caller.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.36.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.36.0</link>
+      <guid isPermaLink="false">v1.36.0</guid>
+      <pubDate>Tue, 25 Mar 2025 15:02:17 GMT</pubDate>
+      <description><![CDATA[# **Release - v1.36.0**  
+
+##  🚀 **Features**  
+
+### **1. SurrealDB Migration Support**  
+- Added support for database migration operations in SurrealDB.  
+- Supported methods include:  
+	```go
+	// Creates a new namespace in SurrealDB.
+	CreateNamespace(ctx context.Context, namespace string) error  
+	// Creates a new database in SurrealDB.
+	CreateDatabase(ctx context.Context, database string) error 
+	// Deletes a namespace from SurrealDB.
+	DropNamespace(ctx context.Context, namespace string) error
+	// Deletes a database from SurrealDB.  
+	DropDatabase(ctx context.Context, database string) error  
+	``` 
+- Refer to our [official documentation](https://gofr.dev/docs/datasources/surrealdb) to know more.
+
+## 🛠 **Improvements**  
+
+### **1. Default Metrics for SurrealDB Data Source**  
+- Introduced default metric collection for SurrealDB at the specified `METRICS_PORT`, enabling better observability and performance monitoring.  
+
+### **2. JWT Claim Validations**  
+- `EnableOAuth` now takes an additional JWT validation options as `jwt.ParserOption`, allowing fine-grained control over claim validation. 
+- Example :
+	```go
+	app.EnableOAuth(
+		"http://jwks-endpoint",
+		20,
+		jwt.WithExpirationRequired(), // to enforce presence of exp claim in every token
+		jwt.WithAudience("https://api.example.com"),
+		jwt.WithIssuer("https://auth.example.com")
+	)
+	```
+- To know more about the different claim validation options, check out our [official documentation](https://gofr.dev/docs/advanced-guide/http-authentication#3-o-auth-2-0).
+
+## 🛠 **Fixes**  
+
+### **1. `pprof` Profiling Enhancements**  
+- Previously, the `pprof` endpoint was restricted to being enabled only when the `APP_ENV=DEBUG` environment variable was set, and it ran on the specified `HTTP_PORT`. This prevented users from loading their different environments, for e.g. stage or production configurations if we set `APP_ENV` as `DEBUG` for profiling.
+- GoFr now automatically enables `pprof` profiling on `METRICS_PORT` (default: `2121`).  
+- Profiling endpoints include :  
+  - `/debug/pprof/cmdline`  
+  - `/debug/pprof/profile`  
+  - `/debug/pprof/symbol`  
+  - `/debug/pprof/trace`  
+  - `/debug/pprof/` (index)  
+ 
+For more information on setting up and using profiling in your application, refer to our [official documentation](https://gofr.dev).
+
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.35.2</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.35.2</link>
+      <guid isPermaLink="false">v1.35.2</guid>
+      <pubDate>Tue, 18 Mar 2025 14:48:52 GMT</pubDate>
+      <description><![CDATA[# **Release - v1.35.2**
+
+# 🛠 **Improvements**
+
+### **1. Kafka TLS Enhancements**
+-   Added support for configuring Kafka with **TLS parameters**, enabling seamless integration with **Confluent Kafka SaaS** and similar ecosystems.
+ Introduced the following configuration options:
+
+    ```
+    KAFKA_TLS_CERT_FILE            : Path to the TLS certificate file.  
+    KAFKA_TLS_KEY_FILE             : Path to the TLS key file.  
+    KAFKA_TLS_CA_CERT_FILE         : Path to the TLS CA certificate file.  
+    KAFKA_TLS_INSECURE_SKIP_VERIFY : Boolean option to skip TLS certificate verification.  
+    ```
+
+    **Note:** All provided paths must be absolute. Check out our [official documentation](https://gofr.dev/docs/advanced-guide/using-publisher-subscriber#kafka) to learn more.  
+
+### **2. Static File Server Enhancements**
+    
+-  If a requested file is missing, the server attempts to serve `404.html` with a `404` status code. If `404.html` is unavailable, it returns a `404` status code.
+    
+-   If the file being accessed lacks **read permissions**, the error is logged and an appropriate  `500 Internal Server Error`  status code and response body is returned.
+
+# 🛠  **Fixes**
+
+### **1. Middleware Execution Order**
+-   Restored the original middleware execution order prior to [**Release v1.35.0**](https://github.com/gofr-dev/gofr/releases/tag/v1.35.0). Standard middlewares (`logs`, `traces`, `metrics`, `CORS`) are now executed before user-defined middlewares, ensuring consistent observability even when responses are handled early for e.g. in custom middlewares.
+- However, **WebSocket** connection upgrades necessarily take place **after all middleware processing**, maintaining compatibility with corresponding authentication flows introduced previously.
+
+
+### **2. Kafka Security Protocol Configuration Fix**
+-   Previously, SASL authentication failed in ecosystems like Confluent due to missing `security.protocol` support, causing errors like:  
+     ```
+      SASL handshake failed: EOF
+     ```
+-   Introduced `KAFKA_SECURITY_PROTOCOL` to explicitly define the security protocol for Kafka communication. Supported options include : `PLAINTEXT`, `SSL`, `SASL_PLAINTEXT`, `SASL_SSL`, ensuring seamless authentication. Check out [official documentation](https://gofr.dev/docs/advanced-guide/using-publisher-subscriber#kafka) to know more.
+   
+### 3. **Redundant WriteHeader Calls**
+-   Fixed redundant WriteHeader calls when custom middleware in the static file server set a status code, preventing log spam like:
+	   ```
+	    http: superfluous response.WriteHeader call  from gofr.dev/pkg/gofr/http/middleware.(*StatusResponseWriter).WriteHeader (logger.go:23)
+	``` 
+-   Headers are now written once—by either user-defined middleware or the framework handlers.
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.35.1</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.35.1</link>
+      <guid isPermaLink="false">v1.35.1</guid>
+      <pubDate>Tue, 11 Mar 2025 13:34:29 GMT</pubDate>
+      <description><![CDATA[
+# **Release v1.35.1**
+ 
+# 🛠  **Improvements**
+
+### **1. Kafka Connection & Security Enhancements**
+
+-   Added support for configuring Kafka with extra **connection and security parameters** to **seamlessly integrate** with Confluent Kafka SaaS and similar platforms.
+-   Introduced three new configuration options for **SASL authentication**:
+
+	#### 🔧 `KAFKA_SASL_MECHANISM`
+	-   SASL mechanism for authentication (e.g. `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`)
+	-   Default: `None`
+
+	#### 🔧 `KAFKA_SASL_USERNAME`
+
+	-   Username for SASL authentication
+	-   Default: `None`
+
+	#### 🔧 `KAFKA_SASL_PASSWORD`
+
+	-   Password for SASL authentication
+	-   Default: `None`
+
+### **2. Multiple Static Folders Support**
+-   **Multiple static folders** can now be registered and served at different custom endpoints.
+    
+-   Example usage:
+```go
+    package main 
+    
+    import  "gofr.dev/pkg/gofr"  
+
+	func  main() {
+        app := gofr.New()
+        app.AddStaticFiles("public", "./public")
+        app.AddStaticFiles("static", "./static")
+        app.Run()
+    }
+   ``` 
+    
+-   In this example:
+    
+    -   Files in the `public` folder are served at `host/public/*`
+    -   Files in the `static` folder are served at `host/static/*`
+  
+### **3. ArangoDB Resource Creation Enhanced**
+
+-   `CreateDB`, `CreateGraph`, and `CreateCollection`  methods in Arango, now check for existing resources before creating them. Check out our [official documentation](https://gofr.dev/docs/datasources/arangodb) to know more.
+
+# 🛠  **Fixes**
+
+### **1. Fixed Static File Server Endpoint Handling**
+-   Previously, files in the **`static`** directory were served by default at **`/static/`**. If the same directory was registered at another path, the files were being served at both endpoints, resulting in duplicate serving.
+-   This has now been fixed. If a user registers a custom endpoint using **`app.AddStaticFiles({custom-endpoint}, ./static)`**, GoFr will automatically serve the files only at the specified custom endpoint.
+-   Additionally, if any directories are re-registered within the GoFr application, the files will now be served at the **latest** registered endpoint, ensuring there’s no duplication.
+
+
+
+
+]]></description>
+    </item>
+    <item>
+      <title>GoFr v1.35.0</title>
+      <link>https://github.com/gofr-dev/gofr/releases/tag/v1.35.0</link>
+      <guid isPermaLink="false">v1.35.0</guid>
+      <pubDate>Tue, 04 Mar 2025 14:00:12 GMT</pubDate>
+      <description><![CDATA[# **Release  v1.35.0**
+
+# 🚀  **Features**
+
+### **1. Template Rendering Support**  
+
+- GoFr now supports rendering HTML templates directly from handlers using the new `response.Template` response type. 
+
+- By default, it looks for template files in the `templates` directory, automatically parsing the specified file and injecting the provided data, allowing developers to serve dynamic HTML content without requiring a separate template rendering mechanism.
+
+- #### **Usage Example:**
+	Here's how you can use template rendering in a GoFr handler:
+	```go
+	package main
+
+	import (
+		"fmt"
+		"net/http"
+
+		"gofr.dev/pkg/gofr"
+		"gofr.dev/pkg/gofr/response"
+	)
+
+	type Todo struct {
+		Title       string
+		Description string
+		Done        bool
+	}
+
+	func main() {
+		app := gofr.New()
+
+		app.GET("/todo", func(ctx *gofr.Context) (interface{}, error) {
+			data := Todo{
+				Title:       "Learn GoFr",
+				Description: "Understand how template rendering works in GoFr",
+				Done:        false,
+			}
+			return response.Template{Name: "todo.html", Data: data}, nil
+		})
+
+		app.Run()
+
+	}
+	```
+
+	#### **Example Template (templates/todo.html):**
+
+	```
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>Todo</title>
+	</head>
+	<body>
+	    <h1>{{ .Title }}</h1>
+	    <p>{{ .Description }}</p>
+	    <p>Status: {{ if .Done }} ✅ Completed {{ else }} ❌ Pending {{ end }}</p>
+	</body>
+	</html>
+	```
+	When a request is made to `/todo`, GoFr will render the `todo.html` template by injecting the provided `Todo` struct values.
+
+### **2. Graceful Shutdown Configuration**
+
+- A new environment variable, `SHUTDOWN_GRACE_PERIOD`, has been introduced to allow customization of the server's shutdown timeout.
+
+-   **Default:** `30s`
+-   **Purpose:** Ensures in-flight requests are served before shutdown.
+ 
+# 🛠  **Fixes & Improvements**
+
+### **1. Authentication in Websockets**  
+- Ensured proper authentication for GoFr WebSocket connections by requiring user-defined authentication or middleware to run before upgrading, as WebSockets do not inherently support authentication.
+    
+### **2.  Fixed Infinite Write Retry on Closed WebSocket** 
+- Previously, if a WebSocket connection was only writing and then closed, it would result in infinite retries without properly closing. This issue has now been resolved.
+
+
+]]></description>
+    </item>
+  </channel>
+</rss>

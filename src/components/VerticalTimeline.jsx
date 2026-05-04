@@ -55,14 +55,19 @@ const VerticalTimeline = ({ events }) => {
                 )}
             />
 
+            {/* `unoptimized` is required: this site builds with */}
+            {/* output: 'export', which disables /_next/image. Without */}
+            {/* unoptimized, Next emits a /_next/image?url=... src that */}
+            {/* 404s in production and renders as a broken-image icon. */}
             <Image
-                className="fixed bottom-full right-full top-5 -mb-56 -mr-72 opacity-50"
+                aria-hidden="true"
+                className="fixed bottom-full right-full top-5 -mb-56 -mr-72 opacity-50 pointer-events-none select-none hidden sm:block"
                 src={blurCyanImage}
                 alt=""
                 width={530}
                 height={530}
+                loading="lazy"
                 unoptimized
-                priority
             />
 
             <div className="relative z-10">
@@ -80,13 +85,14 @@ const VerticalTimeline = ({ events }) => {
             </div>
 
             <Image
-                className="fixed right-0 bottom-0 -mb-56 -mr-72 opacity-50"
+                aria-hidden="true"
+                className="fixed right-0 bottom-0 -mb-56 -mr-72 opacity-50 pointer-events-none select-none hidden sm:block"
                 src={blurCyanImage}
                 alt=""
                 width={530}
                 height={530}
+                loading="lazy"
                 unoptimized
-                priority
             />
         </div>
     );

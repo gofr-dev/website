@@ -1,0 +1,384 @@
+{
+  "repo": "gofr-dev/gofr",
+  "fetchedAt": "2026-04-30T18:28:56.237Z",
+  "labels": [
+    "roadmap",
+    "enhancement"
+  ],
+  "milestones": [],
+  "items": [
+    {
+      "number": 459,
+      "title": "Support  to filter and mask PII data from logs at the framework level",
+      "url": "https://github.com/gofr-dev/gofr/issues/459",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Observability"
+      ],
+      "milestone": null,
+      "created_at": "2024-04-13T15:46:09Z",
+      "updated_at": "2024-08-18T17:06:11Z",
+      "comments": 4
+    },
+    {
+      "number": 492,
+      "title": "Enhance terminal output for cli application",
+      "url": "https://github.com/gofr-dev/gofr/issues/492",
+      "state": "open",
+      "labels": [
+        "enhancement"
+      ],
+      "milestone": null,
+      "created_at": "2024-04-18T07:15:14Z",
+      "updated_at": "2025-05-25T17:01:55Z",
+      "comments": 3
+    },
+    {
+      "number": 863,
+      "title": "Support for write through cache.",
+      "url": "https://github.com/gofr-dev/gofr/issues/863",
+      "state": "open",
+      "labels": [
+        "enhancement"
+      ],
+      "milestone": null,
+      "created_at": "2024-07-22T08:29:16Z",
+      "updated_at": "2024-07-22T16:36:18Z",
+      "comments": 1
+    },
+    {
+      "number": 891,
+      "title": "Refactor and improve error struct",
+      "url": "https://github.com/gofr-dev/gofr/issues/891",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Datasource"
+      ],
+      "milestone": null,
+      "created_at": "2024-08-05T08:24:35Z",
+      "updated_at": "2026-04-28T22:17:17Z",
+      "comments": 3
+    },
+    {
+      "number": 984,
+      "title": "Support MSSQL",
+      "url": "https://github.com/gofr-dev/gofr/issues/984",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Datasource"
+      ],
+      "milestone": null,
+      "created_at": "2024-09-03T11:26:26Z",
+      "updated_at": "2024-12-12T09:28:02Z",
+      "comments": 1
+    },
+    {
+      "number": 1242,
+      "title": "Open AI Client wrapper for GoFr",
+      "url": "https://github.com/gofr-dev/gofr/issues/1242",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Service"
+      ],
+      "milestone": null,
+      "created_at": "2024-11-26T11:58:36Z",
+      "updated_at": "2025-01-12T18:08:01Z",
+      "comments": 18
+    },
+    {
+      "number": 1249,
+      "title": "Support Chroma as datasource",
+      "url": "https://github.com/gofr-dev/gofr/issues/1249",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Datasource"
+      ],
+      "milestone": null,
+      "created_at": "2024-11-27T12:15:46Z",
+      "updated_at": "2025-12-04T17:30:01Z",
+      "comments": 2
+    },
+    {
+      "number": 1330,
+      "title": "Soft delete",
+      "url": "https://github.com/gofr-dev/gofr/issues/1330",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Datasource"
+      ],
+      "milestone": null,
+      "created_at": "2024-12-23T03:21:38Z",
+      "updated_at": "2025-08-05T06:34:37Z",
+      "comments": 1
+    },
+    {
+      "number": 1456,
+      "title": "Request validation support",
+      "url": "https://github.com/gofr-dev/gofr/issues/1456",
+      "state": "open",
+      "labels": [
+        "enhancement"
+      ],
+      "milestone": null,
+      "created_at": "2025-01-29T08:18:42Z",
+      "updated_at": "2025-07-16T12:27:40Z",
+      "comments": 2
+    },
+    {
+      "number": 1484,
+      "title": "Add WebRTC Support",
+      "url": "https://github.com/gofr-dev/gofr/issues/1484",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Service"
+      ],
+      "milestone": null,
+      "created_at": "2025-02-13T09:56:30Z",
+      "updated_at": "2025-02-17T07:33:02Z",
+      "comments": 0
+    },
+    {
+      "number": 1495,
+      "title": "Support Pinecone as a Datasource",
+      "url": "https://github.com/gofr-dev/gofr/issues/1495",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Datasource"
+      ],
+      "milestone": null,
+      "created_at": "2025-02-13T10:25:25Z",
+      "updated_at": "2025-02-27T18:25:47Z",
+      "comments": 1
+    },
+    {
+      "number": 1497,
+      "title": "Support Faiss as a datasource",
+      "url": "https://github.com/gofr-dev/gofr/issues/1497",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Datasource"
+      ],
+      "milestone": null,
+      "created_at": "2025-02-13T10:27:40Z",
+      "updated_at": "2025-02-17T07:30:06Z",
+      "comments": 0
+    },
+    {
+      "number": 1716,
+      "title": "CI: enable disabled linters and remove exclusions from .golangci.yml",
+      "url": "https://github.com/gofr-dev/gofr/issues/1716",
+      "state": "open",
+      "labels": [
+        "enhancement"
+      ],
+      "milestone": null,
+      "created_at": "2025-05-16T18:45:57Z",
+      "updated_at": "2025-07-23T11:17:21Z",
+      "comments": 3
+    },
+    {
+      "number": 1988,
+      "title": "Okta Identity Provider",
+      "url": "https://github.com/gofr-dev/gofr/issues/1988",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "gofr-soc"
+      ],
+      "milestone": null,
+      "created_at": "2025-07-03T07:16:42Z",
+      "updated_at": "2025-07-21T05:02:56Z",
+      "comments": 4
+    },
+    {
+      "number": 1992,
+      "title": "Implement Unified Cache Layer",
+      "url": "https://github.com/gofr-dev/gofr/issues/1992",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "gofr-soc"
+      ],
+      "milestone": null,
+      "created_at": "2025-07-03T08:27:18Z",
+      "updated_at": "2026-03-02T06:41:42Z",
+      "comments": 6
+    },
+    {
+      "number": 2007,
+      "title": "OpenID Connect Support",
+      "url": "https://github.com/gofr-dev/gofr/issues/2007",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "gofr-soc"
+      ],
+      "milestone": null,
+      "created_at": "2025-07-04T02:56:40Z",
+      "updated_at": "2025-07-23T08:08:43Z",
+      "comments": 1
+    },
+    {
+      "number": 2014,
+      "title": "LDAP Integration Helper Module",
+      "url": "https://github.com/gofr-dev/gofr/issues/2014",
+      "state": "open",
+      "labels": [
+        "enhancement"
+      ],
+      "milestone": null,
+      "created_at": "2025-07-04T18:11:47Z",
+      "updated_at": "2026-04-29T09:59:18Z",
+      "comments": 3
+    },
+    {
+      "number": 2123,
+      "title": "Adding Job Queue & Worker pool in Framework",
+      "url": "https://github.com/gofr-dev/gofr/issues/2123",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "go",
+        "triage"
+      ],
+      "milestone": null,
+      "created_at": "2025-08-04T11:45:29Z",
+      "updated_at": "2026-03-21T06:57:26Z",
+      "comments": 4
+    },
+    {
+      "number": 2232,
+      "title": "Support emitting metrics from CLI applications",
+      "url": "https://github.com/gofr-dev/gofr/issues/2232",
+      "state": "open",
+      "labels": [
+        "enhancement"
+      ],
+      "milestone": null,
+      "created_at": "2025-09-03T03:40:17Z",
+      "updated_at": "2026-03-18T05:53:04Z",
+      "comments": 7
+    },
+    {
+      "number": 2237,
+      "title": "Use YAML files to configure AddRestHandlers feature",
+      "url": "https://github.com/gofr-dev/gofr/issues/2237",
+      "state": "open",
+      "labels": [
+        "enhancement"
+      ],
+      "milestone": null,
+      "created_at": "2025-09-05T10:20:36Z",
+      "updated_at": "2026-03-04T16:09:16Z",
+      "comments": 10
+    },
+    {
+      "number": 2238,
+      "title": "Refactor WebSocket",
+      "url": "https://github.com/gofr-dev/gofr/issues/2238",
+      "state": "open",
+      "labels": [
+        "enhancement"
+      ],
+      "milestone": null,
+      "created_at": "2025-09-05T10:21:07Z",
+      "updated_at": "2026-03-10T16:00:01Z",
+      "comments": 3
+    },
+    {
+      "number": 2500,
+      "title": "Panic Recovery Across GoFr Features",
+      "url": "https://github.com/gofr-dev/gofr/issues/2500",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "milestone": null,
+      "created_at": "2025-11-07T08:16:12Z",
+      "updated_at": "2026-03-17T09:45:54Z",
+      "comments": 4
+    },
+    {
+      "number": 2528,
+      "title": "Add a workflow to automatically release submodules new releases on GoFr's release",
+      "url": "https://github.com/gofr-dev/gofr/issues/2528",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "github_actions",
+        "devops"
+      ],
+      "milestone": null,
+      "created_at": "2025-11-17T05:37:29Z",
+      "updated_at": "2025-12-03T07:53:30Z",
+      "comments": 8
+    },
+    {
+      "number": 2650,
+      "title": "Support Span links for PubSub Tracing",
+      "url": "https://github.com/gofr-dev/gofr/issues/2650",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "go"
+      ],
+      "milestone": null,
+      "created_at": "2025-12-08T10:11:21Z",
+      "updated_at": "2026-02-24T11:08:01Z",
+      "comments": 10
+    },
+    {
+      "number": 2892,
+      "title": "Transaction in dGraph Migration",
+      "url": "https://github.com/gofr-dev/gofr/issues/2892",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "good first issue",
+        "Datasource"
+      ],
+      "milestone": null,
+      "created_at": "2026-01-29T10:50:22Z",
+      "updated_at": "2026-03-02T05:08:03Z",
+      "comments": 9
+    },
+    {
+      "number": 2896,
+      "title": "Allow Configurable Rate-Limit Key Derivation in RateLimiter Middleware",
+      "url": "https://github.com/gofr-dev/gofr/issues/2896",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Service"
+      ],
+      "milestone": null,
+      "created_at": "2026-01-30T12:15:30Z",
+      "updated_at": "2026-02-26T05:35:58Z",
+      "comments": 5
+    },
+    {
+      "number": 2955,
+      "title": "Missing OpenTelemetry Span Initialization in CLI SubCommands",
+      "url": "https://github.com/gofr-dev/gofr/issues/2955",
+      "state": "open",
+      "labels": [
+        "enhancement",
+        "Observability"
+      ],
+      "milestone": null,
+      "created_at": "2026-02-04T13:06:58Z",
+      "updated_at": "2026-02-06T07:05:17Z",
+      "comments": 1
+    }
+  ]
+}

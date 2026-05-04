@@ -14,7 +14,7 @@ export function QuickLink({ title, description, icon, href }) {
   return (
     <Container 
       href={href}
-      className={`group relative rounded-xl border border-slate-200 dark:border-slate-800 block ${
+      className={`group relative block rounded-xl border border-slate-200 transition-transform duration-300 hover:-translate-y-1 dark:border-slate-800 ${
         href ? 'no-underline hover:cursor-pointer' : ''
       }`}
     >

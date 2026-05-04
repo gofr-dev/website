@@ -50,7 +50,7 @@ function useAutocomplete({ close }) {
   let [autocomplete] = useState(() =>
     createAutocomplete({
       id,
-      placeholder: 'Find something...',
+      placeholder: 'Search docs...',
       defaultActiveItemId: 0,
       onStateChange({ state }) {
         setAutocompleteState(state)
@@ -67,12 +67,15 @@ function useAutocomplete({ close }) {
             {
               sourceId: 'documentation',
               getItems() {
-                return search(query, { limit: 5 })
+                let result = search(query, { limit: 8 })
+                // Handle both { items: [...] } and direct array formats
+                if (result && result.items) return result.items
+                if (Array.isArray(result)) return result
+                return []
               },
               getItemUrl({ item }) {
                 return item?.url || ''
               },
-
               onSelect: navigate,
             },
           ]
@@ -116,63 +119,44 @@ function LoadingIcon(props) {
 function HighlightQuery({ text, query }) {
   return (
     <Highlighter
-      highlightClassName="group-aria-selected:underline bg-transparent text-sky-600 dark:text-sky-400"
+      highlightClassName="bg-transparent text-sky-600 dark:text-sky-400 font-semibold"
       searchWords={[query]}
       autoEscape={true}
-      textToHighlight={text}
+      textToHighlight={text || ''}
     />
   )
 }
 
-function SearchResult({ result, autocomplete, collection, query, index }) {
+function SearchResult({ result, autocomplete, collection, query }) {
   let sectionTitle = navigation.find((section) =>
-    section.links.find((link) => link.href === result?.url.split('#')[0]),
+    section.links.find((link) => link.href === result?.url?.split('#')[0]),
   )?.title
 
   let hierarchy = [sectionTitle, result.pageTitle].filter(
-    (x) => typeof x === 'string',
+    (x) => typeof x === 'string' && x.trim() !== '',
   )
 
   const id = useId()
 
   return (
     <li
-      className="block cursor-default rounded-lg px-3 py-2 "
+      className="cursor-pointer rounded-lg px-3 py-2.5 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700/30"
       aria-labelledby={`${id}-hierarchy ${id}-title`}
       {...autocomplete.getItemProps({
         item: result,
         source: collection.source,
       })}
-      onMouseEnter={(e) => {
-        e.currentTarget.classList.add('bg-slate-100', 'dark:bg-slate-700/30')
-        const titleEl = e.currentTarget.querySelector('[data-title]')
-        if (titleEl) {
-          titleEl.classList.add('text-sky-600', 'dark:text-sky-400')
-          titleEl.classList.remove('text-slate-700', 'dark:text-slate-300')
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.classList.remove('bg-slate-100', 'dark:bg-slate-700/30')
-        const titleEl = e.currentTarget.querySelector('[data-title]')
-        if (titleEl) {
-          titleEl.classList.remove('text-sky-600', 'dark:text-sky-400')
-          titleEl.classList.add('text-slate-700', 'dark:text-slate-300')
-        }
-      }}
     >
       <div
         id={`${id}-title`}
-        data-title
-        aria-hidden="true"
-        className="text-sm text-slate-700 group-aria-selected:text-sky-600 dark:text-slate-300 dark:group-aria-selected:text-sky-400"
+        className="text-sm font-medium text-slate-700 dark:text-slate-300"
       >
         <HighlightQuery text={result.title} query={query} />
       </div>
       {hierarchy.length > 0 && (
         <div
           id={`${id}-hierarchy`}
-          aria-hidden="true"
-          className="mt-0.5 truncate whitespace-nowrap text-xs text-slate-500 dark:text-slate-400"
+          className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400"
         >
           {hierarchy
             .filter((item) => item && item.trim().toLowerCase() !== 'untitled')
@@ -183,7 +167,7 @@ function SearchResult({ result, autocomplete, collection, query, index }) {
                   className={
                     itemIndex === items.length - 1
                       ? 'sr-only'
-                      : 'mx-2 text-slate-300 dark:text-slate-700'
+                      : 'mx-1.5 text-slate-300 dark:text-slate-600'
                   }
                 >
                   /
@@ -196,29 +180,43 @@ function SearchResult({ result, autocomplete, collection, query, index }) {
   )
 }
 
+// Extract items from various result formats
+function extractItems(collection) {
+  if (!collection || !collection.items) return []
+
+  let items = collection.items
+
+  // Handle nested format: items[0].items
+  if (items.length > 0 && items[0] && items[0].items && Array.isArray(items[0].items)) {
+    items = items[0].items
+  }
+
+  return items
+}
+
 function SearchResults({ autocomplete, query, collection }) {
-  if (collection.items[0].items.length === 0) {
+  let rawItems = extractItems(collection)
+
+  if (!rawItems || rawItems.length === 0) {
     return (
-      <p className="px-4 py-8 text-center text-sm text-slate-700 dark:text-slate-400">
-        Couldn't find what you are looking for?&nbsp;
-        <Link
-          href="https://github.com/gofr-dev/gofr/issues"
-          target="_blank"
-          className="underline"
-        >
-          Create an Issue on GitHub for &ldquo;
-          <span className="break-words text-slate-900 dark:text-white">
+      <div className="px-4 py-8 text-center">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          No results found for &ldquo;
+          <span className="font-medium text-slate-700 dark:text-slate-300">
             {query}
           </span>
           &rdquo;
+        </p>
+        <Link
+          href="https://github.com/gofr-dev/gofr/issues"
+          target="_blank"
+          className="mt-2 inline-block text-sm text-sky-500 hover:text-sky-600"
+        >
+          Create an issue on GitHub
         </Link>
-      </p>
+      </div>
     )
   }
-
-  let rawItems = []
-
-  rawItems = collection.items[0].items
 
   let filtered = rawItems.filter(
     (item) =>
@@ -228,30 +226,33 @@ function SearchResults({ autocomplete, query, collection }) {
       item.title.trim().toLowerCase() !== 'untitled',
   )
 
-  // if (filtered.length === 0) {
-  //   return (
-  //     <p className="px-4 py-8 text-center text-sm text-slate-700 dark:text-slate-400">
-  //       No results found for &ldquo;
-  //       <span className="break-words text-slate-900 dark:text-white">
-  //         {query}
-  //       </span>
-  //       &rdquo;
-  //     </p>
-  //   )
-  // }
+  // Proper URL deduplication
   let seenUrls = new Set()
   let deduped = []
   for (let item of filtered) {
-    // Only the part before the '#'
-    let baseUrl = item.url.split('#')
+    let baseUrl = item.url.split('#')[0]
     if (!seenUrls.has(baseUrl)) {
       seenUrls.add(baseUrl)
       deduped.push(item)
     }
   }
 
+  if (deduped.length === 0) {
+    return (
+      <div className="px-4 py-8 text-center">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          No results found for &ldquo;
+          <span className="font-medium text-slate-700 dark:text-slate-300">
+            {query}
+          </span>
+          &rdquo;
+        </p>
+      </div>
+    )
+  }
+
   return (
-    <ul {...autocomplete.getListProps()}>
+    <ul {...autocomplete.getListProps()} className="divide-y divide-slate-100 dark:divide-slate-700/50">
       {deduped.map((result, index) => (
         <SearchResult
           key={`${result.url}-${index}`}
@@ -259,12 +260,12 @@ function SearchResults({ autocomplete, query, collection }) {
           autocomplete={autocomplete}
           collection={collection}
           query={query}
-          index={index}
         />
       ))}
     </ul>
   )
 }
+
 const SearchInput = forwardRef(function SearchInput(
   { autocomplete, autocompleteState, onClose },
   inputRef,
@@ -276,6 +277,7 @@ const SearchInput = forwardRef(function SearchInput(
       <SearchIcon className="pointer-events-none absolute left-4 top-0 h-full w-5 fill-slate-400 dark:fill-slate-500" />
       <input
         ref={inputRef}
+        aria-label="Search documentation"
         className={clsx(
           'flex-auto appearance-none bg-transparent pl-12 text-slate-900 outline-none placeholder:text-slate-400 focus:w-full focus:flex-none dark:text-white sm:text-sm [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden',
           autocompleteState.status === 'stalled' ? 'pr-11' : 'pr-4',
@@ -287,8 +289,6 @@ const SearchInput = forwardRef(function SearchInput(
             !autocompleteState.isOpen &&
             autocompleteState.query === ''
           ) {
-            // In Safari, closing the dialog with the escape key can sometimes cause the scroll position to jump to the
-            // bottom of the page. This is a workaround for that until we can figure out a proper fix in Headless UI.
             if (document.activeElement instanceof HTMLElement) {
               document.activeElement.blur()
             }
@@ -370,7 +370,7 @@ function SearchDialog({ open, setOpen, className }) {
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur" />
 
         <div className="fixed inset-0 overflow-y-auto px-4 py-4 sm:px-6 sm:py-20 md:py-32 lg:px-8 lg:py-[15vh]">
-          <Dialog.Panel className="mx-auto transform-gpu overflow-hidden rounded-xl bg-white shadow-xl dark:bg-slate-800 dark:ring-1 dark:ring-slate-700 sm:max-w-xl">
+          <Dialog.Panel className="mx-auto transform-gpu overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700 sm:max-w-xl">
             <div {...autocomplete.getRootProps({})}>
               <form
                 ref={formRef}
@@ -386,7 +386,7 @@ function SearchDialog({ open, setOpen, className }) {
                 />
                 <div
                   ref={panelRef}
-                  className="border-t border-slate-200 bg-white px-2 py-3 empty:hidden dark:border-slate-400/10 dark:bg-slate-800"
+                  className="max-h-[60vh] overflow-y-auto border-t border-slate-200 bg-white px-2 py-3 empty:hidden dark:border-slate-700 dark:bg-slate-800"
                   {...autocomplete.getPanelProps({})}
                 >
                   {autocompleteState.isOpen && (
@@ -398,6 +398,27 @@ function SearchDialog({ open, setOpen, className }) {
                   )}
                 </div>
               </form>
+            </div>
+            {/* Keyboard hints */}
+            <div className="flex items-center gap-4 border-t border-slate-200 px-4 py-2.5 dark:border-slate-700">
+              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                <kbd className="rounded border border-slate-200 px-1.5 py-0.5 font-mono text-[10px] dark:border-slate-600">
+                  &darr;&uarr;
+                </kbd>
+                <span>Navigate</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                <kbd className="rounded border border-slate-200 px-1.5 py-0.5 font-mono text-[10px] dark:border-slate-600">
+                  Enter
+                </kbd>
+                <span>Open</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                <kbd className="rounded border border-slate-200 px-1.5 py-0.5 font-mono text-[10px] dark:border-slate-600">
+                  Esc
+                </kbd>
+                <span>Close</span>
+              </div>
             </div>
           </Dialog.Panel>
         </div>
