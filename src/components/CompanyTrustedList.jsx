@@ -35,11 +35,15 @@ export default function CompanyList() {
           />{' '}
           Developers at Companies Like:
         </h2>
-        <div className="mt-10 flex flex-wrap justify-center gap-x-0 gap-y-10 sm:max-w-none lg:mx-0">
+        {/* 9 logos: pick column counts that divide evenly so we
+            don't end on a ragged orphan row. 3 cols at every
+            breakpoint (3+3+3) is more deliberate than the previous
+            4+4+1 (mobile), 6+3 (sm), 5+4 (lg) ladder. */}
+        <div className="mt-10 grid grid-cols-3 justify-items-center gap-x-6 gap-y-10">
           {imageLink.map((item, index) => (
             <div
               key={index}
-              className="flex max-h-12 w-1/4 justify-center sm:w-1/6 lg:w-1/5"
+              className="flex max-h-12 w-full justify-center"
             >
               <Image
                 alt={item.name}
