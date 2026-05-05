@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { ShowcaseGradient } from '@/components/ShowcaseGradient'
 import companies from './companies.json'
 import testimonials from '../../../utils/testimonials.json'
 
@@ -27,8 +28,9 @@ const logoMap = {
 
 export default function ShowcasePage() {
   return (
-    <div className="min-h-screen bg-slate-900">
-      <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen overflow-x-clip bg-slate-900">
+      <ShowcaseGradient />
+      <div className="relative mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
         {/* Hero — star count is already shown live in the header,
             so we don't repeat it here (the cached client-side number
             could lag the header by hours). */}
