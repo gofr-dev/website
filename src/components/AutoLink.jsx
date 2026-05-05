@@ -3,8 +3,11 @@ import Link from 'next/link'
 // Determine whether an href points to an external site.
 // - Relative paths and pure hashes are internal.
 // - mailto: / tel: are treated as internal (handler-driven, no new tab).
-// - Anything else is parsed as an absolute URL; only gofr.dev and
-//   staging.gofr.dev (and www. variants) are considered internal.
+// - Anything else is parsed as an absolute URL; gofr.dev and any
+//   subdomain of gofr.dev (staging.gofr.dev, console.gofr.dev, etc.)
+//   are considered internal. www. variants are normalized.
+const INTERNAL_HOST = 'gofr.dev'
+
 function isExternal(href) {
   if (!href) return false
   if (href.startsWith('/') || href.startsWith('#')) return false
@@ -12,7 +15,7 @@ function isExternal(href) {
   try {
     const url = new URL(href, 'https://gofr.dev')
     const host = url.host.replace(/^www\./, '')
-    return host !== 'gofr.dev' && host !== 'staging.gofr.dev'
+    return host !== INTERNAL_HOST && !host.endsWith('.' + INTERNAL_HOST)
   } catch {
     return false
   }
