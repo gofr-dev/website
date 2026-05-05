@@ -28,12 +28,15 @@ export function Prose({ as, className, ...props }) {
         'prose-code:rounded prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-[0.8125em] prose-code:font-medium prose-code:break-words prose-code:before:content-none prose-code:after:content-none dark:prose-code:bg-slate-800 dark:prose-code:text-slate-300',
         // hr
         'dark:prose-hr:border-slate-800',
-        // tables — `block` + `overflow-x-auto` keeps a wide
-        // configuration table from forcing the entire page wider
-        // than the viewport on mobile (was the worst offender at
-        // /docs/references/configs and /docs/references/testing).
-        // Loses zero visual fidelity at desktop widths.
-        'prose-table:block prose-table:overflow-x-auto prose-table:text-sm',
+        // tables
+        // Intentionally NOT applying `display: block` + horizontal
+        // scroll here. For reference pages like /docs/references/configs
+        // the page-level overflow at 375px is actually more useful than
+        // a per-table scroll: every column stays visible at once (small
+        // but scannable), versus hiding 2 of 4 columns behind a thin,
+        // discovery-hostile scrollbar. The trade-off favors information
+        // density on these reference surfaces.
+        'prose-table:text-sm',
         'prose-thead:border-b prose-thead:border-slate-200 dark:prose-thead:border-slate-700',
         'prose-th:py-2 prose-th:text-left prose-th:font-semibold prose-th:text-slate-900 dark:prose-th:text-slate-200',
         'prose-td:py-2',
