@@ -1,9 +1,5 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { formatNumber } from '@/lib/common'
 import companies from './companies.json'
 import testimonials from '../../../utils/testimonials.json'
 
@@ -30,44 +26,16 @@ const logoMap = {
 }
 
 export default function ShowcasePage() {
-  // Display the cached count if available; otherwise leave empty rather
-  // than show a stale fallback ("3500+" was years out of date).
-  const [githubStars, setGithubStars] = useState(null)
-
-  useEffect(() => {
-    let cached = localStorage.getItem('githubStars')
-    if (cached) {
-      setGithubStars(formatNumber(Number(cached)))
-      return
-    }
-    // No cached value — fetch live so first-time visitors see a number.
-    fetch('https://api.github.com/repos/gofr-dev/gofr')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d?.watchers) {
-          setGithubStars(formatNumber(d.watchers))
-          try { localStorage.setItem('githubStars', String(d.watchers)) } catch {}
-        }
-      })
-      .catch(() => {})
-  }, [])
-
   return (
     <div className="min-h-screen bg-slate-900">
       <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
-        {/* Hero */}
+        {/* Hero — star count is already shown live in the header,
+            so we don't repeat it here (the cached client-side number
+            could lag the header by hours). */}
         <div className="text-center">
           <h1 className="font-display text-4xl font-bold tracking-tight text-white">
             Used by engineers around the world
           </h1>
-          {githubStars && (
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm text-slate-300">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#fcd34d" className="h-4 w-4">
-                <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clipRule="evenodd" />
-              </svg>
-              {githubStars} stars on GitHub
-            </div>
-          )}
         </div>
 
         {/* Company Grid */}
