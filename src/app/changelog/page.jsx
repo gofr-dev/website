@@ -387,39 +387,121 @@ function formatShortDate(dateStr) {
   return `${md} '${yr}`
 }
 
-// Compute a major-line key like "v1.56.x" from a tag like "v1.56.4".
+// Compute a version-line key like "v1.56.x" from a tag like "v1.56.4".
+// Note: this groups by <major>.<minor>, not just <major> — gofr ships
+// patch releases on each minor line, so v1.56.0/v1.56.1/v1.56.2 share
+// the same rail group while v1.55.x sits in its own group above.
 // Tags that don't parse fall into "other" so the rail still has a
 // bucket to put them in.
-function majorKey(tag) {
+function versionLineKey(tag) {
   const m = tag && /^(v\d+\.\d+)/.exec(tag)
   return m ? `${m[1]}.x` : 'other'
 }
 
-// Group releases by major-line. Order is preserved from the source
-// array (newest first), so the first group is the most recent major.
-function groupByMajor(items) {
+// Group releases by version line. Order is preserved from the source
+// array (newest first), so the first group is the most recent line.
+function groupByVersionLine(items) {
   const groups = new Map()
   for (const r of items) {
-    const key = majorKey(r.tag)
+    const key = versionLineKey(r.tag)
     if (!groups.has(key)) groups.set(key, [])
     groups.get(key).push(r)
   }
   return [...groups.entries()]
 }
 
-// Right rail — releases grouped by major-version line inside native
-// <details>/<summary> blocks. The major containing the active tag (or
-// the most recent major as a fallback) is open by default; older
-// majors are collapsed and their entries dimmed. Clicking a row jumps
+// One <details> group inside the rail. State is local so that user
+// toggles stick — passing `open={...}` controlled-style on every render
+// would overwrite each user click. The useEffect re-opens the group
+// when it becomes the active version line (e.g. user clicked a search
+// result that lives in a different line); user-initiated collapses
+// in between are preserved.
+function ReleaseRailGroup({
+  versionLine,
+  entries,
+  isActiveLine,
+  activeTag,
+  onClick,
+}) {
+  const [open, setOpen] = useState(isActiveLine)
+  useEffect(() => {
+    if (isActiveLine) setOpen(true)
+  }, [isActiveLine])
+
+  return (
+    <details
+      open={open}
+      onToggle={(e) => setOpen(e.currentTarget.open)}
+      className="group -ml-px"
+    >
+      <summary className="flex cursor-pointer list-none items-center gap-2 border-l border-transparent py-1.5 pl-4 pr-2 text-xs font-medium text-slate-400 transition-colors hover:border-slate-600 hover:text-slate-200">
+        <svg
+          className="h-3 w-3 flex-none transition-transform duration-200 group-open:rotate-90"
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <path
+            d="M6 4l4 4-4 4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span className="font-mono">{versionLine}</span>
+        <span className="text-[10px] font-normal text-slate-600">
+          ({entries.length})
+        </span>
+      </summary>
+      <ol className="mt-1 space-y-1">
+        {entries.map((r) => {
+          const isActive = r.tag === activeTag
+          const isDim = !isActiveLine && !isActive
+          return (
+            <li key={r.tag}>
+              <Link
+                href={`#${r.tag}`}
+                onClick={(e) => onClick?.(e, r.tag)}
+                className={`-ml-px flex items-center justify-between gap-3 border-l py-1.5 pl-7 pr-2 text-xs transition-colors ${
+                  isActive
+                    ? 'border-sky-500 font-semibold text-sky-400'
+                    : isDim
+                    ? 'border-transparent text-slate-600 hover:border-slate-700 hover:text-slate-400'
+                    : 'border-transparent text-slate-500 hover:border-slate-600 hover:text-slate-300'
+                }`}
+              >
+                <span className="font-mono">{r.tag}</span>
+                <span
+                  className={`text-[10px] ${
+                    isDim ? 'text-slate-700' : 'text-slate-500'
+                  }`}
+                >
+                  {formatShortDate(r.date)}
+                </span>
+              </Link>
+            </li>
+          )
+        })}
+      </ol>
+    </details>
+  )
+}
+
+// Right rail — releases grouped by version line inside native
+// <details>/<summary> blocks. The line containing the active tag (or
+// the most recent line as a fallback) is open by default; other
+// lines are collapsed and their entries dimmed. Each group manages
+// its own open/closed state via ReleaseRailGroup so user toggles
+// don't get overwritten by the next render. Clicking a row jumps
 // straight to that release card; the page-side handler auto-extends
 // pagination if needed.
 function ReleaseRail({ items, activeKey, onClick }) {
-  const grouped = groupByMajor(items)
-  const activeMajor = majorKey(activeKey)
-  const fallbackMajor = grouped[0]?.[0]
-  const openMajor = grouped.some(([m]) => m === activeMajor)
-    ? activeMajor
-    : fallbackMajor
+  const grouped = groupByVersionLine(items)
+  const activeLine = versionLineKey(activeKey)
+  const fallbackLine = grouped[0]?.[0]
+  const initialOpenLine = grouped.some(([k]) => k === activeLine)
+    ? activeLine
+    : fallbackLine
 
   return (
     <nav aria-label="All releases" className="text-sm">
@@ -427,62 +509,15 @@ function ReleaseRail({ items, activeKey, onClick }) {
         Browse by version
       </p>
       <div className="mt-4 space-y-2 border-l border-slate-800">
-        {grouped.map(([major, entries]) => (
-          <details
-            key={major}
-            open={major === openMajor}
-            className="group -ml-px"
-          >
-            <summary className="flex cursor-pointer list-none items-center gap-2 border-l border-transparent py-1.5 pl-4 pr-2 text-xs font-medium text-slate-400 transition-colors hover:border-slate-600 hover:text-slate-200">
-              <svg
-                className="h-3 w-3 flex-none transition-transform duration-200 group-open:rotate-90"
-                viewBox="0 0 16 16"
-                fill="none"
-              >
-                <path
-                  d="M6 4l4 4-4 4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="font-mono">{major}</span>
-              <span className="text-[10px] font-normal text-slate-600">
-                ({entries.length})
-              </span>
-            </summary>
-            <ol className="mt-1 space-y-1">
-              {entries.map((r) => {
-                const isActive = r.tag === activeKey
-                const isDim = major !== activeMajor && !isActive
-                return (
-                  <li key={r.tag}>
-                    <Link
-                      href={`#${r.tag}`}
-                      onClick={(e) => onClick?.(e, r.tag)}
-                      className={`-ml-px flex items-center justify-between gap-3 border-l py-1.5 pl-7 pr-2 text-xs transition-colors ${
-                        isActive
-                          ? 'border-sky-500 font-semibold text-sky-400'
-                          : isDim
-                          ? 'border-transparent text-slate-600 hover:border-slate-700 hover:text-slate-400'
-                          : 'border-transparent text-slate-500 hover:border-slate-600 hover:text-slate-300'
-                      }`}
-                    >
-                      <span className="font-mono">{r.tag}</span>
-                      <span
-                        className={`text-[10px] ${
-                          isDim ? 'text-slate-700' : 'text-slate-500'
-                        }`}
-                      >
-                        {formatShortDate(r.date)}
-                      </span>
-                    </Link>
-                  </li>
-                )
-              })}
-            </ol>
-          </details>
+        {grouped.map(([versionLine, entries]) => (
+          <ReleaseRailGroup
+            key={versionLine}
+            versionLine={versionLine}
+            entries={entries}
+            isActiveLine={versionLine === initialOpenLine}
+            activeTag={activeKey}
+            onClick={onClick}
+          />
         ))}
       </div>
     </nav>

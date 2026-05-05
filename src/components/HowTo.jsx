@@ -3,16 +3,21 @@
 // it emits HowTo JSON-LD so AI search engines and Google rich results can
 // surface the steps.
 //
-// Two modes:
-//  - **Visible mode**: pass `name` (and optionally `description` and/or
-//    `children`). Renders an h2 + description + body, plus the JSON-LD.
-//    Use when you want the page to also have a styled "How to do X"
-//    block.
-//  - **Schema-only mode**: pass just `steps` (and optionally `name` /
-//    `description` for the JSON-LD itself). Renders nothing visible —
-//    only the JSON-LD <script> — so authors can drop a `{% howto
-//    steps=[...] /%}` self-closing tag at the top of an existing guide
-//    purely for AEO/SEO without changing visible layout.
+// Two modes — the discriminator is `children`:
+//
+//  - **Visible mode**: opening + closing tag with body content between them.
+//    `name` / `description` / `steps` populate the JSON-LD AND render the
+//    visible h2 + description + body chrome.
+//        {% howto name="..." description="..." steps=[...] %}
+//          some custom prose
+//        {% /howto %}
+//
+//  - **Schema-only mode**: self-closing tag (no children). Emits JSON-LD
+//    only, no visible chrome — drop one at the top of an existing guide
+//    for AEO/SEO without changing the page layout. `name` / `description`
+//    still feed the JSON-LD's name/description fields.
+//        {% howto name="..." description="..." steps=[...] /%}
+//
 export function HowTo({ name, description, steps = [], children }) {
   const jsonLd =
     steps && steps.length
@@ -30,11 +35,14 @@ export function HowTo({ name, description, steps = [], children }) {
         }
       : null
 
-  const hasVisibleContent =
-    Boolean(name) || Boolean(description) || Boolean(children)
+  // Self-closing tags from Markdoc pass an empty / falsy children. That's
+  // the schema-only signal — `name` and `description` still feed the
+  // JSON-LD but the visible chrome is suppressed.
+  const hasBody = Boolean(children) && (
+    !Array.isArray(children) || children.length > 0
+  )
 
-  if (!hasVisibleContent) {
-    // Schema-only: emit JSON-LD with no surrounding chrome.
+  if (!hasBody) {
     return jsonLd ? (
       <script
         type="application/ld+json"

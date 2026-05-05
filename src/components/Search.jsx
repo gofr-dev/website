@@ -143,11 +143,22 @@ function LoadingIcon(props) {
   )
 }
 
+// Split a query into individual searchable words. Snippets often only
+// contain one word from a multi-word query (because buildSnippet falls
+// back to per-word matching), so highlighting needs to consider each
+// word separately. For single-word queries this is a no-op.
+function queryWords(query) {
+  if (!query) return []
+  let trimmed = String(query).trim()
+  if (!trimmed) return []
+  return trimmed.split(/\s+/).filter((w) => w.length > 0)
+}
+
 function HighlightQuery({ text, query }) {
   return (
     <Highlighter
       highlightClassName="bg-transparent text-sky-600 dark:text-sky-400 font-semibold"
-      searchWords={[query]}
+      searchWords={queryWords(query)}
       autoEscape={true}
       textToHighlight={text || ''}
     />

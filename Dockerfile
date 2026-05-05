@@ -2,7 +2,24 @@
 #
 # Multi-stage build for the GoFr website (Next.js static export).
 #
-# Stage 1 (builder): install deps, run `yarn build` which emits the static
+# This image is the "shell" — website source + node_modules + Tailwind +
+# the data files committed under src/data. It does NOT contain framework
+# docs by itself; those live in the gofr-dev/gofr repo and get layered
+# in by gofr-dev/gofr/docs/Dockerfile at deploy time, which does:
+#
+#   FROM ghcr.io/gofr-dev/website:${WEBSITE_TAG}
+#   COPY docs/quick-start    /app/src/app/docs/quick-start
+#   COPY docs/guides         /app/src/app/docs/guides
+#   COPY docs/navigation.js  /app/src/lib
+#   …
+#   RUN npm run build
+#
+# So a hand-built image of THIS Dockerfile renders pages whose content
+# lives in the website repo (Hero, examples, team, etc.) and shows
+# placeholder/empty docs routes — that's expected. Use the framework's
+# docs/Dockerfile for a fully-populated build.
+#
+# Stage 1 (builder): install deps, run `next build` which emits the static
 #                    export under ./out (because `output: 'export'` is set
 #                    in next.config.mjs).
 # Stage 2 (runtime): nginx-alpine serving the exported HTML/CSS/JS from
@@ -26,20 +43,18 @@ COPY package.json yarn.lock ./
 RUN --mount=type=cache,target=/root/.cache/yarn \
     yarn install --frozen-lockfile
 
-# Copy source. The docs markdown that lives in ../gofr/docs is expected to
-# already be present under src/app/docs by the time docker build is invoked
-# (the rsync step happens before docker build in CI; locally, run the
-# rsync from the host first or pass --build-context).
+# Website source. Framework docs are not copied here — they're layered
+# on top by the framework's docs/Dockerfile at deploy time.
 COPY src src/
 COPY utils utils/
 COPY public public/
 COPY jsconfig.json next.config.mjs postcss.config.js tailwind.config.js ./
 
-# Skip prebuild data fetches that hit GitHub (rate-limited in CI without
-# tokens). The local-pkg flow assumes data files are already current under
-# src/data/. If you want to refresh team / releases / stars, run
-# `yarn refresh-data` on the host before docker build.
-RUN yarn next build
+# Run the offline prebuild generators that read local source files
+# (changelog RSS, llms-full.txt) explicitly. Skip the GitHub-API fetches
+# (releases / roadmap / team / stars) — those need a token and are run by
+# CI's `yarn refresh-data` step before docker build.
+RUN node utils/generate-changelog-rss.mjs && node utils/generate-llms-full.mjs && yarn next build
 
 # ---------- runtime ----------
 FROM nginx:1.27-alpine

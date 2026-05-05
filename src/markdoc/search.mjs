@@ -239,7 +239,11 @@ export default function withSearch(nextConfig = {}) {
                   }
                 }
                 if (idx === -1) return undefined
-                let half = Math.floor((maxLen - matchLen) / 2)
+                // half can go negative if matchLen > maxLen — clamp to 0
+                // so start/end never advance past the actual match. The
+                // window then anchors at the match start and grows up to
+                // matchLen chars, even if matchLen exceeds maxLen.
+                let half = Math.max(0, Math.floor((maxLen - matchLen) / 2))
                 let start = Math.max(0, idx - half)
                 let end = Math.min(content.length, idx + matchLen + half)
                 let head = start > 0 ? '\u2026 ' : ''
