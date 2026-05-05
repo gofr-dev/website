@@ -154,14 +154,55 @@ function HighlightQuery({ text, query }) {
   )
 }
 
-function SearchResult({ result, autocomplete, collection, query }) {
-  let sectionTitle = navigation.find((section) =>
-    section.links.find((link) => link.href === result?.url?.split('#')[0]),
-  )?.title
+// Turn a path segment slug into a Title Case label.
+// "wrap-grpc" → "Wrap Grpc", "from-fiber" → "From Fiber".
+// Strict slug-to-words; preserves embedded acronyms only when they're already uppercase.
+function prettifySegment(seg) {
+  if (!seg) return ''
+  return seg
+    .split(/[-_]/)
+    .map((w) =>
+      w.length === 0
+        ? ''
+        : w === w.toUpperCase()
+        ? w
+        : w.charAt(0).toUpperCase() + w.slice(1),
+    )
+    .join(' ')
+}
 
-  let hierarchy = [sectionTitle, result.pageTitle].filter(
-    (x) => typeof x === 'string' && x.trim() !== '',
-  )
+// Build a breadcrumb-shaped path label from a URL.
+// "/docs/datasources/mongodb" → "Datasources › Mongodb"
+// "/docs/references/gofrcli/init" → "References › Gofrcli › Init"
+// "/comparison/gofr-vs-gin" → "Comparison › Gofr Vs Gin"
+function pathBreadcrumb(rawUrl) {
+  if (!rawUrl) return ''
+  let p = rawUrl.split('#')[0].split('?')[0]
+  if (p.startsWith('/docs/')) p = p.slice(6)
+  else if (p.startsWith('/')) p = p.slice(1)
+  if (!p) return ''
+  return p.split('/').filter(Boolean).map(prettifySegment).join(' › ')
+}
+
+function SearchResult({ result, autocomplete, collection, query }) {
+  // Sectionality: a result is a section-level match when its url has a
+  // #hash. For section-level matches, result.title is the section heading
+  // and result.pageTitle is the actual page name. For page-level matches,
+  // result.title IS the page name and result.pageTitle is undefined.
+  let url = result?.url || ''
+  let isSection = url.includes('#')
+  let pageName = result.pageTitle || result.title
+  let sectionName = isSection ? result.title : null
+
+  // Path breadcrumb derived from the URL. Always present for any non-root
+  // URL — this is what disambiguates "Datasources" matches across 7
+  // different datasource pages. Falls back to the navigation-section
+  // title when the URL is too shallow to form a breadcrumb.
+  let pathLabel = pathBreadcrumb(url)
+  let navSection = navigation.find((section) =>
+    section.links.find((link) => link.href === url.split('#')[0]),
+  )?.title
+  let breadcrumb = pathLabel || navSection || ''
 
   const id = useId()
 
@@ -176,31 +217,24 @@ function SearchResult({ result, autocomplete, collection, query }) {
     >
       <div
         id={`${id}-title`}
-        className="text-sm font-medium text-slate-700 dark:text-slate-300"
+        className="flex flex-wrap items-baseline gap-x-1.5 text-sm font-medium text-slate-700 dark:text-slate-300"
       >
-        <HighlightQuery text={result.title} query={query} />
+        <span>
+          <HighlightQuery text={pageName} query={query} />
+        </span>
+        {sectionName && sectionName !== pageName && (
+          <span className="text-slate-400 dark:text-slate-500">
+            ·{' '}
+            <HighlightQuery text={sectionName} query={query} />
+          </span>
+        )}
       </div>
-      {hierarchy.length > 0 && (
+      {breadcrumb && (
         <div
           id={`${id}-hierarchy`}
           className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400"
         >
-          {hierarchy
-            .filter((item) => item && item.trim().toLowerCase() !== 'untitled')
-            .map((item, itemIndex, items) => (
-              <Fragment key={itemIndex}>
-                <HighlightQuery text={item} query={query} />
-                <span
-                  className={
-                    itemIndex === items.length - 1
-                      ? 'sr-only'
-                      : 'mx-1.5 text-slate-300 dark:text-slate-600'
-                  }
-                >
-                  /
-                </span>
-              </Fragment>
-            ))}
+          <HighlightQuery text={breadcrumb} query={query} />
         </div>
       )}
       {result.snippet && (

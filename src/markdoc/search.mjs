@@ -267,16 +267,14 @@ export default function withSearch(nextConfig = {}) {
                       // For very short queries (1-2 chars), suppress mid-word matches
                       if (queryLower.length <= 2 && score <= 5) continue
 
-                      // Only build a snippet when the match came from content
-                      // (not a title-only match). Title-only matches return
-                      // snippet === undefined.
-                      let titleOnly = (
-                        titleLower === queryLower ||
-                        titleLower.startsWith(queryLower) ||
-                        wordBoundaryMatch(titleLower, queryLower) ||
-                        titleLower.includes(queryLower)
-                      )
-                      let snippet = titleOnly ? undefined : buildSnippet(data.content || '', queryLower)
+                      // Always try to build a snippet from the content. Even
+                      // when the title matches the query, the snippet is the
+                      // primary thing that disambiguates two results that
+                      // share a title (e.g. seven datasource pages each with
+                      // a "Datasources" section). Returns undefined if the
+                      // query never appears in the body — fine, the result
+                      // card just renders without a snippet.
+                      let snippet = buildSnippet(data.content || '', queryLower)
 
                       results.push({
                         url: data.url || url,
