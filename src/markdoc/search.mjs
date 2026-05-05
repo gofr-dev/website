@@ -142,12 +142,18 @@ export default function withSearch(nextConfig = {}) {
                 }
                 sections[0][0] = resolved
 
-                // Extract ALL raw text content (this is the key improvement)
+                // Extract clean text content from the parsed AST. This walks
+                // text / code / code_block nodes recursively, so markdown
+                // syntax like [text](url), ## heading, **bold**, *italic*
+                // never appears in the indexed string — link nodes contribute
+                // only their visible text (the part before the parens), and
+                // heading/strong/emphasis nodes contribute the inner text.
+                // Previously we also appended the raw markdown source as a
+                // "fallback", but that polluted snippets with link syntax
+                // and ## markers — implementation details the reader
+                // shouldn't see.
                 let allRawText = extractAllTextFromNode(ast)
                 fullRawText = allRawText.join(' ').replace(/\s+/g, ' ').trim()
-
-                // Also include the original markdown for fallback
-                fullRawText += ' ' + md.replace(/^---[\s\S]*?---/, '').trim()
 
                 cache.set(file, [md, sections, fullRawText])
               }
