@@ -108,9 +108,39 @@ export default function withSearch(nextConfig = {}) {
                 // results don't render the quoted form: `"My Title"`.
                 let title = rawTitle?.replace(/^["'](.*)["']$/, '$1')
 
-                // Extract structured sections
-                sections = [[title || 'Untitled', null, []]]
+                // Extract structured sections. We start with an empty
+                // page-level slot whose title we'll resolve below — *not*
+                // a literal "Untitled" string, because that would leak
+                // through to the search UI as a real-looking page title
+                // for any page lacking frontmatter title.
+                sections = [['', null, []]]
                 extractSectionsAndContent(ast, sections)
+
+                // Resolve the effective page title with three fallbacks:
+                //   1. Frontmatter `title:` (preferred)
+                //   2. First body heading (sections[1] from the AST walk)
+                //   3. URL-derived slug, prettified (last resort)
+                // We never store "Untitled" — it's a UX dead end in
+                // search results.
+                let resolved = title
+                if (!resolved && sections.length > 1 && sections[1][0]) {
+                  resolved = sections[1][0]
+                }
+                if (!resolved) {
+                  let parts = url.split('/').filter(Boolean)
+                  let last = parts[parts.length - 1] || 'Home'
+                  resolved = last
+                    .split(/[-_]/)
+                    .map((w) =>
+                      w.length === 0
+                        ? ''
+                        : w === w.toUpperCase()
+                        ? w
+                        : w.charAt(0).toUpperCase() + w.slice(1),
+                    )
+                    .join(' ')
+                }
+                sections[0][0] = resolved
 
                 // Extract ALL raw text content (this is the key improvement)
                 let allRawText = extractAllTextFromNode(ast)
@@ -137,7 +167,9 @@ export default function withSearch(nextConfig = {}) {
 
               // Build comprehensive search data
               for (let { url, sections, fullRawText } of data) {
-                let pageTitle = sections[0][0] || 'Untitled'
+                // sections[0][0] is always populated by the loader (frontmatter
+                // > first body heading > URL slug). Defensive fallback only.
+                let pageTitle = sections[0][0] || url
                 
                 // Index full page
                 let pageData = {
