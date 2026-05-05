@@ -278,7 +278,7 @@ export const navigation = [
             {
                 title: 'GoFr CLI',
                 href: '/docs/references/gofrcli',
-                desc: "GoFr CLI is the command line tool for initializing projects and performing tasks in accordance with GoFr framework."
+                desc: "Command-line tool for initializing GoFr projects, generating boilerplate, and running framework-aware tasks. The overview links to per-command pages for init, migrate, wrap grpc, and store."
             }
         ],
     },

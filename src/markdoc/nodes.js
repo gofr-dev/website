@@ -2,6 +2,7 @@ import { nodes as defaultNodes, Tag } from '@markdoc/markdoc'
 import { slugifyWithCounter } from '@sindresorhus/slugify'
 import yaml from 'js-yaml'
 
+import { AutoLink } from '@/components/AutoLink'
 import { DocsLayout } from '@/components/DocsLayout'
 import { Fence } from '@/components/Fence'
 
@@ -57,6 +58,13 @@ const nodes = {
         type: String,
       },
     },
+  },
+  // Override default link rendering so external URLs open in a new tab
+  // with rel="noopener noreferrer". Internal links continue to use
+  // Next.js <Link> for client-side navigation and prefetching.
+  link: {
+    ...defaultNodes.link,
+    render: AutoLink,
   },
 }
 

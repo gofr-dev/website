@@ -2,6 +2,17 @@
 // Visually it is a styled ordered list reusing prose vocabulary; semantically
 // it emits HowTo JSON-LD so AI search engines and Google rich results can
 // surface the steps.
+//
+// Two modes:
+//  - **Visible mode**: pass `name` (and optionally `description` and/or
+//    `children`). Renders an h2 + description + body, plus the JSON-LD.
+//    Use when you want the page to also have a styled "How to do X"
+//    block.
+//  - **Schema-only mode**: pass just `steps` (and optionally `name` /
+//    `description` for the JSON-LD itself). Renders nothing visible —
+//    only the JSON-LD <script> — so authors can drop a `{% howto
+//    steps=[...] /%}` self-closing tag at the top of an existing guide
+//    purely for AEO/SEO without changing visible layout.
 export function HowTo({ name, description, steps = [], children }) {
   const jsonLd =
     steps && steps.length
@@ -18,6 +29,19 @@ export function HowTo({ name, description, steps = [], children }) {
           })),
         }
       : null
+
+  const hasVisibleContent =
+    Boolean(name) || Boolean(description) || Boolean(children)
+
+  if (!hasVisibleContent) {
+    // Schema-only: emit JSON-LD with no surrounding chrome.
+    return jsonLd ? (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+    ) : null
+  }
 
   return (
     <section className="my-8">

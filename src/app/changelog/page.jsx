@@ -232,9 +232,13 @@ function parseRelease(body) {
       if (currentSection) {
         sections.push({ type: currentSection, content: currentContent.join('\n') })
       }
-      let header = line.replace(/^##\s+/, '').replace(/[🚀🔧🛠️]/g, '').trim()
+      let header = line
+        .replace(/^##\s+/, '')
+        .replace(/[\p{Extended_Pictographic}\uFE0F]/gu, '')
+        .trim()
       if (/feature/i.test(header)) currentSection = 'features'
       else if (/enhancement/i.test(header)) currentSection = 'enhancements'
+      else if (/improvement/i.test(header)) currentSection = 'enhancements'
       else if (/fix/i.test(header)) currentSection = 'fixes'
       else currentSection = header.toLowerCase()
       currentContent = []
@@ -383,39 +387,104 @@ function formatShortDate(dateStr) {
   return `${md} '${yr}`
 }
 
-// Right rail — flat list of every release. Each row is one exact
-// version with its release date as secondary metadata. Clicking jumps
+// Compute a major-line key like "v1.56.x" from a tag like "v1.56.4".
+// Tags that don't parse fall into "other" so the rail still has a
+// bucket to put them in.
+function majorKey(tag) {
+  const m = tag && /^(v\d+\.\d+)/.exec(tag)
+  return m ? `${m[1]}.x` : 'other'
+}
+
+// Group releases by major-line. Order is preserved from the source
+// array (newest first), so the first group is the most recent major.
+function groupByMajor(items) {
+  const groups = new Map()
+  for (const r of items) {
+    const key = majorKey(r.tag)
+    if (!groups.has(key)) groups.set(key, [])
+    groups.get(key).push(r)
+  }
+  return [...groups.entries()]
+}
+
+// Right rail — releases grouped by major-version line inside native
+// <details>/<summary> blocks. The major containing the active tag (or
+// the most recent major as a fallback) is open by default; older
+// majors are collapsed and their entries dimmed. Clicking a row jumps
 // straight to that release card; the page-side handler auto-extends
 // pagination if needed.
 function ReleaseRail({ items, activeKey, onClick }) {
+  const grouped = groupByMajor(items)
+  const activeMajor = majorKey(activeKey)
+  const fallbackMajor = grouped[0]?.[0]
+  const openMajor = grouped.some(([m]) => m === activeMajor)
+    ? activeMajor
+    : fallbackMajor
+
   return (
     <nav aria-label="All releases" className="text-sm">
       <p className="font-display text-xs font-medium uppercase tracking-wider text-slate-500">
         Browse by version
       </p>
-      <ol className="mt-4 space-y-1 border-l border-slate-800">
-        {items.map((r) => {
-          const isActive = r.tag === activeKey
-          return (
-            <li key={r.tag}>
-              <Link
-                href={`#${r.tag}`}
-                onClick={(e) => onClick?.(e, r.tag)}
-                className={`-ml-px flex items-center justify-between gap-3 border-l py-1.5 pl-4 pr-2 text-xs transition-colors ${
-                  isActive
-                    ? 'border-sky-500 font-semibold text-sky-400'
-                    : 'border-transparent text-slate-500 hover:border-slate-600 hover:text-slate-300'
-                }`}
+      <div className="mt-4 space-y-2 border-l border-slate-800">
+        {grouped.map(([major, entries]) => (
+          <details
+            key={major}
+            open={major === openMajor}
+            className="group -ml-px"
+          >
+            <summary className="flex cursor-pointer list-none items-center gap-2 border-l border-transparent py-1.5 pl-4 pr-2 text-xs font-medium text-slate-400 transition-colors hover:border-slate-600 hover:text-slate-200">
+              <svg
+                className="h-3 w-3 flex-none transition-transform duration-200 group-open:rotate-90"
+                viewBox="0 0 16 16"
+                fill="none"
               >
-                <span className="font-mono">{r.tag}</span>
-                <span className="text-[10px] text-slate-500">
-                  {formatShortDate(r.date)}
-                </span>
-              </Link>
-            </li>
-          )
-        })}
-      </ol>
+                <path
+                  d="M6 4l4 4-4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="font-mono">{major}</span>
+              <span className="text-[10px] font-normal text-slate-600">
+                ({entries.length})
+              </span>
+            </summary>
+            <ol className="mt-1 space-y-1">
+              {entries.map((r) => {
+                const isActive = r.tag === activeKey
+                const isDim = major !== activeMajor && !isActive
+                return (
+                  <li key={r.tag}>
+                    <Link
+                      href={`#${r.tag}`}
+                      onClick={(e) => onClick?.(e, r.tag)}
+                      className={`-ml-px flex items-center justify-between gap-3 border-l py-1.5 pl-7 pr-2 text-xs transition-colors ${
+                        isActive
+                          ? 'border-sky-500 font-semibold text-sky-400'
+                          : isDim
+                          ? 'border-transparent text-slate-600 hover:border-slate-700 hover:text-slate-400'
+                          : 'border-transparent text-slate-500 hover:border-slate-600 hover:text-slate-300'
+                      }`}
+                    >
+                      <span className="font-mono">{r.tag}</span>
+                      <span
+                        className={`text-[10px] ${
+                          isDim ? 'text-slate-700' : 'text-slate-500'
+                        }`}
+                      >
+                        {formatShortDate(r.date)}
+                      </span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ol>
+          </details>
+        ))}
+      </div>
     </nav>
   )
 }

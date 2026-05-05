@@ -188,8 +188,8 @@ export default function TeamPage() {
               {' '}— commits, merged PRs, reviews, and comments combined.
             </p>
 
-            <div className="mx-auto mt-8 grid max-w-4xl gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-              {contributors.slice(0, 5).map((c) => {
+            <div className="mx-auto mt-8 grid max-w-3xl gap-3 grid-cols-1 sm:grid-cols-3">
+              {contributors.slice(0, 3).map((c) => {
                 // Build a tiny secondary line that surfaces whichever
                 // signal is non-zero beyond commits — keeps the card
                 // honest without crowding the layout.

@@ -176,6 +176,11 @@ function SearchResult({ result, autocomplete, collection, query }) {
             ))}
         </div>
       )}
+      {result.snippet && (
+        <p className="mt-1 line-clamp-2 text-xs text-slate-400 dark:text-slate-500">
+          <HighlightQuery text={result.snippet} query={query} />
+        </p>
+      )}
     </li>
   )
 }

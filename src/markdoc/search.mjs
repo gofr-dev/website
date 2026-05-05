@@ -177,6 +177,41 @@ export default function withSearch(nextConfig = {}) {
                 }
               }
 
+              // Build a snippet of up to maxLen chars centered on the first
+              // match of query (or the first matching word) within content.
+              // Trims word boundaries on both sides; prefixes/suffixes with
+              // an ellipsis if truncated.
+              function buildSnippet(content, query, maxLen) {
+                if (maxLen === undefined) maxLen = 140
+                if (!content || !query) return undefined
+                let lower = content.toLowerCase()
+                let q = query.toLowerCase()
+                let idx = lower.indexOf(q)
+                let matchLen = q.length
+                if (idx === -1) {
+                  // Try matching any single word from a multi-word query
+                  let words = q.split(/\\s+/).filter(function (w) { return w.length > 1 })
+                  for (let i = 0; i < words.length; i++) {
+                    let wIdx = lower.indexOf(words[i])
+                    if (wIdx !== -1) {
+                      idx = wIdx
+                      matchLen = words[i].length
+                      break
+                    }
+                  }
+                }
+                if (idx === -1) return undefined
+                let half = Math.floor((maxLen - matchLen) / 2)
+                let start = Math.max(0, idx - half)
+                let end = Math.min(content.length, idx + matchLen + half)
+                let head = start > 0 ? '\u2026 ' : ''
+                let tail = end < content.length ? ' \u2026' : ''
+                let s = content.slice(start, end)
+                if (start > 0) s = s.replace(/^\\S*\\s/, '')
+                if (end < content.length) s = s.replace(/\\s\\S*$/, '')
+                return head + s + tail
+              }
+
               export function search(query, options = {}) {
                 try {
                   let limit = (options && options.limit) || 10
@@ -232,11 +267,23 @@ export default function withSearch(nextConfig = {}) {
                       // For very short queries (1-2 chars), suppress mid-word matches
                       if (queryLower.length <= 2 && score <= 5) continue
 
+                      // Only build a snippet when the match came from content
+                      // (not a title-only match). Title-only matches return
+                      // snippet === undefined.
+                      let titleOnly = (
+                        titleLower === queryLower ||
+                        titleLower.startsWith(queryLower) ||
+                        wordBoundaryMatch(titleLower, queryLower) ||
+                        titleLower.includes(queryLower)
+                      )
+                      let snippet = titleOnly ? undefined : buildSnippet(data.content || '', queryLower)
+
                       results.push({
                         url: data.url || url,
                         title: data.title || '',
                         pageTitle: data.pageTitle || '',
                         content: data.content || '',
+                        snippet: snippet,
                         score: score
                       })
                     }

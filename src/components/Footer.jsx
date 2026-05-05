@@ -16,7 +16,7 @@ const columns = [
     title: 'Framework',
     links: [
       { title: 'Quick Start', href: '/docs/quick-start/introduction' },
-      { title: 'Production Guides', href: '/docs/guides/deploying-to-kubernetes' },
+      { title: 'Production Guides', href: '/docs/guides/dockerizing-gofr-services' },
       { title: 'Examples', href: '/examples' },
       { title: 'Changelog', href: '/changelog' },
       { title: 'Roadmap', href: '/roadmap' },
