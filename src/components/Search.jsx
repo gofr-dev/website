@@ -69,9 +69,36 @@ function useAutocomplete({ close }) {
               getItems() {
                 let result = search(query, { limit: 8 })
                 // Handle both { items: [...] } and direct array formats
-                if (result && result.items) return result.items
-                if (Array.isArray(result)) return result
-                return []
+                let items =
+                  result && result.items
+                    ? result.items
+                    : Array.isArray(result)
+                    ? result
+                    : []
+
+                // Filter and dedupe HERE so autocomplete's collection
+                // matches what we render. If we filter at render time the
+                // active-item index that ↑/↓/Enter operate on points at
+                // items the user can't see.
+                let filtered = items.filter(
+                  (item) =>
+                    item &&
+                    item.title &&
+                    item.title.trim() !== '' &&
+                    item.title.trim().toLowerCase() !== 'untitled',
+                )
+
+                let seenUrls = new Set()
+                let deduped = []
+                for (let item of filtered) {
+                  let baseUrl = (item.url || '').split('#')[0]
+                  if (!seenUrls.has(baseUrl)) {
+                    seenUrls.add(baseUrl)
+                    deduped.push(item)
+                  }
+                }
+
+                return deduped
               },
               getItemUrl({ item }) {
                 return item?.url || ''
@@ -140,7 +167,7 @@ function SearchResult({ result, autocomplete, collection, query }) {
 
   return (
     <li
-      className="cursor-pointer rounded-lg px-3 py-2.5 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700/30"
+      className="cursor-pointer rounded-lg px-3 py-2.5 transition-colors hover:bg-slate-100 aria-selected:bg-slate-100 dark:hover:bg-slate-700/30 dark:aria-selected:bg-slate-700/30"
       aria-labelledby={`${id}-hierarchy ${id}-title`}
       {...autocomplete.getItemProps({
         item: result,
@@ -200,9 +227,12 @@ function extractItems(collection) {
 }
 
 function SearchResults({ autocomplete, query, collection }) {
-  let rawItems = extractItems(collection)
+  // Items are already filtered + deduped at the source level (see
+  // useAutocomplete.getSources.getItems) so the active-item index that
+  // arrow keys / Enter operate on stays in sync with what's rendered.
+  let items = extractItems(collection)
 
-  if (!rawItems || rawItems.length === 0) {
+  if (!items || items.length === 0) {
     return (
       <div className="px-4 py-8 text-center">
         <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -223,42 +253,9 @@ function SearchResults({ autocomplete, query, collection }) {
     )
   }
 
-  let filtered = rawItems.filter(
-    (item) =>
-      item &&
-      item.title &&
-      item.title.trim() !== '' &&
-      item.title.trim().toLowerCase() !== 'untitled',
-  )
-
-  // Proper URL deduplication
-  let seenUrls = new Set()
-  let deduped = []
-  for (let item of filtered) {
-    let baseUrl = item.url.split('#')[0]
-    if (!seenUrls.has(baseUrl)) {
-      seenUrls.add(baseUrl)
-      deduped.push(item)
-    }
-  }
-
-  if (deduped.length === 0) {
-    return (
-      <div className="px-4 py-8 text-center">
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          No results found for &ldquo;
-          <span className="font-medium text-slate-700 dark:text-slate-300">
-            {query}
-          </span>
-          &rdquo;
-        </p>
-      </div>
-    )
-  }
-
   return (
     <ul {...autocomplete.getListProps()} className="divide-y divide-slate-100 dark:divide-slate-700/50">
-      {deduped.map((result, index) => (
+      {items.map((result, index) => (
         <SearchResult
           key={`${result.url}-${index}`}
           result={result}
