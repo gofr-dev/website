@@ -2,6 +2,22 @@
 // Visually it is a styled ordered list reusing prose vocabulary; semantically
 // it emits HowTo JSON-LD so AI search engines and Google rich results can
 // surface the steps.
+//
+// Two modes — the discriminator is `children`:
+//
+//  - **Visible mode**: opening + closing tag with body content between them.
+//    `name` / `description` / `steps` populate the JSON-LD AND render the
+//    visible h2 + description + body chrome.
+//        {% howto name="..." description="..." steps=[...] %}
+//          some custom prose
+//        {% /howto %}
+//
+//  - **Schema-only mode**: self-closing tag (no children). Emits JSON-LD
+//    only, no visible chrome — drop one at the top of an existing guide
+//    for AEO/SEO without changing the page layout. `name` / `description`
+//    still feed the JSON-LD's name/description fields.
+//        {% howto name="..." description="..." steps=[...] /%}
+//
 export function HowTo({ name, description, steps = [], children }) {
   const jsonLd =
     steps && steps.length
@@ -18,6 +34,22 @@ export function HowTo({ name, description, steps = [], children }) {
           })),
         }
       : null
+
+  // Self-closing tags from Markdoc pass an empty / falsy children. That's
+  // the schema-only signal — `name` and `description` still feed the
+  // JSON-LD but the visible chrome is suppressed.
+  const hasBody = Boolean(children) && (
+    !Array.isArray(children) || children.length > 0
+  )
+
+  if (!hasBody) {
+    return jsonLd ? (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+    ) : null
+  }
 
   return (
     <section className="my-8">

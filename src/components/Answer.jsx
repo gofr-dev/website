@@ -11,7 +11,7 @@ export function Answer({ children }) {
   return (
     <div
       role="note"
-      aria-label="Direct answer"
+      aria-label="Summary"
       className={clsx(
         'my-6 flex rounded-3xl p-6',
         'bg-sky-50 dark:bg-slate-800/60 dark:ring-1 dark:ring-slate-300/10',
@@ -20,13 +20,13 @@ export function Answer({ children }) {
       <Icon icon="lightbulb" className="h-8 w-8 flex-none" />
       <div className="ml-4 flex-auto">
         <p className="m-0 font-display text-xl text-sky-900 dark:text-sky-400">
-          Answer
+          Summary
         </p>
         <div
           className={clsx(
             'prose mt-2.5',
-            'text-sky-800 [--tw-prose-background:theme(colors.sky.50)] prose-a:text-sky-900 prose-code:text-sky-900',
-            'dark:text-slate-300 dark:prose-code:text-slate-300',
+            'text-sky-800 [--tw-prose-background:theme(colors.sky.50)] prose-a:text-sky-900 prose-code:text-sky-900 prose-strong:text-sky-900',
+            'dark:text-slate-300 dark:prose-code:text-slate-300 dark:prose-strong:text-white',
           )}
         >
           {children}

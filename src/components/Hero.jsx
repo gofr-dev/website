@@ -101,8 +101,8 @@ const DEFAULT_T = {
   h2: 'For accelerated microservice development',
   getStarted: 'Get Started',
   viewOnGithub: 'View on GitHub',
-  evaluateLead: 'Want to evaluate and adopt GoFr at your org?',
-  evaluateCta: 'block our calendar.',
+  agentLead: 'Building with an AI coding agent?',
+  agentCta: 'Hand it our LLM guide →',
 }
 
 export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
@@ -162,21 +162,19 @@ export function Hero({ t = DEFAULT_T, getStartedHref = '/docs' }) {
                     <span>{t.viewOnGithub}</span>
                   </Link>
                 </div>
-                {/* Tertiary CTA — matches prod: evaluation prospects */}
-                {/* hit the calendar booking link rather than the AI- */}
-                {/* assistant /llms.txt link. AI assistants find */}
-                {/* gofr.dev/llms.txt via the rel="alternate" link in */}
-                {/* the root layout's <head>; they don't need a */}
-                {/* hero CTA. Live calendar/eval traffic does. */}
+                {/* Tertiary CTA — for users handing off to an AI */}
+                {/* coding agent (Claude/Cursor/Copilot/etc.). The */}
+                {/* /llms-full.txt file is what you drop into the */}
+                {/* agent's context so it can scaffold/build a GoFr */}
+                {/* service correctly. Same-origin plain text — */}
+                {/* opens in current tab. */}
                 <div className="mt-4 flex flex-wrap justify-center gap-x-1.5 text-xs text-slate-400 xl:justify-start">
-                  <span>Want to evaluate and adopt GoFr at your org?</span>
+                  <span>{t.agentLead}</span>
                   <a
-                    href="https://calendly.com/aryan-mehrotra-gofr/30min"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/llms-full.txt"
                     className="text-sky-400 transition-colors hover:text-sky-300"
                   >
-                    block our calendar.
+                    {t.agentCta}
                   </a>
                 </div>
               </div>

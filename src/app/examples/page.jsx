@@ -5,31 +5,21 @@ import Link from 'next/link'
 import examples from './examples.json'
 
 const tagColors = {
-  'REST': 'bg-emerald-500/10 text-emerald-400',
-  'gRPC': 'bg-violet-500/10 text-violet-400',
-  'Pub/Sub': 'bg-sky-500/10 text-sky-400',
-  'Messaging': 'bg-sky-500/10 text-sky-400',
-  'Database': 'bg-amber-500/10 text-amber-400',
-  'Redis': 'bg-red-500/10 text-red-400',
-  'Communication': 'bg-blue-500/10 text-blue-400',
-  'Migrations': 'bg-amber-500/10 text-amber-400',
-  'GraphQL': 'bg-pink-500/10 text-pink-400',
-  'WebSocket': 'bg-indigo-500/10 text-indigo-400',
-  'Background': 'bg-slate-500/10 text-slate-400',
-  'Scheduling': 'bg-slate-500/10 text-slate-400',
-  'Observability': 'bg-cyan-500/10 text-cyan-400',
-  'Metrics': 'bg-cyan-500/10 text-cyan-400',
-  'Resilience': 'bg-orange-500/10 text-orange-400',
-  'Security': 'bg-red-500/10 text-red-400',
-  'Middleware': 'bg-purple-500/10 text-purple-400',
-  'Files': 'bg-teal-500/10 text-teal-400',
-  'Storage': 'bg-teal-500/10 text-teal-400',
-  'Data Binding': 'bg-lime-500/10 text-lime-400',
-  'Templates': 'bg-rose-500/10 text-rose-400',
-  'Frontend': 'bg-rose-500/10 text-rose-400',
-  'CLI': 'bg-slate-500/10 text-slate-300',
-  'Tools': 'bg-slate-500/10 text-slate-400',
-  'Getting Started': 'bg-emerald-500/10 text-emerald-400',
+  // Sky — external interfaces / capabilities you usually choose first
+  REST: 'bg-sky-500/10 text-sky-300',
+  gRPC: 'bg-sky-500/10 text-sky-300',
+  GraphQL: 'bg-sky-500/10 text-sky-300',
+  WebSocket: 'bg-sky-500/10 text-sky-300',
+  'Pub/Sub': 'bg-sky-500/10 text-sky-300',
+  Messaging: 'bg-sky-500/10 text-sky-300',
+  Communication: 'bg-sky-500/10 text-sky-300',
+
+  // Emerald — cross-cutting reliability / quality concerns
+  Observability: 'bg-emerald-500/10 text-emerald-300',
+  Metrics: 'bg-emerald-500/10 text-emerald-300',
+  Resilience: 'bg-emerald-500/10 text-emerald-300',
+  Security: 'bg-emerald-500/10 text-emerald-300',
+  'Getting Started': 'bg-emerald-500/10 text-emerald-300',
 }
 
 const allTags = [...new Set(examples.flatMap((e) => e.tags))]

@@ -273,7 +273,7 @@ export default function RoadmapPage() {
         {/* CTA */}
         <div className="mt-12 text-center">
           <Link
-            href={`https://github.com/${repo}/issues/new/choose`}
+            href={`https://github.com/${repo}/issues/new?template=feature_request.md`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-full bg-sky-300 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-sky-200"

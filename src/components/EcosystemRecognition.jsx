@@ -20,9 +20,9 @@ const items = [
     href: 'https://www.thoughtworks.com/en-in/radar/languages-and-frameworks/gofr',
     label: 'TW',
     accent: {
-      border: 'group-hover:border-rose-400/60',
-      tint: 'bg-rose-500/10 text-rose-300 border-rose-500/40',
-      meta: 'text-rose-300/80',
+      border: 'group-hover:border-sky-400/60',
+      tint: 'bg-sky-500/10 text-sky-300 border-sky-500/40',
+      meta: 'text-slate-400',
     },
   },
   {
@@ -35,7 +35,7 @@ const items = [
     accent: {
       border: 'group-hover:border-sky-400/60',
       tint: 'bg-sky-500/10 text-sky-300 border-sky-500/40',
-      meta: 'text-sky-300/80',
+      meta: 'text-slate-400',
     },
   },
   {
@@ -46,9 +46,9 @@ const items = [
     href: 'https://www.jetbrains.com/community/opensource/',
     label: 'JB',
     accent: {
-      border: 'group-hover:border-amber-400/60',
-      tint: 'bg-amber-500/10 text-amber-300 border-amber-500/40',
-      meta: 'text-amber-300/80',
+      border: 'group-hover:border-sky-400/60',
+      tint: 'bg-sky-500/10 text-sky-300 border-sky-500/40',
+      meta: 'text-slate-400',
     },
   },
 ]

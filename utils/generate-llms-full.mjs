@@ -28,6 +28,7 @@ const SECTIONS = [
   { dir: 'src/app/docs/quick-start',    label: 'Quick Start' },
   { dir: 'src/app/docs/advanced-guide', label: 'Advanced Guide' },
   { dir: 'src/app/docs/datasources',    label: 'Datasources' },
+  { dir: 'src/app/docs/guides',         label: 'Production guides' },
   { dir: 'src/app/docs/references',     label: 'References' },
   { dir: 'src/app/why-gofr',            label: 'Why GoFr' },
   { dir: 'src/app/comparison',          label: 'Comparison' },

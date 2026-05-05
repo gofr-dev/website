@@ -69,9 +69,36 @@ function useAutocomplete({ close }) {
               getItems() {
                 let result = search(query, { limit: 8 })
                 // Handle both { items: [...] } and direct array formats
-                if (result && result.items) return result.items
-                if (Array.isArray(result)) return result
-                return []
+                let items =
+                  result && result.items
+                    ? result.items
+                    : Array.isArray(result)
+                    ? result
+                    : []
+
+                // Filter and dedupe HERE so autocomplete's collection
+                // matches what we render. If we filter at render time the
+                // active-item index that ↑/↓/Enter operate on points at
+                // items the user can't see.
+                let filtered = items.filter(
+                  (item) =>
+                    item &&
+                    item.title &&
+                    item.title.trim() !== '' &&
+                    item.title.trim().toLowerCase() !== 'untitled',
+                )
+
+                let seenUrls = new Set()
+                let deduped = []
+                for (let item of filtered) {
+                  let baseUrl = (item.url || '').split('#')[0]
+                  if (!seenUrls.has(baseUrl)) {
+                    seenUrls.add(baseUrl)
+                    deduped.push(item)
+                  }
+                }
+
+                return deduped
               },
               getItemUrl({ item }) {
                 return item?.url || ''
@@ -116,31 +143,83 @@ function LoadingIcon(props) {
   )
 }
 
+// Split a query into individual searchable words. Snippets often only
+// contain one word from a multi-word query (because buildSnippet falls
+// back to per-word matching), so highlighting needs to consider each
+// word separately. For single-word queries this is a no-op.
+function queryWords(query) {
+  if (!query) return []
+  let trimmed = String(query).trim()
+  if (!trimmed) return []
+  return trimmed.split(/\s+/).filter((w) => w.length > 0)
+}
+
 function HighlightQuery({ text, query }) {
   return (
     <Highlighter
       highlightClassName="bg-transparent text-sky-600 dark:text-sky-400 font-semibold"
-      searchWords={[query]}
+      searchWords={queryWords(query)}
       autoEscape={true}
       textToHighlight={text || ''}
     />
   )
 }
 
-function SearchResult({ result, autocomplete, collection, query }) {
-  let sectionTitle = navigation.find((section) =>
-    section.links.find((link) => link.href === result?.url?.split('#')[0]),
-  )?.title
+// Turn a path segment slug into a Title Case label.
+// "wrap-grpc" → "Wrap Grpc", "from-fiber" → "From Fiber".
+// Strict slug-to-words; preserves embedded acronyms only when they're already uppercase.
+function prettifySegment(seg) {
+  if (!seg) return ''
+  return seg
+    .split(/[-_]/)
+    .map((w) =>
+      w.length === 0
+        ? ''
+        : w === w.toUpperCase()
+        ? w
+        : w.charAt(0).toUpperCase() + w.slice(1),
+    )
+    .join(' ')
+}
 
-  let hierarchy = [sectionTitle, result.pageTitle].filter(
-    (x) => typeof x === 'string' && x.trim() !== '',
-  )
+// Build a breadcrumb-shaped path label from a URL.
+// "/docs/datasources/mongodb" → "Datasources › Mongodb"
+// "/docs/references/gofrcli/init" → "References › Gofrcli › Init"
+// "/comparison/gofr-vs-gin" → "Comparison › Gofr Vs Gin"
+function pathBreadcrumb(rawUrl) {
+  if (!rawUrl) return ''
+  let p = rawUrl.split('#')[0].split('?')[0]
+  if (p.startsWith('/docs/')) p = p.slice(6)
+  else if (p.startsWith('/')) p = p.slice(1)
+  if (!p) return ''
+  return p.split('/').filter(Boolean).map(prettifySegment).join(' › ')
+}
+
+function SearchResult({ result, autocomplete, collection, query }) {
+  // Sectionality: a result is a section-level match when its url has a
+  // #hash. For section-level matches, result.title is the section heading
+  // and result.pageTitle is the actual page name. For page-level matches,
+  // result.title IS the page name and result.pageTitle is undefined.
+  let url = result?.url || ''
+  let isSection = url.includes('#')
+  let pageName = result.pageTitle || result.title
+  let sectionName = isSection ? result.title : null
+
+  // Path breadcrumb derived from the URL. Always present for any non-root
+  // URL — this is what disambiguates "Datasources" matches across 7
+  // different datasource pages. Falls back to the navigation-section
+  // title when the URL is too shallow to form a breadcrumb.
+  let pathLabel = pathBreadcrumb(url)
+  let navSection = navigation.find((section) =>
+    section.links.find((link) => link.href === url.split('#')[0]),
+  )?.title
+  let breadcrumb = pathLabel || navSection || ''
 
   const id = useId()
 
   return (
     <li
-      className="cursor-pointer rounded-lg px-3 py-2.5 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700/30"
+      className="cursor-pointer rounded-lg px-3 py-2.5 transition-colors hover:bg-slate-100 aria-selected:bg-slate-100 dark:hover:bg-slate-700/30 dark:aria-selected:bg-slate-700/30"
       aria-labelledby={`${id}-hierarchy ${id}-title`}
       {...autocomplete.getItemProps({
         item: result,
@@ -149,32 +228,30 @@ function SearchResult({ result, autocomplete, collection, query }) {
     >
       <div
         id={`${id}-title`}
-        className="text-sm font-medium text-slate-700 dark:text-slate-300"
+        className="flex flex-wrap items-baseline gap-x-1.5 text-sm font-medium text-slate-700 dark:text-slate-300"
       >
-        <HighlightQuery text={result.title} query={query} />
+        <span>
+          <HighlightQuery text={pageName} query={query} />
+        </span>
+        {sectionName && sectionName !== pageName && (
+          <span className="text-slate-400 dark:text-slate-500">
+            ·{' '}
+            <HighlightQuery text={sectionName} query={query} />
+          </span>
+        )}
       </div>
-      {hierarchy.length > 0 && (
+      {breadcrumb && (
         <div
           id={`${id}-hierarchy`}
           className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400"
         >
-          {hierarchy
-            .filter((item) => item && item.trim().toLowerCase() !== 'untitled')
-            .map((item, itemIndex, items) => (
-              <Fragment key={itemIndex}>
-                <HighlightQuery text={item} query={query} />
-                <span
-                  className={
-                    itemIndex === items.length - 1
-                      ? 'sr-only'
-                      : 'mx-1.5 text-slate-300 dark:text-slate-600'
-                  }
-                >
-                  /
-                </span>
-              </Fragment>
-            ))}
+          <HighlightQuery text={breadcrumb} query={query} />
         </div>
+      )}
+      {result.snippet && (
+        <p className="mt-1 line-clamp-2 text-xs text-slate-400 dark:text-slate-500">
+          <HighlightQuery text={result.snippet} query={query} />
+        </p>
       )}
     </li>
   )
@@ -195,9 +272,12 @@ function extractItems(collection) {
 }
 
 function SearchResults({ autocomplete, query, collection }) {
-  let rawItems = extractItems(collection)
+  // Items are already filtered + deduped at the source level (see
+  // useAutocomplete.getSources.getItems) so the active-item index that
+  // arrow keys / Enter operate on stays in sync with what's rendered.
+  let items = extractItems(collection)
 
-  if (!rawItems || rawItems.length === 0) {
+  if (!items || items.length === 0) {
     return (
       <div className="px-4 py-8 text-center">
         <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -218,42 +298,9 @@ function SearchResults({ autocomplete, query, collection }) {
     )
   }
 
-  let filtered = rawItems.filter(
-    (item) =>
-      item &&
-      item.title &&
-      item.title.trim() !== '' &&
-      item.title.trim().toLowerCase() !== 'untitled',
-  )
-
-  // Proper URL deduplication
-  let seenUrls = new Set()
-  let deduped = []
-  for (let item of filtered) {
-    let baseUrl = item.url.split('#')[0]
-    if (!seenUrls.has(baseUrl)) {
-      seenUrls.add(baseUrl)
-      deduped.push(item)
-    }
-  }
-
-  if (deduped.length === 0) {
-    return (
-      <div className="px-4 py-8 text-center">
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          No results found for &ldquo;
-          <span className="font-medium text-slate-700 dark:text-slate-300">
-            {query}
-          </span>
-          &rdquo;
-        </p>
-      </div>
-    )
-  }
-
   return (
     <ul {...autocomplete.getListProps()} className="divide-y divide-slate-100 dark:divide-slate-700/50">
-      {deduped.map((result, index) => (
+      {items.map((result, index) => (
         <SearchResult
           key={`${result.url}-${index}`}
           result={result}

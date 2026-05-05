@@ -108,16 +108,52 @@ export default function withSearch(nextConfig = {}) {
                 // results don't render the quoted form: `"My Title"`.
                 let title = rawTitle?.replace(/^["'](.*)["']$/, '$1')
 
-                // Extract structured sections
-                sections = [[title || 'Untitled', null, []]]
+                // Extract structured sections. We start with an empty
+                // page-level slot whose title we'll resolve below — *not*
+                // a literal "Untitled" string, because that would leak
+                // through to the search UI as a real-looking page title
+                // for any page lacking frontmatter title.
+                sections = [['', null, []]]
                 extractSectionsAndContent(ast, sections)
 
-                // Extract ALL raw text content (this is the key improvement)
+                // Resolve the effective page title with three fallbacks:
+                //   1. Frontmatter `title:` (preferred)
+                //   2. First body heading (sections[1] from the AST walk)
+                //   3. URL-derived slug, prettified (last resort)
+                // We never store "Untitled" — it's a UX dead end in
+                // search results.
+                let resolved = title
+                if (!resolved && sections.length > 1 && sections[1][0]) {
+                  resolved = sections[1][0]
+                }
+                if (!resolved) {
+                  let parts = url.split('/').filter(Boolean)
+                  let last = parts[parts.length - 1] || 'Home'
+                  resolved = last
+                    .split(/[-_]/)
+                    .map((w) =>
+                      w.length === 0
+                        ? ''
+                        : w === w.toUpperCase()
+                        ? w
+                        : w.charAt(0).toUpperCase() + w.slice(1),
+                    )
+                    .join(' ')
+                }
+                sections[0][0] = resolved
+
+                // Extract clean text content from the parsed AST. This walks
+                // text / code / code_block nodes recursively, so markdown
+                // syntax like [text](url), ## heading, **bold**, *italic*
+                // never appears in the indexed string — link nodes contribute
+                // only their visible text (the part before the parens), and
+                // heading/strong/emphasis nodes contribute the inner text.
+                // Previously we also appended the raw markdown source as a
+                // "fallback", but that polluted snippets with link syntax
+                // and ## markers — implementation details the reader
+                // shouldn't see.
                 let allRawText = extractAllTextFromNode(ast)
                 fullRawText = allRawText.join(' ').replace(/\s+/g, ' ').trim()
-
-                // Also include the original markdown for fallback
-                fullRawText += ' ' + md.replace(/^---[\s\S]*?---/, '').trim()
 
                 cache.set(file, [md, sections, fullRawText])
               }
@@ -137,7 +173,9 @@ export default function withSearch(nextConfig = {}) {
 
               // Build comprehensive search data
               for (let { url, sections, fullRawText } of data) {
-                let pageTitle = sections[0][0] || 'Untitled'
+                // sections[0][0] is always populated by the loader (frontmatter
+                // > first body heading > URL slug). Defensive fallback only.
+                let pageTitle = sections[0][0] || url
                 
                 // Index full page
                 let pageData = {
@@ -175,6 +213,45 @@ export default function withSearch(nextConfig = {}) {
                 } catch(e) {
                   return text.toLowerCase().includes(query.toLowerCase())
                 }
+              }
+
+              // Build a snippet of up to maxLen chars centered on the first
+              // match of query (or the first matching word) within content.
+              // Trims word boundaries on both sides; prefixes/suffixes with
+              // an ellipsis if truncated.
+              function buildSnippet(content, query, maxLen) {
+                if (maxLen === undefined) maxLen = 140
+                if (!content || !query) return undefined
+                let lower = content.toLowerCase()
+                let q = query.toLowerCase()
+                let idx = lower.indexOf(q)
+                let matchLen = q.length
+                if (idx === -1) {
+                  // Try matching any single word from a multi-word query
+                  let words = q.split(/\\s+/).filter(function (w) { return w.length > 1 })
+                  for (let i = 0; i < words.length; i++) {
+                    let wIdx = lower.indexOf(words[i])
+                    if (wIdx !== -1) {
+                      idx = wIdx
+                      matchLen = words[i].length
+                      break
+                    }
+                  }
+                }
+                if (idx === -1) return undefined
+                // half can go negative if matchLen > maxLen — clamp to 0
+                // so start/end never advance past the actual match. The
+                // window then anchors at the match start and grows up to
+                // matchLen chars, even if matchLen exceeds maxLen.
+                let half = Math.max(0, Math.floor((maxLen - matchLen) / 2))
+                let start = Math.max(0, idx - half)
+                let end = Math.min(content.length, idx + matchLen + half)
+                let head = start > 0 ? '\u2026 ' : ''
+                let tail = end < content.length ? ' \u2026' : ''
+                let s = content.slice(start, end)
+                if (start > 0) s = s.replace(/^\\S*\\s/, '')
+                if (end < content.length) s = s.replace(/\\s\\S*$/, '')
+                return head + s + tail
               }
 
               export function search(query, options = {}) {
@@ -232,11 +309,21 @@ export default function withSearch(nextConfig = {}) {
                       // For very short queries (1-2 chars), suppress mid-word matches
                       if (queryLower.length <= 2 && score <= 5) continue
 
+                      // Always try to build a snippet from the content. Even
+                      // when the title matches the query, the snippet is the
+                      // primary thing that disambiguates two results that
+                      // share a title (e.g. seven datasource pages each with
+                      // a "Datasources" section). Returns undefined if the
+                      // query never appears in the body — fine, the result
+                      // card just renders without a snippet.
+                      let snippet = buildSnippet(data.content || '', queryLower)
+
                       results.push({
                         url: data.url || url,
                         title: data.title || '',
                         pageTitle: data.pageTitle || '',
                         content: data.content || '',
+                        snippet: snippet,
                         score: score
                       })
                     }
