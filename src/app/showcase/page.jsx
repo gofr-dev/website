@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { formatNumber } from '@/lib/common'
+import { ShowcaseGradient } from '@/components/ShowcaseGradient'
 import companies from './companies.json'
 import testimonials from '../../../utils/testimonials.json'
 
@@ -53,8 +54,9 @@ export default function ShowcasePage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-slate-900">
-      <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen overflow-x-clip bg-slate-900">
+      <ShowcaseGradient />
+      <div className="relative mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
         {/* Hero */}
         <div className="text-center">
           <h1 className="font-display text-4xl font-bold tracking-tight text-white">
