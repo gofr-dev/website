@@ -7,6 +7,7 @@ import { EcosystemRecognition } from '@/components/EcosystemRecognition'
 import { FadeInOnScroll } from '@/components/FadeInOnScroll'
 import { StaggerChildren } from '@/components/StaggerChildren'
 import blurCyanImage from "@/images/blur-cyan.png";
+import { ShowcaseGradient } from '@/components/ShowcaseGradient'
 import Image from "next/image";
 import React from "react";
 import Testimonials from "@/components/Reviews";
@@ -19,7 +20,8 @@ import Testimonials from "@/components/Reviews";
 // continuous strip rather than two seams.
 export function HomePage() {
   return (
-    <div className="m-auto w-auto max-w-screen-2xl">
+    <div className="relative m-auto w-auto max-w-screen-2xl overflow-x-clip">
+      <ShowcaseGradient />
       {/* Density-matched section padding. Uniform `py-24` everywhere
           made the page feel padded-for-padding's-sake when section
           content was thin (a 100 px marquee strip, a 1-row logo wall).

@@ -9,9 +9,13 @@ export default function Testimonials() {
             {/*<h2 className="text-center text-lg font-semibold leading-8 text-white mb-10">*/}
             {/*    User Testimonials*/}
             {/*</h2>*/}
-            <div className="sm:columns-2 md:columns-3">
+            <div className="gap-x-6 sm:columns-2 md:columns-3">
                 {testimonials.map((testimonial, index) => (
-                    <div key={index} className="group inline-block relative my-3 rounded-xl border cursor-default border-slate-200 dark:border-slate-800 p-1">
+                    // `block break-inside-avoid` keeps each card whole inside
+                    // the CSS multi-column flow. Without it, a tall card gets
+                    // split at the column boundary and the two halves render
+                    // on top of each other on narrow viewports.
+                    <div key={index} className="group block break-inside-avoid w-full relative my-3 rounded-xl border cursor-default border-slate-200 dark:border-slate-800 p-1">
                         <div className="absolute -inset-px rounded-xl border-2 border-transparent opacity-0 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sky.50)),var(--quick-links-hover-bg,theme(colors.sky.50)))_padding-box,linear-gradient(to_top,theme(colors.indigo.400),theme(colors.cyan.400),theme(colors.sky.500))_border-box] group-hover:opacity-100 dark:[--quick-links-hover-bg:theme(colors.slate.800)]" />
 
                         <div className="relative overflow-hidden rounded-xl p-6">

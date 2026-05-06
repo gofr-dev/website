@@ -165,27 +165,47 @@ function HighlightQuery({ text, query }) {
   )
 }
 
+// Known-token map for breadcrumb/segment prettifying. Naive Title
+// Case turned `gofr-vs-gin` into `Gofr Vs Gin` — wrong on both
+// counts (brand mark is `GoFr`, comparator is lowercase `vs`) and
+// `wrap-grpc` into `Wrap Grpc` instead of `Wrap gRPC`. Anything
+// not in this map falls back to plain Title Case.
+const PRETTY_TOKENS = {
+  gofr: 'GoFr',
+  gofrcli: 'GoFr CLI',
+  vs: 'vs',
+  grpc: 'gRPC',
+  graphql: 'GraphQL',
+  api: 'API',
+  cli: 'CLI',
+  http: 'HTTP',
+  https: 'HTTPS',
+  rest: 'REST',
+  faq: 'FAQ',
+}
+
 // Turn a path segment slug into a Title Case label.
-// "wrap-grpc" → "Wrap Grpc", "from-fiber" → "From Fiber".
-// Strict slug-to-words; preserves embedded acronyms only when they're already uppercase.
+// "wrap-grpc" → "Wrap gRPC", "from-fiber" → "From Fiber",
+// "gofr-vs-gin" → "GoFr vs Gin".
 function prettifySegment(seg) {
   if (!seg) return ''
   return seg
     .split(/[-_]/)
-    .map((w) =>
-      w.length === 0
-        ? ''
-        : w === w.toUpperCase()
-        ? w
-        : w.charAt(0).toUpperCase() + w.slice(1),
-    )
+    .map((w) => {
+      if (w.length === 0) return ''
+      const known = PRETTY_TOKENS[w.toLowerCase()]
+      if (known) return known
+      // Already uppercase — preserve embedded acronyms.
+      if (w === w.toUpperCase()) return w
+      return w.charAt(0).toUpperCase() + w.slice(1)
+    })
     .join(' ')
 }
 
 // Build a breadcrumb-shaped path label from a URL.
 // "/docs/datasources/mongodb" → "Datasources › Mongodb"
-// "/docs/references/gofrcli/init" → "References › Gofrcli › Init"
-// "/comparison/gofr-vs-gin" → "Comparison › Gofr Vs Gin"
+// "/docs/references/gofrcli/init" → "References › GoFr CLI › Init"
+// "/comparison/gofr-vs-gin" → "Comparison › GoFr vs Gin"
 function pathBreadcrumb(rawUrl) {
   if (!rawUrl) return ''
   let p = rawUrl.split('#')[0].split('?')[0]

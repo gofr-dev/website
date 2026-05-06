@@ -2,17 +2,28 @@ import React, { useRef, useEffect, useState } from 'react';
 
 const AnimatedTimelineItem = ({ date, title, description, imageSrc, isLeft }) => {
     const itemRef = useRef(null);
-    const [isVisible, setIsVisible] = useState(false);
+    // Default `isVisible: true` so the image renders fully visible
+    // for users with `prefers-reduced-motion: reduce`, for SSR/no-JS,
+    // and for any environment where the IntersectionObserver doesn't
+    // fire (e.g. Playwright fullPage screenshot capture). Without
+    // this, the image stayed at opacity 0 and looked like the
+    // timeline was missing half its photos.
+    const [isVisible, setIsVisible] = useState(true);
     const [isExiting, setIsExiting] = useState(false);
 
     useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) return; // already visible=true, skip the observer-driven fade
+        // Start hidden post-hydration so the entry animation can play.
+        setIsVisible(false);
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
-                    setIsVisible(true); 
-                    setIsExiting(false); 
+                    setIsVisible(true);
+                    setIsExiting(false);
                 } else {
-                    setIsVisible(false); 
+                    setIsVisible(false);
                     setIsExiting(true);
                 }
             },
