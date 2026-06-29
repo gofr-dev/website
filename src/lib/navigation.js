@@ -296,6 +296,11 @@ export const navigation = [
                 desc: "Learn how to connect to and interact with clickhouse database in GoFr."
             },
             {
+                title: "Cloud SQL",
+                href: "/docs/datasources/cloudsql",
+                desc: "Learn how to connect to and interact with Google Cloud SQL in GoFr using IAM authentication."
+            },
+            {
                 title: "CockroachDB",
                 href: "/docs/datasources/cockroachdb",
                 desc: "Learn how to connect to and interact with CockroachDB in GoFr."
