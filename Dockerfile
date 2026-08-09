@@ -32,7 +32,13 @@
 #   docker run --rm -p 3001:3000 gofr-website:local
 
 # ---------- builder ----------
-FROM node:23.11.1-alpine3.21 AS builder
+# Node 24 is the active LTS (EOL 2028-04-30). Tracked as the major tag
+# rather than an exact patch pin: this repo has no Renovate/Dependabot,
+# and the previous exact pin (node:23.11.1-alpine3.21) silently outlived
+# its line — v23 was never LTS and went EOL 2025-06-01. A floating major
+# picks up patch + Alpine security updates on rebuild and only needs a
+# human when the major itself goes EOL.
+FROM node:24-alpine AS builder
 
 RUN apk add --no-cache libc6-compat
 
