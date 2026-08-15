@@ -32,7 +32,12 @@
 #   docker run --rm -p 3001:3000 gofr-website:local
 
 # ---------- builder ----------
-FROM node:23.11.1-alpine3.21 AS builder
+# 24.x is the active LTS (EOL 2028-04-30). The previous pin, 23.11.1, was an
+# odd-numbered release: those never become LTS, and 23 went EOL on 2025-06-01 —
+# so the Node that produced every deployed artifact was receiving no security
+# patches. Pinned to a patch + Alpine minor, same style as before, so an
+# upstream rebuild cannot silently change the toolchain under a release.
+FROM node:24.19.0-alpine3.24 AS builder
 
 RUN apk add --no-cache libc6-compat
 
