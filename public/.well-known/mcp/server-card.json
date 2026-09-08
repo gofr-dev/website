@@ -1,0 +1,40 @@
+{
+  "name": "gofr-docs",
+  "description": "Search and retrieve GoFr framework documentation. Use it to answer questions about building Go microservices with GoFr, connecting datasources, observability, gRPC/GraphQL/WebSockets/Pub-Sub, deployment, and migrating from other frameworks.",
+  "version": "1.0.0",
+  "serverUrl": "stdio://go run gofr.dev/mcp/docs-server@latest",
+  "transport": "stdio",
+  "homepage": "https://gofr.dev",
+  "repository": "https://github.com/gofr-dev/gofr/tree/HEAD/mcp/docs-server",
+  "authentication": { "type": "none" },
+  "tools": [
+    {
+      "name": "search_docs",
+      "description": "Full-text search across all GoFr documentation. Returns matching pages with titles, URLs, and excerpts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Search terms, e.g. 'kafka consumer' or 'custom metrics'." },
+          "limit": { "type": "integer", "description": "Maximum results to return.", "default": 10 }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "get_doc",
+      "description": "Fetch one GoFr documentation page as Markdown by its site path.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "description": "Site path, e.g. '/docs/quick-start/introduction'." }
+        },
+        "required": ["path"]
+      }
+    },
+    {
+      "name": "list_sections",
+      "description": "List the GoFr documentation sections and how many pages each contains.",
+      "inputSchema": { "type": "object", "properties": {} }
+    }
+  ]
+}

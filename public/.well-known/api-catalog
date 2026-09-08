@@ -1,0 +1,40 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://gofr.dev",
+      "service-desc": [
+        {
+          "href": "https://gofr.dev/openapi.json",
+          "type": "application/vnd.oai.openapi+json;version=3.1",
+          "title": "GoFr Documentation Content API"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://gofr.dev/docs",
+          "type": "text/html",
+          "title": "GoFr documentation"
+        },
+        {
+          "href": "https://gofr.dev/llms.txt",
+          "type": "text/markdown",
+          "title": "LLM index"
+        }
+      ],
+      "service-meta": [
+        {
+          "href": "https://gofr.dev/.well-known/oauth-protected-resource",
+          "type": "application/json",
+          "title": "Protected resource metadata (RFC 9728)"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://gofr.dev/changelog",
+          "type": "text/html",
+          "title": "Release changelog"
+        }
+      ]
+    }
+  ]
+}

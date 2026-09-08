@@ -1,0 +1,30 @@
+{
+  "$schema": "https://agentskills.dev/schema/v1/index.json",
+  "version": "1.0",
+  "name": "GoFr",
+  "description": "Agent skills for building and maintaining Go microservices with the GoFr framework.",
+  "homepage": "https://gofr.dev",
+  "skills": [
+    {
+      "name": "gofr-rest-api",
+      "description": "Build a production GoFr REST API: gofr.New(), route registration, request binding, typed errors, and AddRESTHandlers for zero-boilerplate CRUD.",
+      "source": "https://github.com/gofr-dev/gofr/tree/HEAD/skills/gofr-rest-api",
+      "documentation": "https://gofr.dev/docs/quick-start/introduction.md",
+      "tags": ["golang", "rest", "microservices"]
+    },
+    {
+      "name": "gofr-datasources",
+      "description": "Connect a GoFr service to a datasource — Postgres, MySQL, Redis, MongoDB, Cassandra, ClickHouse, Elasticsearch, and 10+ others — with health checks and tracing wired in.",
+      "source": "https://github.com/gofr-dev/gofr/tree/HEAD/skills/gofr-datasources",
+      "documentation": "https://gofr.dev/docs/datasources/llms.txt",
+      "tags": ["golang", "database", "redis", "mongodb"]
+    },
+    {
+      "name": "gofr-observability",
+      "description": "Instrument a GoFr service: structured logs, Prometheus metrics, custom OpenTelemetry spans, health endpoints, and remote log-level changes.",
+      "source": "https://github.com/gofr-dev/gofr/tree/HEAD/skills/gofr-observability",
+      "documentation": "https://gofr.dev/docs/quick-start/observability.md",
+      "tags": ["golang", "opentelemetry", "prometheus", "observability"]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://agenticresourcediscovery.org/schema/v1/ard.json",
+  "version": "1.0",
+  "name": "GoFr",
+  "description": "Documentation and agent resources for GoFr, an opinionated Go framework for production microservices with built-in observability, 15+ datasource integrations, gRPC, GraphQL, WebSockets, Pub/Sub, and cron jobs.",
+  "homepage": "https://gofr.dev",
+  "provider": {
+    "name": "GoFr",
+    "url": "https://gofr.dev",
+    "email": "connect@gofr.dev"
+  },
+  "resources": [
+    {
+      "type": "api",
+      "name": "GoFr Documentation Content API",
+      "description": "Read-only HTTP GET access to every documentation page as Markdown, plus site-wide and per-section indexes.",
+      "specification": "https://gofr.dev/openapi.json",
+      "specificationFormat": "openapi-3.1",
+      "authentication": "none"
+    },
+    {
+      "type": "skill",
+      "name": "GoFr agent primer",
+      "description": "Framework conventions, datasource patterns, and per-framework migration mappings for AI coding assistants generating GoFr code.",
+      "url": "https://gofr.dev/AGENTS.md",
+      "mediaType": "text/markdown"
+    },
+    {
+      "type": "dataset",
+      "name": "GoFr documentation corpus",
+      "description": "Every documentation page concatenated into a single Markdown file for long-context ingestion.",
+      "url": "https://gofr.dev/llms-full.txt",
+      "mediaType": "text/markdown",
+      "license": "Apache-2.0"
+    },
+    {
+      "type": "mcp",
+      "name": "GoFr docs MCP server",
+      "description": "Model Context Protocol server exposing GoFr documentation search and retrieval as tools. Runs locally over stdio: `go run gofr.dev/mcp/docs-server@latest`.",
+      "card": "https://gofr.dev/.well-known/mcp/server-card.json"
+    }
+  ],
+  "authentication": {
+    "required": false,
+    "description": "All resources are public and unauthenticated. See https://gofr.dev/auth.md."
+  }
+}

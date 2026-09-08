@@ -8,76 +8,116 @@
 # OpenAI — ChatGPT
 User-agent: GPTBot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: OAI-SearchBot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: ChatGPT-User
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # Anthropic — Claude
 User-agent: ClaudeBot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: Claude-SearchBot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: Claude-User
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: anthropic-ai
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # Google — Search + Gemini
 User-agent: Googlebot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: Google-Extended
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # Microsoft / Bing
 User-agent: Bingbot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # Perplexity
 User-agent: PerplexityBot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: Perplexity-User
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # Apple — Siri / Apple Intelligence
 User-agent: Applebot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: Applebot-Extended
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # Meta — Llama / Meta AI
 User-agent: Meta-ExternalAgent
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: Meta-ExternalFetcher
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # Other answer engines
 User-agent: cohere-ai
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: YouBot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: DuckAssistBot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 User-agent: Amazonbot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # Common Crawl — feeds many open LLM training corpora
 User-agent: CCBot
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # ByteDance / Doubao
 User-agent: Bytespider
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # Default
 User-agent: *
 Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+
+# Content-Signal above states the policy in Cloudflare's machine-readable
+# form: this site may be used for search indexing, as AI input (RAG /
+# grounding), and for model training. GoFr's docs are Apache-2.0 and we
+# want them in open training corpora, so CCBot and Bytespider stay
+# allowed rather than blocked.
 
 # AI assistant context (for Claude Code, Cursor, Codex, Aider, Continue):
 #   https://gofr.dev/AGENTS.md
+# Markdown homepage / cold-arrival entry point:
+#   https://gofr.dev/index.md
+# Machine-readable content API + access model:
+#   https://gofr.dev/openapi.json
+#   https://gofr.dev/auth.md
+# Agent resource catalogs:
+#   https://gofr.dev/.well-known/ard.json
+#   https://gofr.dev/.well-known/agent-card.json
 # LLM index (Markdown-shaped, per https://llmstxt.org/):
 #   https://gofr.dev/llms.txt
 # LLM full content dump (concatenated docs):
 #   https://gofr.dev/llms-full.txt
 
 Sitemap: https://gofr.dev/sitemap.xml
+
+# NLWeb Schema Feeds — structured-data feeds for this site.
+schemamap: https://gofr.dev/schemamap.xml

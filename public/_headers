@@ -1,0 +1,31 @@
+# Static response headers, applied by zopdev/static-server (Netlify /
+# Cloudflare Pages `_headers` convention).
+#
+# Patterns here are literal paths or a trailing `/*` — there is no
+# per-request variable, so anything that depends on the specific URL
+# (e.g. a per-page markdown alternate) is emitted as a <link> in the
+# page <head> instead. See next.config.mjs.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Link: </sitemap.xml>; rel="sitemap", </openapi.json>; rel="service-desc", </.well-known/api-catalog>; rel="api-catalog", </llms.txt>; rel="alternate"; type="text/plain"
+
+# RFC 9727 requires this exact media type for an API catalog; without
+# it a client cannot tell a linkset from an arbitrary JSON document.
+/.well-known/api-catalog
+  Content-Type: application/linkset+json;profile="https://www.rfc-editor.org/info/rfc9727"
+
+# A directly-requested twin (/docs/x.md, rather than Accept-negotiated)
+# is served by Go's http.ServeFile, whose MIME table has no .md entry —
+# it lands as text/plain on a base image without /etc/mime.types.
+# Agents check the media type before parsing, so state it here.
+/*.md
+  Content-Type: text/markdown; charset=utf-8
+
+# Extensionless files: static-server would otherwise sniff these as
+# text/plain.
+/.well-known/oauth-protected-resource
+  Content-Type: application/json
+/agent/identity
+  Content-Type: application/json

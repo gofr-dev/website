@@ -66,9 +66,19 @@ const __tw = {
   ...(__pageMeta.twitter || {}),
 };
 const __derivedCanonical = ${JSON.stringify(__canonical)};
+// Advertise the Markdown twin of this page. static-server's
+// _headers file can only express site-wide patterns (no per-URL
+// variable), so the per-page alternate has to live in the document
+// head. Next renders this as
+//   <link rel="alternate" type="text/markdown" href="/docs/x.md">
+// which is how an agent discovers the twin without guessing.
 const __alternates = {
-  canonical: __derivedCanonical,
   ...(__pageMeta.alternates || {}),
+  canonical: __pageMeta.alternates?.canonical || __derivedCanonical,
+  types: {
+    'text/markdown': __derivedCanonical === '/' ? '/index.md' : __derivedCanonical + '.md',
+    ...(__pageMeta.alternates?.types || {}),
+  },
 };
 // Only emit openGraph / twitter when the page actually carries
 // per-page values. If we always emitted an object, Next's metadata
