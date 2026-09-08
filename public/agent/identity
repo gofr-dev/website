@@ -1,0 +1,8 @@
+{
+  "identity_type": "anonymous",
+  "resource": "https://gofr.dev",
+  "authentication_required": false,
+  "message": "gofr.dev serves public, read-only documentation. No registration, credential, or access token is required or issued. Send unauthenticated GET requests; use Accept: text/markdown, or append .md to any page URL, to receive Markdown.",
+  "documentation": "https://gofr.dev/auth.md",
+  "rate_limit": "No published rate limit. Prefer https://gofr.dev/llms-full.txt over crawling page-by-page."
+}

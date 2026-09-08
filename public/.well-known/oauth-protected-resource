@@ -1,0 +1,14 @@
+{
+  "resource": "https://gofr.dev",
+  "resource_name": "GoFr Documentation Content API",
+  "resource_documentation": "https://gofr.dev/openapi.json",
+  "resource_policy_uri": "https://gofr.dev/privacy",
+  "authorization_servers": [],
+  "scopes_supported": [],
+  "bearer_methods_supported": [],
+  "agent_auth": {
+    "identity_endpoint": "https://gofr.dev/agent/identity",
+    "identity_types_supported": ["anonymous"],
+    "skill": "https://gofr.dev/auth.md"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "protocolVersion": "0.3.0",
+  "name": "GoFr Documentation Agent",
+  "description": "Answers questions about the GoFr Go framework and returns its documentation as Markdown: quick-start, datasource integrations, observability, gRPC/GraphQL/WebSockets/Pub-Sub, deployment, and migration guides from other frameworks.",
+  "version": "1.0.0",
+  "url": "https://gofr.dev",
+  "preferredTransport": "HTTP+JSON",
+  "provider": {
+    "organization": "GoFr",
+    "url": "https://gofr.dev"
+  },
+  "documentationUrl": "https://gofr.dev/docs",
+  "iconUrl": "https://gofr.dev/img/gofr-logo.png",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/markdown"],
+  "securitySchemes": {},
+  "security": [],
+  "skills": [
+    {
+      "id": "fetch-doc-page",
+      "name": "Fetch a documentation page as Markdown",
+      "description": "Retrieve any gofr.dev page as clean Markdown by appending .md to its URL or sending Accept: text/markdown. Use when you need the exact wording of a GoFr guide rather than a summary.",
+      "tags": ["documentation", "markdown", "golang", "gofr"],
+      "examples": [
+        "Fetch https://gofr.dev/docs/quick-start/introduction.md",
+        "Get the GoFr gRPC guide as Markdown"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/markdown"]
+    },
+    {
+      "id": "browse-section-index",
+      "name": "Browse a documentation section",
+      "description": "List every page in one documentation section (quick-start, advanced-guide, datasources, guides, references) with titles and descriptions, via /docs/{section}/llms.txt.",
+      "tags": ["documentation", "index", "gofr"],
+      "examples": [
+        "What datasources does GoFr support?",
+        "List the GoFr advanced guide pages"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/markdown"]
+    },
+    {
+      "id": "generate-gofr-code",
+      "name": "Generate GoFr application code",
+      "description": "Use https://gofr.dev/AGENTS.md as grounding to write idiomatic GoFr handlers, datasource wiring, middleware, and migrations that match framework conventions.",
+      "tags": ["codegen", "golang", "microservices", "gofr"],
+      "examples": [
+        "Write a GoFr REST handler backed by Postgres",
+        "Migrate this Gin handler to GoFr"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    }
+  ]
+}

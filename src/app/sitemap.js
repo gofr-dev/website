@@ -19,7 +19,19 @@ const SITE_URL = 'https://gofr.dev'
 // Files to include even though they're not Next.js routes — published
 // at the public root with their own meaning. Without listing them
 // here, the sitemap silently omits them.
-const STATIC_FILES = ['/llms.txt', '/llms-full.txt', '/AGENTS.md', '/robots.txt']
+// Standalone published resources — not Next routes, but each is a real
+// document with its own meaning. Markdown *twins* (/docs/x.md) are
+// deliberately NOT listed: they duplicate a canonical HTML URL that is
+// already in this sitemap, and listing both invites the raw Markdown to
+// be indexed in place of the page.
+const STATIC_FILES = [
+  '/llms.txt',
+  '/llms-full.txt',
+  '/AGENTS.md',
+  '/robots.txt',
+  '/openapi.json',
+  '/auth.md',
+]
 
 const EXCLUDED_PATTERNS = [
   /\/api\//,
