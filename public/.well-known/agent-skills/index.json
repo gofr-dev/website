@@ -1,5 +1,4 @@
 {
-  "$schema": "https://agentskills.dev/schema/v1/index.json",
   "version": "1.0",
   "name": "GoFr",
   "description": "Agent skills for building and maintaining Go microservices with the GoFr framework.",

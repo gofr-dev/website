@@ -26,6 +26,10 @@ import {
   isExcludedRoute,
 } from './lib/doc-sections.mjs'
 
+// Hand-authored, committed files under public/ that a generated twin must
+// never clobber. Kept in sync with the negations in .gitignore.
+const RESERVED_PUBLIC_FILES = new Set(['index.md', 'auth.md', 'AGENTS.md'])
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
 const publicDir = path.join(repoRoot, 'public')
@@ -270,7 +274,7 @@ function collectPages() {
 }
 
 function writeTwin(page) {
-  const raw = fs.readFileSync(page.file, 'utf8')
+  const raw = fs.readFileSync(page.file, 'utf8').replace(/\r\n/g, '\n')
   const { frontmatter, body } = splitFrontmatter(raw)
   const title = readFrontmatterField(frontmatter, 'title')
   const description = readFrontmatterField(frontmatter, 'description')
@@ -309,6 +313,19 @@ function writeTwin(page) {
   parts.push(content, '', '---', '', `Source: ${SITE_URL}${page.route}`, '')
 
   const outFile = path.join(publicDir, `${page.route.replace(/^\//, '')}.md`)
+
+  // Twins are gitignored, so overwriting a hand-authored file here would
+  // not even show up in `git status` — the spec document would just
+  // vanish from the build. Refuse instead. Today no route collides;
+  // adding src/app/auth/page.md would be enough to cause it.
+  if (RESERVED_PUBLIC_FILES.has(path.relative(publicDir, outFile))) {
+    throw new Error(
+      `[md-twins] route ${page.route} would overwrite the hand-authored ` +
+        `public/${path.relative(publicDir, outFile)}. Rename the route or ` +
+        `the published file.`,
+    )
+  }
+
   fs.mkdirSync(path.dirname(outFile), { recursive: true })
   fs.writeFileSync(outFile, parts.join('\n'))
   return { title: heading || page.route, description }

@@ -85,7 +85,7 @@ Errors are ordinary HTTP status codes. There are no auth-related failures.
 | Status | Meaning | What to do |
 | --- | --- | --- |
 | `404` | The path does not exist | Re-read `/llms.txt` or `/sitemap.xml`; a Markdown-preferring client gets a Markdown 404 body with those links |
-| `405` | Method not allowed | Only `GET`, `HEAD`, and `OPTIONS` are served |
+| `200` on a write | Nothing was written | This is a static file server. `POST`, `PUT`, `PATCH`, and `DELETE` return the page body and change nothing. Treat every endpoint as read-only |
 | `5xx` | Transient server-side failure | Retry with backoff |
 
 A `401` or `403` from this host indicates an interception proxy, not a policy of ours.

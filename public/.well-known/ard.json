@@ -1,5 +1,4 @@
 {
-  "$schema": "https://agenticresourcediscovery.org/schema/v1/ard.json",
   "version": "1.0",
   "name": "GoFr",
   "description": "Documentation and agent resources for GoFr, an opinionated Go framework for production microservices with built-in observability, 15+ datasource integrations, gRPC, GraphQL, WebSockets, Pub/Sub, and cron jobs.",

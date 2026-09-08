@@ -48,6 +48,11 @@ const columns = [
       { title: 'Team', href: '/team' },
       { title: 'Showcase', href: '/showcase' },
       { title: 'Events', href: '/events' },
+      { title: 'Contact', href: '/contact' },
+      // Every page loads Google Tag Manager, so the privacy notice has to
+      // be reachable from every page. The footer is the only element that
+      // renders site-wide.
+      { title: 'Privacy', href: '/privacy' },
       // /llms.txt rather than AGENTS.md here: the hero already hands
       // AGENTS.md to developers wiring Claude/Cursor. The footer is
       // where AI search-engine crawlers and curious humans look for
