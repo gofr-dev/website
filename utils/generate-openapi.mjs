@@ -150,10 +150,18 @@ const spec = {
             required: true,
             description:
               'Route without the leading slash and without the .md suffix, ' +
-              'e.g. `docs/quick-start/introduction`.',
+              'e.g. `docs/quick-start/introduction`. Slashes are literal ' +
+              'path separators — send them unencoded, not as %2F.',
+            // Enumerated so an agent doing function-calling can only ask
+            // for a page that exists. Omitted rather than emitted empty
+            // when the twin list is missing (a build without the docs
+            // overlay): `enum: []` matches nothing and would make this
+            // operation uncallable.
             schema: {
               type: 'string',
-              enum: routes.map((r) => r.replace(/^\//, '')),
+              ...(routes.length > 0
+                ? { enum: routes.map((r) => r.replace(/^\//, '')) }
+                : {}),
             },
           },
         ],

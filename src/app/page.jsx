@@ -95,7 +95,7 @@ const organizationLd = {
   '@type': 'Organization',
   name: 'GoFr',
   url: 'https://gofr.dev',
-  logo: 'https://gofr.dev/img/gofr-logo.svg',
+  logo: 'https://gofr.dev/img/gofr-logo.png',
   sameAs: [
     'https://github.com/gofr-dev/gofr',
     'https://twitter.com/gofr_dev',

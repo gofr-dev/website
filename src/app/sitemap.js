@@ -29,7 +29,6 @@ const STATIC_FILES = [
   '/llms-full.txt',
   '/AGENTS.md',
   '/robots.txt',
-  '/index.md',
   '/openapi.json',
   '/auth.md',
 ]

@@ -29,7 +29,7 @@ difference between a fix this week and a thread that stalls.
 
 Start a discussion at
 [github.com/gofr-dev/gofr/discussions](https://github.com/gofr-dev/gofr/discussions),
-or ask in the [GoFr Discord](https://discord.gg/wsaSkQTdgq) if you want a faster,
+or ask in the [GoFr Discord](https://discord.gg/5ACeSKGt37) if you want a faster,
 more conversational answer.
 
 Before asking, it is worth checking the [FAQ](/faq) and searching the
@@ -69,6 +69,6 @@ conference talk, or using the GoFr name and logo, this is the address.
 ## Where to find us
 
 - Source: [github.com/gofr-dev/gofr](https://github.com/gofr-dev/gofr)
-- Chat: [Discord](https://discord.gg/wsaSkQTdgq)
+- Chat: [Discord](https://discord.gg/5ACeSKGt37)
 - Releases: [changelog](/changelog)
 - Email: **connect@gofr.dev**

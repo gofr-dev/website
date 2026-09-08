@@ -17,25 +17,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { SECTIONS, SITE_URL } from './lib/doc-sections.mjs'
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
 const outFile = path.join(repoRoot, 'public/llms-full.txt')
 
-// Order of inclusion roughly matches the typical "what does an AI
-// assistant need first?" priority. Higher-utility content earlier so
-// when an LLM truncates context, the foundational material survives.
-const SECTIONS = [
-  { dir: 'src/app/docs/quick-start',    label: 'Quick Start' },
-  { dir: 'src/app/docs/advanced-guide', label: 'Advanced Guide' },
-  { dir: 'src/app/docs/datasources',    label: 'Datasources' },
-  { dir: 'src/app/docs/guides',         label: 'Production guides' },
-  { dir: 'src/app/docs/references',     label: 'References' },
-  { dir: 'src/app/why-gofr',            label: 'Why GoFr' },
-  { dir: 'src/app/comparison',          label: 'Comparison' },
-  { dir: 'src/app/migrate',             label: 'Migration guides' },
-  { dir: 'src/app/learn',               label: 'Learn' },
-  { dir: 'src/app/faq',                 label: 'FAQ' },
-]
 
 function walk(dir, acc = []) {
   if (!fs.existsSync(dir)) return acc
@@ -69,8 +56,6 @@ function stripFrontmatter(text) {
   if (end === -1) return text
   return text.slice(end + 4).replace(/^\n+/, '')
 }
-
-const SITE_URL = 'https://gofr.dev'
 
 const header = [
   '# GoFr — full content dump',

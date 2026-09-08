@@ -1,9 +1,14 @@
 // Single source of truth for "which routes carry Markdoc content".
 //
-// Three generators need this list and were drifting apart:
+// Consumers:
 //   - utils/generate-llms-full.mjs  (concatenated dump)
 //   - utils/generate-md-twins.mjs   (per-route .md twins + scoped llms.txt)
-//   - src/app/sitemap.js            (blind-globs today; see EXCLUDED below)
+//   - utils/generate-openapi.mjs    (section enum)
+//
+// src/app/sitemap.js deliberately does NOT use this list: it must cover
+// .jsx routes too (/team, /roadmap, /showcase), which carry no Markdoc
+// content, so it globs instead. It shares only the exclusions below in
+// spirit — keep the two exclusion sets in step by hand.
 //
 // Most of these directories are EMPTY in this repo. Docs live in
 // gofr-dev/gofr and are layered in at build time by that repo's
@@ -47,7 +52,7 @@ export const STANDALONE_PAGES = ['src/app/docs/page.md']
 //   /pkg/*         → JS-redirect stubs for Go module import paths
 //   /cli/*         → metadata-only landing for `go install`
 //   /releases      → redirect to /changelog
-export const EXCLUDED_ROUTE_PATTERNS = [
+const EXCLUDED_ROUTE_PATTERNS = [
   /^\/api\//,
   /^\/certificate\//,
   /^\/hackathon\b/,

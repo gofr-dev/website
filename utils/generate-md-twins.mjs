@@ -200,15 +200,47 @@ function renderMarkdocTags(body) {
 
 // An agent holding /docs/x.md has no base URL, so `../y` and `/docs/y`
 // are both unresolvable. Make every internal link absolute.
+//
+// Fence-aware for the same reason renderMarkdocTags is: a code sample
+// showing markdown syntax, or a config snippet containing `](/path)`,
+// must survive verbatim. Rewriting inside a fence would silently edit
+// the code a reader is meant to copy.
 function absolutiseLinks(body, route) {
   const baseDir = route.replace(/\/[^/]*$/, '')
-  return body.replace(/\]\(([^)\s]+)(\s+"[^"]*")?\)/g, (full, href, title) => {
-    if (/^(https?:|mailto:|#|data:)/.test(href)) return full
-    let abs
-    if (href.startsWith('/')) abs = href
-    else abs = path.posix.normalize(path.posix.join(baseDir, href))
-    return `](${SITE_URL}${abs}${title || ''})`
-  })
+
+  const rewrite = (line) =>
+    line.replace(/\]\(([^)\s]+)(\s+"[^"]*")?\)/g, (full, href, title) => {
+      if (/^(https?:|mailto:|#|data:)/.test(href)) return full
+
+      const abs = href.startsWith('/')
+        ? href
+        : path.posix.normalize(path.posix.join(baseDir, href))
+
+      return `](${SITE_URL}${abs}${title || ''})`
+    })
+
+  const out = []
+  let inFence = false
+  let fenceMarker = ''
+
+  for (const line of body.split('\n')) {
+    const fence = line.match(/^\s*(```+|~~~+)/)
+    if (fence) {
+      if (!inFence) {
+        inFence = true
+        fenceMarker = fence[1][0]
+      } else if (fence[1][0] === fenceMarker) {
+        inFence = false
+      }
+
+      out.push(line)
+      continue
+    }
+
+    out.push(inFence ? line : rewrite(line))
+  }
+
+  return out.join('\n')
 }
 
 // --- emit -------------------------------------------------------------
