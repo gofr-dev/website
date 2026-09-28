@@ -132,6 +132,75 @@ function RenderMarkdown({ text }) {
       continue
     }
 
+    // Tables: a |…| header row directly followed by a |---|---|
+    // separator row. Consumes every consecutive row line after that.
+    if (isTableRow(line) && i + 1 < lines.length && isTableSeparator(lines[i + 1])) {
+      let header = splitTableRow(line)
+      let aligns = tableAlignments(lines[i + 1])
+      let rows = []
+      let j = i + 2
+      while (j < lines.length && isTableRow(lines[j])) {
+        rows.push(splitTableRow(lines[j]))
+        j++
+      }
+      elements.push(
+        <div key={`tbl-${i}`} className="my-3 overflow-x-auto">
+          <table className="border-collapse text-sm">
+            <thead>
+              <tr>
+                {header.map((cell, c) => (
+                  <th
+                    key={c}
+                    className={`border border-slate-800 bg-slate-800/40 px-3 py-1.5 font-semibold text-slate-200 ${aligns[c] || 'text-left'}`}
+                  >
+                    {renderInline(cell)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, r) => (
+                <tr key={r}>
+                  {row.map((cell, c) => (
+                    <td
+                      key={c}
+                      className={`border border-slate-800 px-3 py-1.5 align-top text-slate-400 ${aligns[c] || 'text-left'}`}
+                    >
+                      {renderInline(cell)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )
+      i = j - 1
+      continue
+    }
+
+    // Blockquotes: consecutive `>` lines folded into one <blockquote>
+    if (/^\s*>/.test(line)) {
+      let quoted = []
+      let j = i
+      while (j < lines.length && /^\s*>/.test(lines[j])) {
+        quoted.push(lines[j].replace(/^\s*>\s?/, ''))
+        j++
+      }
+      elements.push(
+        <blockquote
+          key={`bq-${i}`}
+          className="my-3 border-l-2 border-slate-700 pl-3 text-sm text-slate-400"
+        >
+          {quoted.filter(q => q.trim()).map((q, qi) => (
+            <p key={qi}>{renderInline(q)}</p>
+          ))}
+        </blockquote>
+      )
+      i = j - 1
+      continue
+    }
+
     // Empty lines
     if (line.trim() === '') continue
 
@@ -157,6 +226,37 @@ function RenderMarkdown({ text }) {
   }
 
   return <div className="space-y-1">{elements}</div>
+}
+
+// A GFM table row: the line starts and ends with a pipe
+function isTableRow(line) {
+  return /^\s*\|.*\|\s*$/.test(line)
+}
+
+// The |---|:---:|---| separator line under a table header row
+function isTableSeparator(line) {
+  return /^\s*\|(\s*:?-+:?\s*\|)+\s*$/.test(line)
+}
+
+// Split a |…|…| row into trimmed cell strings, dropping the empty
+// leading/trailing entries created by the outer pipes.
+function splitTableRow(line) {
+  let cells = line.trim().split('|')
+  if (cells.length && cells[0].trim() === '') cells.shift()
+  if (cells.length && cells[cells.length - 1].trim() === '') cells.pop()
+  return cells.map(c => c.trim())
+}
+
+// Map each separator cell to a Tailwind text-align class: `:---:` →
+// center, `---:` → right, everything else left.
+function tableAlignments(sepLine) {
+  return splitTableRow(sepLine).map(c => {
+    let left = c.startsWith(':')
+    let right = c.endsWith(':')
+    if (left && right) return 'text-center'
+    if (right) return 'text-right'
+    return 'text-left'
+  })
 }
 
 // Render inline markdown (bold, code, links)
