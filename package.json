@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node utils/fetch-github-stars.mjs && node utils/generate-changelog-rss.mjs && node utils/generate-llms-full.mjs",
+    "prebuild": "node utils/fetch-github-stars.mjs && node utils/generate-changelog-rss.mjs && node utils/generate-llms-full.mjs && node utils/check-changelog.mjs",
+    "check:changelog": "node utils/check-changelog.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
