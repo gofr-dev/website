@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Renders every release in src/app/changelog/releases.json the way the
 // /changelog page does and fails if any of them comes out wrong: Markdoc
-// can't parse it, a release loses all its content, or raw markdown (table
-// rows, [text](url), # headings) survives outside code. Runs in prebuild,
-// so a regression in the release-notes renderer — or a release body it
-// can't handle — shows up in CI instead of on gofr.dev.
+// can't parse it, a release loses all its content, a section ends up
+// inside another one, or raw markdown (table rows, [text](url), #
+// headings) survives outside code. Runs in prebuild, so a regression in
+// the release-notes renderer — or a release body it can't handle — shows
+// up in CI instead of on gofr.dev.
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -12,6 +13,9 @@ import { fileURLToPath } from 'node:url'
 import Markdoc from '@markdoc/markdoc'
 
 import {
+  headingText,
+  isSectionHeading,
+  isTitleHeading,
   normalizeReleaseMarkdown,
   releaseMarkdocConfig,
   splitReleaseSections,
@@ -36,6 +40,34 @@ function visibleText(html) {
     .replace(/<[^>]+>/g, '\n')
 }
 
+// Plain text of a node's inline content (text and inline code).
+function nodeText(node) {
+  if (node.type === 'text' || node.type === 'code') {
+    return node.attributes.content ?? ''
+  }
+  return node.children.map(nodeText).join('')
+}
+
+// Headings that should have started a section of their own (or, for a
+// version title, been dropped) but are still at the top level of a
+// section's content. They are read from Markdoc's parse of what is
+// rendered, not from the splitter, so a splitter that swallows a section
+// can't hide it: the swallowed heading renders as a real <h3>, not as raw
+// markdown, and would pass the raw-markdown patterns below.
+function swallowedHeadings(ast) {
+  return ast.children
+    .filter((node) => node.type === 'heading')
+    .map((node) => ({
+      depth: node.attributes.level,
+      label: headingText(nodeText(node)),
+    }))
+    .filter(
+      ({ depth, label }) =>
+        isTitleHeading(label) || isSectionHeading(depth, label),
+    )
+    .map(({ depth, label }) => `${'#'.repeat(depth)} ${label}`)
+}
+
 function checkRelease(release) {
   const problems = []
   const sections = splitReleaseSections(release.body)
@@ -49,6 +81,12 @@ function checkRelease(release) {
       if (e.error.level !== 'critical') continue
       problems.push(
         `${section.label}: line ${(e.lines?.[0] ?? 0) + 1}: ${e.error.message}`,
+      )
+    }
+
+    for (const heading of swallowedHeadings(ast)) {
+      problems.push(
+        `${section.label}: "${heading}" should be its own section but is inside this one`,
       )
     }
 

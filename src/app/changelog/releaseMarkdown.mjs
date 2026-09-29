@@ -7,7 +7,18 @@ const { nodes: defaultNodes, Tag, Tokenizer } = Markdoc
 // Markdoc's own tokenizer decides where code fences and headings are, so
 // the rewriting and section splitting below always agree with the parser
 // (a fence inside a list item also ends where the item ends, for example).
+//
+// Its `{% %}` tag rules are turned off: the text Markdoc finally parses has
+// every `{%` in prose escaped and every fence marked process=false, so no
+// tag is active in it. Reading the raw text with tags on would let a stray
+// `{% include %}` line open a tag and hide the headings after it, while
+// the final parse sees them.
 const tokenizer = new Tokenizer()
+// These are the rule names Markdoc's tag plugin registers (block/core
+// "annotations", inline "containers"). They're internal: if a Markdoc
+// upgrade renames them, markdown-it throws here and the build fails
+// loudly rather than silently tokenizing with tags on.
+tokenizer.parser.disable(['annotations', 'containers'])
 
 // GitHub release bodies are GitHub-flavoured markdown. They used to be
 // rendered by a small line-by-line parser that only knew about fences,
@@ -146,7 +157,7 @@ export function normalizeReleaseMarkdown(text) {
 
 // A heading that only repeats the version ("# Release v1.46.0",
 // "## **Release - v1.38.0**", "## v1.43.0") is a title, not a section.
-function isTitleHeading(header) {
+export function isTitleHeading(header) {
   return /^(release\s*[-–:]?\s*)?v?\d+(\.\d+){1,2}\.?[\w.+-]*$/i.test(header)
 }
 
@@ -166,9 +177,16 @@ function sectionType(header) {
 
 const KNOWN_TYPES = new Set(['features', 'enhancements', 'fixes'])
 
+// Whether a top-level heading starts a section: every `#` and `##`, and a
+// `###` only when it is a section name. Exported for check-changelog.mjs,
+// which uses it to spot a section heading left inside another section.
+export function isSectionHeading(depth, label) {
+  return depth < 3 || (depth === 3 && SECTION_NAME.test(label))
+}
+
 // The heading as plain text for the card title and badge: decoration and
 // inline markdown ([text](url), `code`, **bold**, a trailing colon) removed.
-function headingText(raw) {
+export function headingText(raw) {
   return raw
     .replace(/[\p{Extended_Pictographic}\uFE0F]/gu, '')
     .replace(EMOJI_SHORTCODE, '$1')
@@ -223,10 +241,8 @@ export function splitReleaseSections(body) {
   for (const heading of topLevelHeadings(tokenizer.tokenize(text))) {
     const label = headingText(heading.raw)
     const isTitle = isTitleHeading(label)
-    const isSection =
-      heading.depth < 3 || (heading.depth === 3 && SECTION_NAME.test(label))
     // Any other heading (a `###` feature title, `####`) stays in the section.
-    if (!isTitle && !isSection) continue
+    if (!isTitle && !isSectionHeading(heading.depth, label)) continue
 
     current.lines.push(...lines.slice(line, heading.line))
     line = heading.line + 1
