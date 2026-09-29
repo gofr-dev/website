@@ -1,8 +1,13 @@
 import Markdoc from '@markdoc/markdoc'
 
 // Default import: @markdoc/markdoc ships CommonJS, and Node's ESM loader
-// (used by the changelog checks) can't see its named exports.
-const { nodes: defaultNodes, Tag } = Markdoc
+// (used by utils/check-changelog.mjs) can't see its named exports.
+const { nodes: defaultNodes, Tag, Tokenizer } = Markdoc
+
+// Markdoc's own tokenizer decides where code fences and headings are, so
+// the rewriting and section splitting below always agree with the parser
+// (a fence inside a list item also ends where the item ends, for example).
+const tokenizer = new Tokenizer()
 
 // GitHub release bodies are GitHub-flavoured markdown. They used to be
 // rendered by a small line-by-line parser that only knew about fences,
@@ -22,11 +27,26 @@ const DECORATIVE_EMOJI = /[🔹🚀🔧🛠💎⚡]\uFE0F?\s*/gu
 const EMOJI_SHORTCODE = /(^|\s):[a-z][a-z0-9_+-]*:(?=[\s,.!?;)\]]|$)/g
 
 // A bare URL that GitHub would auto-link. It must start the line or follow
-// whitespace or an opening parenthesis, so URLs that are already the target
-// or text of a markdown link (`](https://…)`, `[https://…]`) are left
-// alone. Trailing punctuation is not part of the link.
+// whitespace or an opening parenthesis. Trailing punctuation is not part of
+// the link.
 const BARE_URL =
   /(^|\s|(?<!\])\()(https?:\/\/[^\s<>()[\]]*[^\s<>()[\].,;:!?'"])/g
+
+// Existing links ([text](url), <https://…>) whose text or target must not
+// be auto-linked a second time.
+const MARKDOWN_LINK = /!?\[[^\]]*\]\([^)]*\)|<https?:\/\/[^>\s]*>/g
+
+function linkBareUrls(text) {
+  let out = ''
+  let last = 0
+  const link = (part) =>
+    part.replace(BARE_URL, (_, lead, url) => `${lead}[${url}](${url})`)
+  for (const m of text.matchAll(MARKDOWN_LINK)) {
+    out += link(text.slice(last, m.index)) + m[0]
+    last = m.index + m[0].length
+  }
+  return out + link(text.slice(last))
+}
 
 // Raw <img> tags, which GitHub renders for pasted screenshots.
 const IMG_TAG = /<img\b[^>]*>/gi
@@ -48,9 +68,7 @@ function imgToMarkdown(tag) {
 
 function transformProse(text) {
   return (
-    text
-      .replace(IMG_TAG, imgToMarkdown)
-      .replace(BARE_URL, (_, lead, url) => `${lead}[${url}](${url})`)
+    linkBareUrls(text.replace(IMG_TAG, imgToMarkdown))
       // Before punctuation the space in front goes too ("launch :rocket:,").
       .replace(EMOJI_SHORTCODE, (m, lead, offset, str) =>
         /[,.!?;)\]]/.test(str[offset + m.length] ?? '') ? '' : lead,
@@ -84,12 +102,23 @@ function openFence(line) {
   return line.includes('{%') ? line : `${line} {% process=false %}`
 }
 
+// Line ranges of every code fence, as Markdoc's tokenizer sees them:
+// [first line, line after the last]. A fence left open inside a list item
+// ends with the item, not at the end of the document.
+function fenceRanges(tokens) {
+  return tokens
+    .filter((t) => t.type === 'fence' && t.map)
+    .map((t) => ({ start: t.map[0], end: t.map[1] }))
+}
+
 // Applies fn to prose only: fenced code blocks and inline code spans are
 // passed through untouched, so code samples are never rewritten.
 function mapOutsideCode(text, fn) {
+  const lines = text.split('\n')
+  const fences = fenceRanges(tokenizer.tokenize(text))
   const out = []
-  let fence = null
   let prose = []
+  let line = 0
 
   const flush = () => {
     if (prose.length === 0) return
@@ -97,26 +126,14 @@ function mapOutsideCode(text, fn) {
     prose = []
   }
 
-  for (const line of text.split('\n')) {
-    const marker = /^\s*(`{3,}|~{3,})/.exec(line)
-    if (fence) {
-      out.push(line)
-      if (
-        marker &&
-        marker[1][0] === fence[0] &&
-        marker[1].length >= fence.length
-      )
-        fence = null
-      continue
-    }
-    if (marker) {
-      flush()
-      fence = marker[1]
-      out.push(openFence(line))
-      continue
-    }
-    prose.push(line)
+  for (const fence of fences) {
+    prose.push(...lines.slice(line, fence.start))
+    flush()
+    out.push(openFence(lines[fence.start]))
+    out.push(...lines.slice(fence.start + 1, fence.end))
+    line = fence.end
   }
+  prose.push(...lines.slice(line))
   flush()
 
   return out.join('\n')
@@ -161,16 +178,34 @@ function headingText(raw) {
     .trim()
 }
 
+// Top-level `#`-style headings with the line they are on, from Markdoc's
+// tokenizer, so headings inside code, list items or quotes never count.
+// Setext headings (text underlined with ---) stay part of the content.
+function topLevelHeadings(tokens) {
+  const headings = []
+  tokens.forEach((t, i) => {
+    if (t.type !== 'heading_open' || t.level !== 0 || !t.map) return
+    if (!t.markup.startsWith('#')) return
+    headings.push({
+      line: t.map[0],
+      depth: Number(t.tag.slice(1)),
+      raw: (tokens[i + 1]?.content ?? '').trim(),
+    })
+  })
+  return headings
+}
+
 // Splits a release body into its sections (Features, Enhancements, Fixes,
 // …), which releases mark with `#`, `##` or `###` headings. Text before the
-// first section is kept as an "overview" section instead of being dropped,
-// and headings inside code blocks are ignored.
+// first section is kept as an "overview" section instead of being dropped.
 export function splitReleaseSections(body) {
   if (!body) return []
 
+  const text = body.replace(/\r\n?/g, '\n')
+  const lines = text.split('\n')
   const sections = []
   let current = { type: 'overview', label: 'Overview', lines: [] }
-  let fence = null
+  let line = 0
 
   const push = () => {
     const content = current.lines.join('\n').trim()
@@ -185,50 +220,35 @@ export function splitReleaseSections(body) {
     }
   }
 
-  for (const line of body.replace(/\r\n?/g, '\n').split('\n')) {
-    const marker = /^\s*(`{3,}|~{3,})/.exec(line)
-    if (fence) {
-      current.lines.push(line)
-      if (
-        marker &&
-        marker[1][0] === fence[0] &&
-        marker[1].length >= fence.length
-      )
-        fence = null
-      continue
+  for (const heading of topLevelHeadings(tokenizer.tokenize(text))) {
+    const label = headingText(heading.raw)
+    const isTitle = isTitleHeading(label)
+    const isSection =
+      heading.depth < 3 || (heading.depth === 3 && SECTION_NAME.test(label))
+    // Any other heading (a `###` feature title, `####`) stays in the section.
+    if (!isTitle && !isSection) continue
+
+    current.lines.push(...lines.slice(line, heading.line))
+    line = heading.line + 1
+
+    // The release title (# Release v1.x.x) is already shown on the card.
+    if (isTitle) continue
+
+    push()
+    const type = sectionType(label)
+    current = {
+      type,
+      label,
+      lines: [],
+      // Only a sentence-like heading is kept as a notice when it has no
+      // body; empty "What's Changed" style headings are dropped.
+      notice:
+        KNOWN_TYPES.has(type) || label.split(/\s+/).length < 4
+          ? ''
+          : heading.raw,
     }
-    if (marker) {
-      fence = marker[1]
-      current.lines.push(line)
-      continue
-    }
-
-    const heading = /^(#{1,3})\s+(.*)$/.exec(line.trim())
-    if (heading) {
-      const raw = heading[2].trim()
-      const text = headingText(raw)
-
-      // The release title (# Release v1.x.x) is already shown on the card.
-      if (isTitleHeading(text)) continue
-
-      if (heading[1].length < 3 || SECTION_NAME.test(text)) {
-        push()
-        const type = sectionType(text)
-        current = {
-          type,
-          label: text,
-          lines: [],
-          // Only a sentence-like heading is kept as a notice when it has
-          // no body; empty "What's Changed" style headings are dropped.
-          notice:
-            KNOWN_TYPES.has(type) || text.split(/\s+/).length < 4 ? '' : raw,
-        }
-        continue
-      }
-    }
-
-    current.lines.push(line)
   }
+  current.lines.push(...lines.slice(line))
   push()
 
   return sections

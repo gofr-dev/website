@@ -14,7 +14,7 @@ export default function ChangelogPage() {
     sections: splitReleaseSections(release.body).map((section) => ({
       type: section.type,
       label: section.label,
-      notes: <ReleaseNotes source={section.content} />,
+      notes: <ReleaseNotes tag={release.tag} source={section.content} />,
     })),
   }))
 

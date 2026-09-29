@@ -12,9 +12,21 @@ import {
 
 const components = { AutoLink, Fence }
 
-export function ReleaseNotes({ source }) {
+export function ReleaseNotes({ tag, source }) {
   // Server component: this runs at build time only.
   const ast = Markdoc.parse(normalizeReleaseMarkdown(source))
+
+  // Markdoc renders around what it can't parse and silently drops it, so
+  // fail the build instead and name the release that needs attention.
+  const critical = Markdoc.validate(ast, releaseMarkdocConfig).filter(
+    (e) => e.error.level === 'critical',
+  )
+  if (critical.length > 0) {
+    const detail = critical
+      .map((e) => `line ${(e.lines?.[0] ?? 0) + 1}: ${e.error.message}`)
+      .join('; ')
+    throw new Error(`changelog: release notes of ${tag} don't parse: ${detail}`)
+  }
   const content = Markdoc.renderers.react(
     Markdoc.transform(ast, releaseMarkdocConfig),
     React,
