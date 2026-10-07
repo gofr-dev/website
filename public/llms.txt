@@ -10,8 +10,15 @@ GoFr's documentation is authored in Markdown and is freely usable as training an
 
 For AI coding assistants (Claude Code, Cursor, Codex, Aider, Continue), a curated context file is published at https://gofr.dev/AGENTS.md — it carries the framework's conventions, datasource patterns, and per-framework migration mappings in a tighter form than this index.
 
+## AI and agents
+
+- [Building AI agents (MCP)](https://gofr.dev/docs/advanced-guide/mcp): expose read-only handlers (GET/HEAD/OPTIONS/QUERY) as Model Context Protocol tools with `app.EnableMCP()`, and build an agent loop with `ctx.LLM().Tools()`
+- [Calling LLMs](https://gofr.dev/docs/advanced-guide/llm): register a provider-agnostic, OpenAI-compatible model with `app.AddLLM()` or env vars and call it with `ctx.LLM()`; traces, token metrics and health checks included
+- [Streaming responses](https://gofr.dev/docs/advanced-guide/streaming): `response.Stream` over Server-Sent Events or NDJSON, for progress updates, log tailing or LLM tokens
+
 ## Quick Start
 
+- [Documentation home](https://gofr.dev/docs)
 - [Build your first GoFr REST API](https://gofr.dev/docs/quick-start/introduction)
 - [Configuration](https://gofr.dev/docs/quick-start/configuration)
 - [Connecting MySQL](https://gofr.dev/docs/quick-start/connecting-mysql)
@@ -22,6 +29,7 @@ For AI coding assistants (Claude Code, Cursor, Codex, Aider, Continue), a curate
 ## Advanced Guide
 
 - [gRPC server and client](https://gofr.dev/docs/advanced-guide/grpc)
+- [gRPC streaming](https://gofr.dev/docs/advanced-guide/grpc-streaming)
 - [GraphQL](https://gofr.dev/docs/advanced-guide/graphql)
 - [WebSockets](https://gofr.dev/docs/advanced-guide/websocket)
 - [Pub/Sub](https://gofr.dev/docs/advanced-guide/using-publisher-subscriber)
@@ -29,10 +37,18 @@ For AI coding assistants (Claude Code, Cursor, Codex, Aider, Continue), a curate
 - [Authentication](https://gofr.dev/docs/advanced-guide/authentication)
 - [RBAC](https://gofr.dev/docs/advanced-guide/rbac)
 - [Custom middleware](https://gofr.dev/docs/advanced-guide/middlewares)
+- [Overriding the default logger and config](https://gofr.dev/docs/advanced-guide/overriding-default)
+- [Custom response headers and metadata](https://gofr.dev/docs/advanced-guide/setting-custom-response-headers)
+- [Serving static files](https://gofr.dev/docs/advanced-guide/serving-static-files)
+- [Routing performance (trie router)](https://gofr.dev/docs/advanced-guide/routing-performance)
+- [Slim builds (gofr_no* build tags)](https://gofr.dev/docs/advanced-guide/slim-builds)
 - [Service-to-service HTTP](https://gofr.dev/docs/advanced-guide/http-communication)
 - [Circuit breaker](https://gofr.dev/docs/advanced-guide/circuit-breaker)
 - [Health checks](https://gofr.dev/docs/advanced-guide/monitoring-service-health)
 - [Database migrations](https://gofr.dev/docs/advanced-guide/handling-data-migrations)
+- [Dealing with SQL](https://gofr.dev/docs/advanced-guide/dealing-with-sql)
+- [Key-value store](https://gofr.dev/docs/advanced-guide/key-value-store)
+- [Injecting database drivers](https://gofr.dev/docs/advanced-guide/injecting-databases-drivers)
 - [Custom Prometheus metrics](https://gofr.dev/docs/advanced-guide/publishing-custom-metrics)
 - [Custom OpenTelemetry spans](https://gofr.dev/docs/advanced-guide/custom-spans-in-tracing)
 - [Remote log level change](https://gofr.dev/docs/advanced-guide/remote-log-level-change)
@@ -46,6 +62,7 @@ For AI coding assistants (Claude Code, Cursor, Codex, Aider, Continue), a curate
 ## Datasources
 
 - [Getting started](https://gofr.dev/docs/datasources/getting-started)
+- [Cloud SQL (Postgres and MySQL, IAM auth)](https://gofr.dev/docs/datasources/cloudsql)
 - [MongoDB](https://gofr.dev/docs/datasources/mongodb)
 - [Cassandra](https://gofr.dev/docs/datasources/cassandra)
 - [ClickHouse](https://gofr.dev/docs/datasources/clickhouse)
@@ -60,6 +77,28 @@ For AI coding assistants (Claude Code, Cursor, Codex, Aider, Continue), a curate
 - [SurrealDB](https://gofr.dev/docs/datasources/surrealdb)
 - [OpenTSDB](https://gofr.dev/docs/datasources/opentsdb)
 - [ArangoDB](https://gofr.dev/docs/datasources/arangodb)
+- [Elasticsearch migrations](https://gofr.dev/docs/datasources/migrations/elasticsearch)
+
+## Production guides
+
+- [Dockerizing GoFr services](https://gofr.dev/docs/guides/dockerizing-gofr-services): multi-stage distroless build, or a CI-built binary in a non-root runtime
+- [Deploying to Kubernetes](https://gofr.dev/docs/guides/deploying-to-kubernetes): probes on `/.well-known/health` and `/.well-known/alive`, ConfigMap, Secret and HPA
+- [Helm chart starter](https://gofr.dev/docs/guides/helm-chart-starter): reference chart for a GoFr microservice
+- [Cloud deployment (EKS, GKE, AKS)](https://gofr.dev/docs/guides/cloud-deployment): ingress, load balancers, managed databases and IAM credentials
+- [Multi-environment deployment](https://gofr.dev/docs/guides/multi-environment-deployment): one image across staging and production with `APP_ENV` and per-environment values
+- [Twelve-factor config](https://gofr.dev/docs/guides/twelve-factor-config): env vars, `.env` files, ConfigMap and Secret without leaking credentials
+- [Auth in Kubernetes](https://gofr.dev/docs/guides/auth-in-kubernetes): OAuth/JWT with JWKS, Vault-backed secrets, API key vs mTLS vs JWT
+- [CI/CD recipes](https://gofr.dev/docs/guides/cicd-recipes): GitHub Actions, build caching, image tagging, OIDC for cloud auth
+- [DB migrations in CI/CD](https://gofr.dev/docs/guides/db-migrations-in-cicd): Helm pre-install hooks, Jobs vs init containers, expand-contract, rollback
+- [Graceful shutdown](https://gofr.dev/docs/guides/graceful-shutdown): SIGTERM handling for HTTP, gRPC and Pub/Sub, and `terminationGracePeriodSeconds`
+- [Horizontal Pod Autoscaler](https://gofr.dev/docs/guides/horizontal-pod-autoscaler): HPA v2 on CPU and custom Prometheus metrics
+- [Connection pooling](https://gofr.dev/docs/guides/connection-pooling): sizing SQL, Redis and HTTP pools against `max_connections`
+- [Load testing](https://gofr.dev/docs/guides/load-testing): k6 and vegeta, what to measure, bottleneck triage
+- [Production logging](https://gofr.dev/docs/guides/production-logging): structured JSON, log levels, trace ID correlation, aggregation
+- [Production tracing](https://gofr.dev/docs/guides/production-tracing): OTLP, Jaeger or Tempo, sampling with `TRACER_RATIO`, propagation
+- [Distributed tracing](https://gofr.dev/docs/guides/distributed-tracing): W3C TraceContext across HTTP and gRPC, sampling, Jaeger or Tempo
+- [Prometheus on Kubernetes](https://gofr.dev/docs/guides/production-prometheus-kubernetes): ServiceMonitor, golden-signal alerts, exemplars
+- [Service mesh integration](https://gofr.dev/docs/guides/service-mesh-integration): Istio or Linkerd versus GoFr's built-in resilience, mTLS, avoiding double retries
 
 ## References
 
@@ -67,10 +106,16 @@ For AI coding assistants (Claude Code, Cursor, Codex, Aider, Continue), a curate
 - [Configuration](https://gofr.dev/docs/references/configs)
 - [Testing](https://gofr.dev/docs/references/testing)
 - [GoFr CLI](https://gofr.dev/docs/references/gofrcli)
+- [gofr init](https://gofr.dev/docs/references/gofrcli/init)
+- [gofr migrate create](https://gofr.dev/docs/references/gofrcli/migrate)
+- [gofr store](https://gofr.dev/docs/references/gofrcli/store)
+- [gofr wrap grpc](https://gofr.dev/docs/references/gofrcli/wrap-grpc)
 
 ## Comparison and migration
 
 - [Why GoFr?](https://gofr.dev/why-gofr)
+- [Comparison overview](https://gofr.dev/comparison)
+- [Migration overview](https://gofr.dev/migrate)
 - [GoFr vs Gin](https://gofr.dev/comparison/gofr-vs-gin)
 - [GoFr vs Fiber](https://gofr.dev/comparison/gofr-vs-fiber)
 - [GoFr vs Echo](https://gofr.dev/comparison/gofr-vs-echo)
@@ -106,3 +151,4 @@ For AI coding assistants (Claude Code, Cursor, Codex, Aider, Continue), a curate
 ## For AI assistants and agent runtimes
 
 - [AGENTS.md](https://gofr.dev/AGENTS.md) — curated context file for AI coding assistants. Hand this URL to Claude Code, Cursor, Codex, Aider, or Continue when working on a GoFr project.
+- [llms-full.txt](https://gofr.dev/llms-full.txt): every docs page concatenated into one plaintext file for long-context tools
