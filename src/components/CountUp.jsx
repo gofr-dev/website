@@ -6,23 +6,25 @@ import { useEffect, useRef, useState } from 'react'
 // into view. Eases out (cubic) so the count slows toward the final
 // number rather than stopping abruptly.
 //
+// The server-rendered HTML (and the first client render) already contains
+// the final `value`, so crawlers and tools that do not run JavaScript read
+// the real number. The count only restarts from 0 in the browser when the
+// element scrolls into view.
+//
 // `format` is called with the current number to render the displayed
 // string (e.g. add a "+" or commas). Defaults to localized integer.
 //
-// Honors `prefers-reduced-motion` — renders the final number
-// immediately with no animation.
+// Honors `prefers-reduced-motion` — keeps the final number with no
+// animation.
 export function CountUp({ value, durationMs = 1500, format }) {
   const ref = useRef(null)
-  const [n, setN] = useState(0)
+  const [n, setN] = useState(value)
   const formatFn = format || ((x) => x.toLocaleString())
 
   useEffect(() => {
     if (typeof window === 'undefined') return
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    if (reduce) {
-      setN(value)
-      return
-    }
+    if (reduce) return
     const node = ref.current
     if (!node) return
     let raf = 0
@@ -42,6 +44,7 @@ export function CountUp({ value, durationMs = 1500, format }) {
       ([entry]) => {
         if (entry.isIntersecting && !started) {
           started = true
+          setN(0)
           start(performance.now())
           obs.unobserve(node)
         }
