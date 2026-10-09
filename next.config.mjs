@@ -52,6 +52,26 @@ const nextConfig = {
           return (
             source +
             `
+// Site-wide default social card. Docs pages carry title/description
+// frontmatter, and Next's metadata merge REPLACES the parent layout's
+// openGraph/twitter object instead of merging images into it — so a
+// docs page that emits its own openGraph would otherwise lose the
+// og:image/twitter:image entirely and shared links would render as a
+// plain text card. Attach the site default card (unless the page
+// author explicitly sets images) so every docs page previews properly
+// on LinkedIn, X, and Slack.
+const __defaultOgImage = {
+  url: '/opengraph-image.png',
+  width: 1200,
+  height: 630,
+  alt: 'GoFr — An Opinionated Go Framework',
+};
+const __defaultTwitterImage = {
+  url: '/twitter-image.png',
+  width: 1200,
+  height: 630,
+  alt: 'GoFr — An Opinionated Go Framework',
+};
 const __pageMeta = frontmatter.nextjs?.metadata || {};
 const __pageTitle = typeof __pageMeta.title === 'string' ? __pageMeta.title : undefined;
 const __pageDesc = typeof __pageMeta.description === 'string' ? __pageMeta.description : undefined;
@@ -65,6 +85,16 @@ const __tw = {
   ...(__pageDesc ? { description: __pageDesc } : {}),
   ...(__pageMeta.twitter || {}),
 };
+// Default card image unless the author explicitly provided their own.
+// Only attach when the page actually carries per-page values — pages
+// without frontmatter must stay empty so the parent layout's openGraph
+// (with its own title/description/images) is preserved.
+if (Object.keys(__og).length && !__og.images) {
+  __og.images = [__defaultOgImage];
+}
+if (Object.keys(__tw).length && !__tw.images) {
+  __tw.images = [__defaultTwitterImage];
+}
 const __derivedCanonical = ${JSON.stringify(__canonical)};
 const __alternates = {
   canonical: __derivedCanonical,
